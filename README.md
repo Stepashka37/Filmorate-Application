@@ -20,7 +20,7 @@ Template repository for Filmorate project.
    FROM Film
    WHERE film_id = <your_id>;
    
-3) Получить фильм c конкретным id:
+3) Получить список самых популярных фильмов:
    
    SELECT f.name as name
           COUNT(fl.user_id) as likes_number
