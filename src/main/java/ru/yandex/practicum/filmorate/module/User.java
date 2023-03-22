@@ -3,31 +3,40 @@ package ru.yandex.practicum.filmorate.module;
 
 import lombok.Builder;
 import lombok.Data;
-
+import lombok.Singular;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.Positive;
 import java.time.LocalDate;
-
 import java.util.Objects;
+import java.util.Set;
 
 @Data
 @Builder
 public class User {
-    private int id;
-    @Email
+    @Singular
+    private Set<Long> friends;
+    @Positive(message = "id должен быть больше нуля")
+    private Long id;
+    @Email(message = "Email не может быть пустым и должен соответствовать следующему формату: email@email.ru")
+
+    @NotBlank
     private String email;
-    @NotNull
+
+    @NotBlank
     private String login;
     private String name;
-    @PastOrPresent
+    @PastOrPresent(message = "Дата рождения не может быть в будущем")
     private LocalDate birthday;
+
 
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "friends=" + friends +
+                ", id=" + id +
                 ", email='" + email + '\'' +
                 ", login='" + login + '\'' +
                 ", name='" + name + '\'' +
@@ -40,62 +49,25 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id && email.equals(user.email) && login.equals(user.login) && name.equals(user.name) && birthday.equals(user.birthday);
+        return id == user.id && Objects.equals(friends, user.friends) && Objects.equals(email, user.email) && Objects.equals(login, user.login) && Objects.equals(name, user.name) && Objects.equals(birthday, user.birthday);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, email, login, name, birthday);
+        return Objects.hash(friends, id, email, login, name, birthday);
     }
 
-    public User(int id, String email, String login, String name, LocalDate birthday) {
-        this.id = id;
-        this.email = email;
-        this.login = login;
-        this.name = name;
-        this.birthday = birthday;
+    public Set<Long> getFriends() {
+        return friends;
     }
 
-   /* public static class UserBuilder {
-        private int id;
-        @Email
-        private String email;
-        @NotNull
-        private String login;
-        private String name;
-        @PastOrPresent
-        private LocalDate birthday;
+    public void addFriend(Long id) {
+        friends.add(id);
+    }
 
-        public UserBuilder() {
-        }
+    public void deleteFriend(Long id) {
+        friends.remove(id);
+    }
 
-        public User.UserBuilder setId(int id) {
-            this.id = id;
-            return this;
-        }
 
-        public User.UserBuilder setEmail(String email) {
-            this.email = email;
-            return this;
-        }
-
-        public User.UserBuilder setLogin(String login) {
-            this.login = login;
-            return this;
-        }
-
-        public User.UserBuilder setBirthday(LocalDate birthday) {
-            this.birthday = birthday;
-            return this;
-        }
-
-        public User.UserBuilder setName(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public User build() {
-            return new User(id,email,login, name,birthday);
-        }
-    }*/
 }

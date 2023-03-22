@@ -4,56 +4,41 @@ package ru.yandex.practicum.filmorate.module;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
+import lombok.Singular;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Set;
 
 @Data
 @Builder
 public class Film {
-    private int id;
-    @NotNull
+    @Singular
+    private Set<Long> likes;
+    @Positive(message = "id должен быть больше нуля")
+    private Long id;
+    @NotBlank(message = "Имя не может быть пустым")
     private String name;
-    @Size(min = 0, max = 200)
+    @Size(min = 0, max = 200, message = "Максимальная длина описания - 200 символов")
     private String description;
-    @Past
+    @Past(message = "Дата выхода фильма не может быть в будущем")
     @NonNull
     private LocalDate releaseDate;
-    @Positive
+    @Positive(message = "Продолжительность фильма не может быть отрицательной")
     @NonNull
     private long duration;
 
 
-
-    public Film(int id, String name, String description, LocalDate releaseDate, long duration) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.releaseDate = releaseDate;
-        this.duration = duration;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Film film = (Film) o;
-        return id == film.id && duration == film.duration && name.equals(film.name) && description.equals(film.description) && releaseDate.equals(film.releaseDate);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, description, releaseDate, duration);
-    }
-
     @Override
     public String toString() {
         return "Film{" +
-                "id=" + id +
+                "likes=" + likes +
+                ", id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", releaseDate=" + releaseDate +
@@ -61,51 +46,30 @@ public class Film {
                 '}';
     }
 
-   /* public static class FilmBuilder {
-        private int id;
-        @NotNull
-        private String name;
-        @Size(min = 0, max = 200)
-        private String description;
-        @Past
-        @NotNull
-        private LocalDate releaseDate;
-        @Positive
-        @NotNull
-        private long duration;
-
-
-
-        public FilmBuilder() {
-        }
-
-        public FilmBuilder setId(int id) {
-            this.id = id;
-            return this;
-        }
-
-        public FilmBuilder setName(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public FilmBuilder setDescription(String description) {
-            this.description = description;
-            return this;
-        }
-
-        public FilmBuilder setReleaseDate(LocalDate releaseDate) {
-            this.releaseDate = releaseDate;
-            return this;
-        }
-
-        public FilmBuilder setDuration(long duration) {
-            this.duration = duration;
-            return this;
-        }
-
-        public Film build() {
-            return new Film(id, name, description, releaseDate, duration);
-        }*/
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Film film = (Film) o;
+        return duration == film.duration && Objects.equals(likes, film.likes) && Objects.equals(id, film.id) && Objects.equals(name, film.name) && Objects.equals(description, film.description) && releaseDate.equals(film.releaseDate);
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(likes, id, name, description, releaseDate, duration);
+    }
+
+    public void likeFilm(Long userId) {
+        likes.add(userId);
+    }
+
+    public void removeLike(Long userId) {
+        if (!likes.contains(userId)) {
+            throw new UserNotFoundException("Пользователь с id " + userId + " не найден");
+        }
+        likes.remove(userId);
+    }
+
+
+}
 
