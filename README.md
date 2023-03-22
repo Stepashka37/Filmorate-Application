@@ -50,7 +50,7 @@ LEFT JOIN User AS f ON u.friend_id = f.user_id
 WHERE u.user_id = <your_id>;
 
 7) Получить общих друзей юзера c id = 1 и id = 2
-SELECT *
+SELECT user1_friends.user_id
 FROM (SELECT u.* AS user,
       f.* AS friend
       FROM User AS u
