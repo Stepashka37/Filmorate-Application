@@ -64,3 +64,4 @@ INNER JOIN (SELECT u.* AS user,
 ON user1_friends.friend_id = user2_friends.frind_id;
 
   
+  SELECT * FROM EMP JOIN DEPT ON EMP.DEPTNO = DEPT.DEPTNO;
