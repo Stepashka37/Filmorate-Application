@@ -35,9 +35,9 @@ public class UserController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public User addUser(@Valid @RequestBody User user) {
-        User addedUser = usersService.addUser(user);
-        log.info("Добавили пользователя с id{}", addedUser.getId());
-        return addedUser;
+        User addUser = usersService.addUser(user);
+        log.info("Добавили пользователя с id{}", addUser.getId());
+        return addUser;
     }
 
     @PutMapping()
@@ -56,13 +56,13 @@ public class UserController {
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    public void addFriend(@PathVariable Long id, @PathVariable Long friendId) {
+    public void addFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
         usersService.addFriend(id, friendId);
         log.info("Пользователь с id{}", friendId + " добавился в друзья к пользователю с id" + id);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
-    public void deleteFriend(@PathVariable @Min(1) Long id, @PathVariable @Min(1) Long friendId) {
+    public void deleteFriend(@PathVariable @Min(1) Integer id, @PathVariable @Min(1) Integer friendId) {
         if (id == null || friendId == null) {
             throw new ValidationException("не указан id");
         }
@@ -71,21 +71,21 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends")
-    public List<User> getFriends(@PathVariable Long id) {
+    public List<User> getFriends(@PathVariable Integer id) {
         List<User> friends = usersService.showFriends(id);
         log.info("Получен список друзей пользователя с id{}", id);
         return friends;
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public List<User> getCommonFriends(@PathVariable Long id, @PathVariable Long otherId) {
+    public List<User> getCommonFriends(@PathVariable Integer id, @PathVariable Integer otherId) {
         List<User> commonFriends = usersService.showCommonFriends(id, otherId);
         log.info("Получен список общих друзей пользователей с id{}", id + " и с id" + otherId);
         return commonFriends;
     }
 
     @GetMapping("/{id}")
-    public User getUser(@PathVariable Long id) {
+    public User getUser(@PathVariable Integer id) {
         if (id <= 0) {
             throw new ValidationException("id должен быть больше или равен 0");
         }
@@ -98,7 +98,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) {
+    public void deleteUser(@PathVariable Integer id) {
         if (id <= 0) {
             throw new ValidationException("id должен быть больше или равен 0");
         }

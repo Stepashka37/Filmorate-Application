@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.Singular;
+import org.springframework.data.annotation.Id;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 
 import javax.validation.constraints.NotBlank;
@@ -12,6 +13,7 @@ import javax.validation.constraints.Past;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -19,9 +21,10 @@ import java.util.Set;
 @Builder
 public class Film {
     @Singular
-    private Set<Long> likes;
-    @Positive(message = "id должен быть больше нуля")
-    private Long id;
+    private Set<Integer> likes = new HashSet<>();
+    //@Positive(message = "id должен быть больше нуля")
+    @Id
+    private int id;
     @NotBlank(message = "Имя не может быть пустым")
     private String name;
     @Size(min = 0, max = 200, message = "Максимальная длина описания - 200 символов")
@@ -33,6 +36,51 @@ public class Film {
     @NonNull
     private long duration;
 
+    private Set<Genre> genres;
+
+
+    private RatingMpa mpa;
+
+   /* public Film() {
+    }
+
+    public Film(int id, String name, String description, @NonNull LocalDate releaseDate, @NonNull long duration, Integer rating_id) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.rating_id = rating_id;
+    }
+
+    public Film(String name, String description, @NonNull LocalDate releaseDate, @NonNull long duration, Integer rating_id) {
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.rating_id = rating_id;
+    }
+
+    public Film(Set<Integer> likes, int id, String name, String description, @NonNull LocalDate releaseDate, @NonNull long duration, Integer rating_id) {
+        this.likes = likes;
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.rating_id = rating_id;
+    }
+
+    public Film(Set<Integer> likes, int id, String name, String description, @NonNull LocalDate releaseDate, @NonNull long duration, List<Integer> genress, Integer rating_id) {
+        this.likes = likes;
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.genres = genres;
+        this.rating_id = rating_id;
+    }*/
 
     @Override
     public String toString() {
@@ -59,11 +107,16 @@ public class Film {
         return Objects.hash(likes, id, name, description, releaseDate, duration);
     }
 
-    public void likeFilm(Long userId) {
+    public void likeFilm(int userId) {
+        if (likes.isEmpty()) {
+            likes = new HashSet<>();
+            likes.add(userId);
+            return;
+        }
         likes.add(userId);
     }
 
-    public void removeLike(Long userId) {
+    public void removeLike(int userId) {
         if (!likes.contains(userId)) {
             throw new UserNotFoundException("Пользователь с id " + userId + " не найден");
         }

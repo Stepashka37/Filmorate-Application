@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.module.User;
+import ru.yandex.practicum.filmorate.storage.interfaces.UsersStorage;
 
 import java.util.*;
 
@@ -11,8 +12,8 @@ import java.util.*;
 public class InMemoryUserStorage implements UsersStorage {
 
 
-    private Map<Long, User> users = new HashMap<>();
-    private Long genId = 0L;
+    private Map<Integer, User> users = new HashMap<>();
+    private Integer genId = 0;
 
     @Override
     public List<User> getUsers() {
@@ -32,11 +33,16 @@ public class InMemoryUserStorage implements UsersStorage {
     }
 
     @Override
-    public User getUser(Long id) {
+    public User getUser(Integer id) {
         if (!users.containsKey(id)) {
             throw new UserNotFoundException("Пользователь с id " + id + " не найден");
         }
         return users.get(id);
+    }
+
+    @Override
+    public void deleteFriend(int initiator_id, int acceptor_id) {
+
     }
 
     @Override
@@ -64,16 +70,21 @@ public class InMemoryUserStorage implements UsersStorage {
     @Override
     public void deleteAllUsers() {
         users.clear();
-        genId = 0L;
+        genId = 0;
     }
 
+
     @Override
-    public void deleteUser(Long id) {
+    public void deleteUser(Integer id) {
         if (!users.containsKey(id)) {
             throw new UserNotFoundException("Пользователь с id" + id + " не найден");
         }
         users.remove(id);
     }
 
+    @Override
+    public void makeFriendship(int initiator_id, int acceptor_id) {
+
+    }
 
 }

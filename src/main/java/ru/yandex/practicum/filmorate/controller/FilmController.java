@@ -33,17 +33,18 @@ public class FilmController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Film addFilm(@Valid @RequestBody Film film) {
-        Film addedFilm = filmService.addFilm(film);
-        log.info("Добавили фильм с id{}", addedFilm.getId());
-        return addedFilm;
+        Film addFilm = filmService.addFilm(film);
+        log.info("Добавили фильм с id{}", addFilm.getId());
+        //return addedFilm;
+        return addFilm;
     }
 
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
-        Film updatedFilm = filmService.updateFilm(film);
+        Film updateFilm = filmService.updateFilm(film);
 
-        log.info("Обновили фильм с id{}", updatedFilm.getId());
-        return updatedFilm;
+        log.info("Обновили фильм с id{}", film.getId());
+        return updateFilm;
     }
 
     @DeleteMapping()
@@ -54,20 +55,20 @@ public class FilmController {
     }
 
     @PutMapping("/{id}/like/{userId}")
-    public void likeFilm(@PathVariable Long id, @PathVariable Long userId) {
+    public void likeFilm(@PathVariable int id, @PathVariable int userId) {
         filmService.likeFilm(id, userId);
         log.info("Пользователь с id{}", userId + " поставил лайк фильму с id" + id);
 
     }
 
     @DeleteMapping("/{id}/like/{userId}")
-    public void removeLike(@PathVariable Long id, @PathVariable Long userId) {
+    public void removeLike(@PathVariable int id, @PathVariable int userId) {
         filmService.removeLike(id, userId);
         log.info("Пользователь с id{}", userId + " убрал лайк фильму с id" + id);
     }
 
     @GetMapping("/{id}")
-    public Film getFilm(@PathVariable Long id) {
+    public Film getFilm(@PathVariable int id) {
         Film film = filmService.getFilm(id);
         log.info("Получили фильм с id{}", id);
         return film;
@@ -87,7 +88,7 @@ public class FilmController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteFilm(@PathVariable Long id) {
+    public void deleteFilm(@PathVariable int id) {
         filmService.deleteFilm(id);
         log.info("Удалили фильм с id{}", id);
     }
