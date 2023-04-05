@@ -2,11 +2,9 @@ package ru.yandex.practicum.filmorate.storage;
 
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.module.Film;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmsStorage;
 
-import java.time.LocalDate;
 import java.util.*;
 
 
@@ -33,7 +31,7 @@ public class InMemoryFilmStorage implements FilmsStorage {
 
     @Override
     public Film addFilm(Film film) {
-        validateFilm(film);
+       // validateFilm(film);
         ++genId;
         film.setId(genId);
         film.setLikes(new HashSet<>());
@@ -43,7 +41,7 @@ public class InMemoryFilmStorage implements FilmsStorage {
 
     @Override
     public Film updateFilm(Film film) {
-        validateFilm(film);
+        // validateFilm(film);
         if (!films.containsKey(film.getId())) {
             throw new FilmNotFoundException("Фильм с id " + film.getId() + " не найден");
         }
@@ -54,12 +52,12 @@ public class InMemoryFilmStorage implements FilmsStorage {
         return films.get(film.getId());
     }
 
-    private void validateFilm(Film film) {
+    /*private void validateFilm(Film film) {
         if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
             throw new ValidationException("Дата релиза - не раньше 28 декабря 1895 года");
         }
 
-    }
+    }*/
 
     @Override
     public void deleteAllFilms() {
@@ -83,6 +81,11 @@ public class InMemoryFilmStorage implements FilmsStorage {
     @Override
     public void removeLike(int filmId, int userId) {
 
+    }
+
+    @Override
+    public List<Film> getPopularFilms(int count) {
+        return null;
     }
 
 

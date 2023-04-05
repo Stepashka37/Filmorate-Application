@@ -4,13 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.module.User;
 import ru.yandex.practicum.filmorate.storage.interfaces.UsersStorage;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 
@@ -29,6 +27,11 @@ public class UserService {
     }
 
     public User addUser(User user) {
+        if (user.getLogin().contains(" ")) {
+            throw new ValidationException("Логин не может быть пустым и содержать пробелы");
+        } else if (user.getName() == (null) || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
         return storage.addUser(user);
     }
 
@@ -71,7 +74,8 @@ public class UserService {
     }
 
     public List<User> showFriends(Integer id) {
-        List<User> result = new ArrayList<>();
+        return storage.showFriends(id);
+        /*List<User> result = new ArrayList<>();
 
         User user = storage.getUser(id);
         if (user.getFriends().size() == 0) {
@@ -81,12 +85,16 @@ public class UserService {
             result.add(storage.getUser(idUser));
 
         }
-        return result;
+        return result;*/
 
     }
 
     public List<User> showCommonFriends(Integer idNumb1, Integer idNumb2) {
-        List<User> result = new ArrayList<>();
+        List<User> firstUserFriends = storage.showFriends(idNumb1);
+        List<User> secondUserFriends = storage.showFriends(idNumb2);
+        firstUserFriends.retainAll(secondUserFriends);
+        return firstUserFriends;
+        /*List<User> result = new ArrayList<>();
         User userNumb1 = storage.getUser(idNumb1);
         User userNumb2 = storage.getUser(idNumb2);
         if (userNumb1.getFriends() == null || userNumb2.getFriends() == null) {
@@ -99,6 +107,6 @@ public class UserService {
         for (Integer id : intersectSet) {
             result.add(storage.getUser(id));
         }
-        return result;
+        return result;*/
     }
 }

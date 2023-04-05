@@ -22,4 +22,6 @@ public interface UsersStorage {
     void deleteUser(Integer id);
 
     void makeFriendship(int initiator_id, int acceptor_id);
+
+    List<User> showFriends(int id);
 }

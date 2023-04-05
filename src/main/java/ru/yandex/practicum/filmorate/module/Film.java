@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NonNull;
 import lombok.Singular;
 import org.springframework.data.annotation.Id;
+import ru.yandex.practicum.filmorate.annotation.ValidReleaseDate;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 
 import javax.validation.constraints.NotBlank;
@@ -31,6 +32,7 @@ public class Film {
     private String description;
     @Past(message = "Дата выхода фильма не может быть в будущем")
     @NonNull
+    @ValidReleaseDate
     private LocalDate releaseDate;
     @Positive(message = "Продолжительность фильма не может быть отрицательной")
     @NonNull
@@ -41,46 +43,6 @@ public class Film {
 
     private RatingMpa mpa;
 
-   /* public Film() {
-    }
-
-    public Film(int id, String name, String description, @NonNull LocalDate releaseDate, @NonNull long duration, Integer rating_id) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.releaseDate = releaseDate;
-        this.duration = duration;
-        this.rating_id = rating_id;
-    }
-
-    public Film(String name, String description, @NonNull LocalDate releaseDate, @NonNull long duration, Integer rating_id) {
-        this.name = name;
-        this.description = description;
-        this.releaseDate = releaseDate;
-        this.duration = duration;
-        this.rating_id = rating_id;
-    }
-
-    public Film(Set<Integer> likes, int id, String name, String description, @NonNull LocalDate releaseDate, @NonNull long duration, Integer rating_id) {
-        this.likes = likes;
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.releaseDate = releaseDate;
-        this.duration = duration;
-        this.rating_id = rating_id;
-    }
-
-    public Film(Set<Integer> likes, int id, String name, String description, @NonNull LocalDate releaseDate, @NonNull long duration, List<Integer> genress, Integer rating_id) {
-        this.likes = likes;
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.releaseDate = releaseDate;
-        this.duration = duration;
-        this.genres = genres;
-        this.rating_id = rating_id;
-    }*/
 
     @Override
     public String toString() {

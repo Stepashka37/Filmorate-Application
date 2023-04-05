@@ -87,4 +87,9 @@ public class InMemoryUserStorage implements UsersStorage {
 
     }
 
+    @Override
+    public List<User> showFriends(int id) {
+        return null;
+    }
+
 }

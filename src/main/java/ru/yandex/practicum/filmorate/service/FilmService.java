@@ -7,10 +7,7 @@ import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.module.Film;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmsStorage;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 
@@ -42,18 +39,18 @@ public class FilmService {
 
     public void likeFilm(int id, int userId) {
         Film film = filmsStorage.getFilm(id);
-        film.likeFilm(userId);
+        //film.likeFilm(userId);
         filmsStorage.addLike(id, userId);
     }
 
     public void removeLike(int id, int userId) {
         Film film = filmsStorage.getFilm(id);
-        film.removeLike(userId);
+        //film.removeLike(userId);
         filmsStorage.removeLike(id, userId);
     }
 
     public List<Film> getMostLikedFilms(int count) {
-        if (filmsStorage.getFilms().isEmpty()) {
+        /*if (filmsStorage.getFilms().isEmpty()) {
             return new ArrayList<>();
         }
         if (filmsStorage.getFilms().size() <= count) {
@@ -65,7 +62,8 @@ public class FilmService {
                 .collect(Collectors.toList());
 
         Collections.reverse(values);
-        return values.subList(0, count);
+        return values.subList(0, count);*/
+        return filmsStorage.getPopularFilms(count);
     }
 
     public Film getFilm(int id) {
