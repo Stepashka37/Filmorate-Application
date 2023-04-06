@@ -69,7 +69,7 @@ class FilmControllerTest {
 
         Film filmCreated = Film.builder().name("name")
                 .likes(new HashSet<>())
-                .id(1L)
+                .id(1)
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(120)
@@ -236,7 +236,7 @@ class FilmControllerTest {
 
 
         Film film2 = Film.builder().name(null)
-                .id(1L)
+                .id(1)
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(120)
@@ -262,7 +262,7 @@ class FilmControllerTest {
                 .content(gson1)
         ).andExpect(status().isCreated());
 
-        Film filmBefore = Film.builder().id(1L)
+        Film filmBefore = Film.builder().id(1)
                 .name("name")
                 .description("Film description")
                 .releaseDate(LocalDate.of(1895, 03, 04))
@@ -275,7 +275,7 @@ class FilmControllerTest {
                 ).andExpect(status().isBadRequest())
                 .andExpect(h -> h.getResponse().equals("Ошибка валидации release date"));
 
-        Film filmAfter = Film.builder().id(1L)
+        Film filmAfter = Film.builder().id(1)
                 .name("name")
                 .description("Film description")
                 .releaseDate(LocalDate.of(2123, 03, 04))
@@ -303,7 +303,7 @@ class FilmControllerTest {
                 .content(gson1)
         ).andExpect(status().isCreated());
 
-        Film filmNull = Film.builder().id(1L)
+        Film filmNull = Film.builder().id(1)
                 .name("name")
                 .description("\"The Social Network is a 2010 American biographical drama film directed by David Fincher" +
                         "and written by Aaron Sorkin, based on the 2009 book The Accidental Billionaires by Ben Mezrich." +
@@ -337,7 +337,7 @@ class FilmControllerTest {
                 .content(gson1)
         ).andExpect(status().isCreated());
 
-        Film filmNull = Film.builder().id(1L)
+        Film filmNull = Film.builder().id(1)
                 .name("name")
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
@@ -355,7 +355,7 @@ class FilmControllerTest {
     @Test
     public void filmPutMethodTestInvalidPresence() {
         Film film = Film.builder().name("Name")
-                .id(100L)
+                .id(100)
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(120)

@@ -76,14 +76,8 @@ public class FilmController {
 
     @GetMapping(value = {"/popular?count={count}", "/popular"})
     public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") @Min(1) Integer count) {
-        /*if (count == null) {
-            count = 10;
-        }
-        if (count < 0) {
-            throw new ValidationException("count не может быть меньше 0");
-        }*/
         List<Film> popularFilms = filmService.getMostLikedFilms(count);
-        log.info("Получили список из " + count + " наиболее популярных фильмов");
+        log.info("Получили список из " + popularFilms.size() + " наиболее популярных фильмов");
         return popularFilms;
     }
 

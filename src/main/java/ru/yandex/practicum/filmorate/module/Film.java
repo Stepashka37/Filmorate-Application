@@ -41,7 +41,7 @@ public class Film {
     private Set<Genre> genres;
 
 
-    private RatingMpa mpa;
+    private Rating mpa;
 
 
     @Override

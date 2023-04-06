@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.module.Film;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmsStorage;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -31,7 +32,6 @@ public class InMemoryFilmStorage implements FilmsStorage {
 
     @Override
     public Film addFilm(Film film) {
-       // validateFilm(film);
         ++genId;
         film.setId(genId);
         film.setLikes(new HashSet<>());
@@ -41,7 +41,6 @@ public class InMemoryFilmStorage implements FilmsStorage {
 
     @Override
     public Film updateFilm(Film film) {
-        // validateFilm(film);
         if (!films.containsKey(film.getId())) {
             throw new FilmNotFoundException("Фильм с id " + film.getId() + " не найден");
         }
@@ -52,12 +51,7 @@ public class InMemoryFilmStorage implements FilmsStorage {
         return films.get(film.getId());
     }
 
-    /*private void validateFilm(Film film) {
-        if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
-            throw new ValidationException("Дата релиза - не раньше 28 декабря 1895 года");
-        }
 
-    }*/
 
     @Override
     public void deleteAllFilms() {
@@ -75,17 +69,29 @@ public class InMemoryFilmStorage implements FilmsStorage {
 
     @Override
     public void addLike(int filmId, int userId) {
-
+        films.get(filmId).likeFilm(userId);
     }
 
     @Override
     public void removeLike(int filmId, int userId) {
-
+        films.get(filmId).removeLike(userId);
     }
 
     @Override
     public List<Film> getPopularFilms(int count) {
-        return null;
+        if (films.values().isEmpty()) {
+            return new ArrayList<>();
+        }
+        if (films.values().size() <= count) {
+            return new ArrayList<>(films.values());
+        }
+        List<Film> values = films.values().stream()
+                .sorted((e1, e2) ->
+                        Integer.compare(e1.getLikes().size(), e2.getLikes().size()))
+                .collect(Collectors.toList());
+
+        Collections.reverse(values);
+        return values.subList(0, count);
     }
 
 

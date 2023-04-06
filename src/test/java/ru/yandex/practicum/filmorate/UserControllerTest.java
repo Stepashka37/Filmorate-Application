@@ -63,7 +63,7 @@ class UserControllerTest {
                 .build();
 
         User userCreated = User.builder().name("name")
-                .id(1L)
+                .id(1)
                 .email("email@yandex.ru")
                 .login("login")
                 .birthday(LocalDate.of(1997, 06, 05))
@@ -240,7 +240,7 @@ class UserControllerTest {
                 .andReturn();
 
         User userCreated = User.builder().name("login")
-                .id(1L)
+                .id(1)
                 .email("email@yandex.ru")
                 .login("login")
                 .name("name")
@@ -250,7 +250,7 @@ class UserControllerTest {
         User fromGson1 = objectMapper.readValue(result1.getResponse().getContentAsString(), User.class);
         User fromGson2 = objectMapper.readValue(result2.getResponse().getContentAsString(), User.class);
         assertEquals(userCreated, fromGson1);
-        userCreated.setId(2L);
+        userCreated.setId(2);
         assertEquals(userCreated, fromGson2);
 
 
@@ -272,7 +272,7 @@ class UserControllerTest {
         ).andExpect(status().isCreated());
 
         User userToPut = User.builder().name("name")
-                .id(1L)
+                .id(1)
                 .email("email.yandex.ru")
                 .login("login")
                 .name("name")
@@ -286,7 +286,7 @@ class UserControllerTest {
                 .andExpect(h -> h.getResponse().equals("Ошибка валидации email"));
 
         userToPut = User.builder().name("name")
-                .id(1L)
+                .id(1)
                 .email("")
                 .login("login")
                 .name("name")
@@ -300,7 +300,7 @@ class UserControllerTest {
                 .andExpect(h -> h.getResponse().equals("Ошибка валидации email"));
 
         userToPut = User.builder().name("name")
-                .id(1L)
+                .id(1)
                 .email("это-неправильный?эмейл@")
                 .login("login")
                 .name("name")
@@ -330,7 +330,7 @@ class UserControllerTest {
         ).andExpect(status().isCreated());
 
         User userInvalidLogin = User.builder().name("name")
-                .id(1L)
+                .id(1)
                 .email("email.yandex.ru")
                 .login("")
                 .name("name")
@@ -344,7 +344,7 @@ class UserControllerTest {
                 .andExpect(h -> h.getResponse().equals("Ошибка валидации login"));
 
         userInvalidLogin = User.builder().name("name")
-                .id(1L)
+                .id(1)
                 .email("email.yandex.ru")
                 .login("login with space")
                 .name("name")
@@ -363,7 +363,7 @@ class UserControllerTest {
     public void userPutMethodTestInvalid() {
         User user = User.builder().name("name")
                 .email("email@yandex.ru")
-                .id(9999L)
+                .id(9999)
                 .login("login")
                 .name("name")
                 .birthday(LocalDate.of(1997, 06, 05))
@@ -391,7 +391,7 @@ class UserControllerTest {
         ).andExpect(status().isCreated());
 
         User userInvalidBirthday = User.builder().name("name")
-                .id(1L)
+                .id(1)
                 .email("email@yandex.ru")
                 .login("login")
                 .name("name")
@@ -409,7 +409,7 @@ class UserControllerTest {
     @Test
     public void userPutMethodTestInvalidPresence() {
         User user = User.builder().name("name")
-                .id(10L)
+                .id(1)
                 .email("email@yandex.ru")
                 .login("login")
                 .name("name")

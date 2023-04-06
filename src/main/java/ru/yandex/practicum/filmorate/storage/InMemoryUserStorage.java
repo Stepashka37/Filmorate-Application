@@ -42,7 +42,8 @@ public class InMemoryUserStorage implements UsersStorage {
 
     @Override
     public void deleteFriend(int initiator_id, int acceptor_id) {
-
+        users.get(initiator_id).deleteFriend(acceptor_id);
+        users.get(acceptor_id).deleteFriend(initiator_id);
     }
 
     @Override
@@ -83,13 +84,23 @@ public class InMemoryUserStorage implements UsersStorage {
     }
 
     @Override
-    public void makeFriendship(int initiator_id, int acceptor_id) {
-
+    public void addFriend(int initiator_id, int acceptor_id) {
+        if (!users.containsKey(initiator_id)) {
+            throw new UserNotFoundException("Пользователь с id" + initiator_id + " не найден");
+        }
+        if (!users.containsKey(acceptor_id)) {
+            throw new UserNotFoundException("Пользователь с id" + acceptor_id + " не найден");
+        }
+        users.get(acceptor_id).addFriend(initiator_id);
     }
 
     @Override
     public List<User> showFriends(int id) {
-        return null;
+        List<User> friends = new ArrayList<>();
+        for (Integer integer : users.get(id).getFriends()) {
+            friends.add(users.get(integer));
+        }
+        return friends;
     }
 
 }

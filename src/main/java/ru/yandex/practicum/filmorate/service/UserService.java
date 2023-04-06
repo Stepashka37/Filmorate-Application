@@ -55,12 +55,9 @@ public class UserService {
     }
 
     public void addFriend(int initiator_id, int acceptor_id) {
-
         User initiator = storage.getUser(initiator_id);
-        User acceptor = storage.getUser(acceptor_id);
-        storage.makeFriendship(initiator_id, acceptor_id);
+        storage.addFriend(initiator_id, acceptor_id);
 
-        acceptor.addFriend(initiator_id);
 
     }
 
@@ -69,23 +66,11 @@ public class UserService {
         User user = storage.getUser(initiator_id);
         User userToDelete = storage.getUser(acceptor_id);
         storage.deleteFriend(initiator_id, acceptor_id);
-        user.deleteFriend(acceptor_id);
-        userToDelete.deleteFriend(initiator_id);
+
     }
 
     public List<User> showFriends(Integer id) {
         return storage.showFriends(id);
-        /*List<User> result = new ArrayList<>();
-
-        User user = storage.getUser(id);
-        if (user.getFriends().size() == 0) {
-            return new ArrayList<>();
-        }
-        for (Integer idUser : user.getFriends()) {
-            result.add(storage.getUser(idUser));
-
-        }
-        return result;*/
 
     }
 
