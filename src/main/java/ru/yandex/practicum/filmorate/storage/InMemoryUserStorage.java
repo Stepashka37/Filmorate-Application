@@ -41,9 +41,9 @@ public class InMemoryUserStorage implements UsersStorage {
     }
 
     @Override
-    public void deleteFriend(int initiator_id, int acceptor_id) {
-        users.get(initiator_id).deleteFriend(acceptor_id);
-        users.get(acceptor_id).deleteFriend(initiator_id);
+    public void deleteFriend(int initiatorId, int acceptorId) {
+        users.get(initiatorId).deleteFriend(acceptorId);
+        users.get(acceptorId).deleteFriend(initiatorId);
     }
 
     @Override
@@ -84,14 +84,14 @@ public class InMemoryUserStorage implements UsersStorage {
     }
 
     @Override
-    public void addFriend(int initiator_id, int acceptor_id) {
-        if (!users.containsKey(initiator_id)) {
-            throw new UserNotFoundException("Пользователь с id" + initiator_id + " не найден");
+    public void addFriend(int initiatorId, int acceptorId) {
+        if (!users.containsKey(initiatorId)) {
+            throw new UserNotFoundException("Пользователь с id" + initiatorId + " не найден");
         }
-        if (!users.containsKey(acceptor_id)) {
-            throw new UserNotFoundException("Пользователь с id" + acceptor_id + " не найден");
+        if (!users.containsKey(acceptorId)) {
+            throw new UserNotFoundException("Пользователь с id" + acceptorId + " не найден");
         }
-        users.get(acceptor_id).addFriend(initiator_id);
+        users.get(acceptorId).addFriend(initiatorId);
     }
 
     @Override
