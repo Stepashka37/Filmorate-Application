@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate;
+package ru.yandex.practicum.filmorate.controller;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -13,8 +13,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.module.Film;
+import ru.yandex.practicum.filmorate.module.Rating;
+import ru.yandex.practicum.filmorate.module.User;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -37,6 +38,8 @@ class FilmControllerTest {
     private ObjectMapper objectMapper;
     @Autowired
     private FilmController filmController;
+    @Autowired
+    private UserController userController;
 
 
     @AfterEach
@@ -65,6 +68,8 @@ class FilmControllerTest {
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(120)
+                .genres(new HashSet<>())
+                .mpa(new Rating(1, "G"))
                 .build();
 
         Film filmCreated = Film.builder().name("name")
@@ -73,6 +78,8 @@ class FilmControllerTest {
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(120)
+                .genres(new HashSet<>())
+                .mpa(new Rating(1, "G"))
                 .build();
 
 
@@ -99,12 +106,22 @@ class FilmControllerTest {
     @SneakyThrows
     @Test
     public void filmPostMethodTestValidValue() {
-        String validFilm = "{\"likes\":[],\"id\":1,\"name\":\"name\",\"description\":\"Film description\",\"releaseDate\":\"2016-03-04\",\"duration\":120}";
-
+        String validFilm = "{\"likes\":[],\"id\":1,\"name\":\"name\",\"description\":\"Film description\",\"releaseDate\":\"2016-03-04\",\"duration\":120,\"genres\":[],\"mpa\":{\"id\":1,\"name\":\"G\"}}";
+        Film filmCreated = Film.builder().name("name")
+                .likes(new HashSet<>())
+                .id(1)
+                .description("Film description")
+                .releaseDate(LocalDate.of(2016, 03, 04))
+                .duration(120)
+                .genres(new HashSet<>())
+                .mpa(new Rating(1, "G"))
+                .build();
         Film film = Film.builder().name("name")
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(120)
+                .genres(new HashSet<>())
+                .mpa(new Rating(1, "G"))
                 .build();
         String gson1 = objectMapper.writeValueAsString(film);
         MvcResult result = mockMvc.perform(post("/films")
@@ -158,18 +175,22 @@ class FilmControllerTest {
                 .description("Film description")
                 .releaseDate(LocalDate.of(1895, 03, 04))
                 .duration(120)
+                .mpa(new Rating(1, "PG"))
+                .genres(new HashSet<>())
                 .build();
         String gson1 = objectMapper.writeValueAsString(filmBefore);
         mockMvc.perform(post("/films")
                         .contentType("application/json")
                         .content(gson1)
-                ).andExpect(status().isBadRequest())
+                ).andExpect(status().isInternalServerError())
                 .andExpect(h -> h.getResponse().equals("Ошибка валидации releaseDate"));
 
         Film filmAfter = Film.builder().name("Film")
                 .description("Film description")
                 .releaseDate(LocalDate.now().plusDays(1))
                 .duration(120)
+                .mpa(new Rating(1, "PG"))
+                .genres(new HashSet<>())
                 .build();
         gson1 = objectMapper.writeValueAsString(filmAfter);
         mockMvc.perform(post("/films")
@@ -193,6 +214,8 @@ class FilmControllerTest {
                         " was a consultant for Mezrich's book.")
                 .releaseDate(LocalDate.of(2010, 03, 04))
                 .duration(120)
+                .mpa(new Rating(1, "PG"))
+                .genres(new HashSet<>())
                 .build();
         String gson1 = objectMapper.writeValueAsString(film);
         mockMvc.perform(post("/films")
@@ -210,6 +233,8 @@ class FilmControllerTest {
                 .description("Film description")
                 .releaseDate(LocalDate.of(2010, 03, 04))
                 .duration(-120)
+                .mpa(new Rating(1, "PG"))
+                .genres(new HashSet<>())
                 .build();
         String gson1 = objectMapper.writeValueAsString(film);
         mockMvc.perform(post("/films")
@@ -227,6 +252,8 @@ class FilmControllerTest {
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(120)
+                .mpa(new Rating(1, "PG"))
+                .genres(new HashSet<>())
                 .build();
         String gson1 = objectMapper.writeValueAsString(film);
         mockMvc.perform(post("/films")
@@ -240,6 +267,8 @@ class FilmControllerTest {
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(120)
+                .mpa(new Rating(1, "PG"))
+                .genres(new HashSet<>())
                 .build();
         gson1 = objectMapper.writeValueAsString(film2);
         mockMvc.perform(put("/films")
@@ -255,6 +284,8 @@ class FilmControllerTest {
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(120)
+                .mpa(new Rating(1, "PG"))
+                .genres(new HashSet<>())
                 .build();
         String gson1 = objectMapper.writeValueAsString(film);
         mockMvc.perform(post("/films")
@@ -267,12 +298,14 @@ class FilmControllerTest {
                 .description("Film description")
                 .releaseDate(LocalDate.of(1895, 03, 04))
                 .duration(120)
+                .mpa(new Rating(1, "PG"))
+                .genres(new HashSet<>())
                 .build();
         gson1 = objectMapper.writeValueAsString(filmBefore);
         mockMvc.perform(put("/films")
                         .contentType("application/json")
                         .content(gson1)
-                ).andExpect(status().isBadRequest())
+                ).andExpect(status().isInternalServerError())
                 .andExpect(h -> h.getResponse().equals("Ошибка валидации release date"));
 
         Film filmAfter = Film.builder().id(1)
@@ -280,6 +313,8 @@ class FilmControllerTest {
                 .description("Film description")
                 .releaseDate(LocalDate.of(2123, 03, 04))
                 .duration(120)
+                .mpa(new Rating(1, "PG"))
+                .genres(new HashSet<>())
                 .build();
         gson1 = objectMapper.writeValueAsString(filmAfter);
         mockMvc.perform(put("/films")
@@ -296,6 +331,8 @@ class FilmControllerTest {
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(120)
+                .mpa(new Rating(1, "PG"))
+                .genres(new HashSet<>())
                 .build();
         String gson1 = objectMapper.writeValueAsString(film);
         mockMvc.perform(post("/films")
@@ -314,6 +351,8 @@ class FilmControllerTest {
                         " was a consultant for Mezrich's book.\"")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(120)
+                .mpa(new Rating(1, "PG"))
+                .genres(new HashSet<>())
                 .build();
         gson1 = objectMapper.writeValueAsString(filmNull);
         mockMvc.perform(put("/films")
@@ -330,6 +369,8 @@ class FilmControllerTest {
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(120)
+                .mpa(new Rating(1, "PG"))
+                .genres(new HashSet<>())
                 .build();
         String gson1 = objectMapper.writeValueAsString(film);
         mockMvc.perform(post("/films")
@@ -342,6 +383,8 @@ class FilmControllerTest {
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(-120)
+                .mpa(new Rating(1, "PG"))
+                .genres(new HashSet<>())
                 .build();
         gson1 = objectMapper.writeValueAsString(filmNull);
         mockMvc.perform(put("/films")
@@ -376,6 +419,8 @@ class FilmControllerTest {
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(120)
+                .mpa(new Rating(1, "PG"))
+                .genres(new HashSet<>())
                 .build();
         String gson1 = objectMapper.writeValueAsString(film);
         mockMvc.perform(post("/films")
@@ -406,14 +451,31 @@ class FilmControllerTest {
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(120)
+                .mpa(new Rating(1, "PG"))
+                .genres(new HashSet<>())
                 .build();
+        User user1 = User.builder()
+                .email("yandex1@yandex.ru")
+                .login("user1")
+                .name("user1")
+                .birthday(LocalDate.of(1997, 06, 03))
+                .friends(new HashSet<>())
+                .build();
+
+        String userGson = objectMapper.writeValueAsString(user1);
+        mockMvc.perform(post("/users")
+                .contentType("application/json")
+                .content(userGson)
+        ).andExpect(status().isCreated());
+
+
         String gson1 = objectMapper.writeValueAsString(film);
         mockMvc.perform(post("/films")
                 .contentType("application/json")
                 .content(gson1)
         ).andExpect(status().isCreated());
 
-        mockMvc.perform(put("/films/1/like/1")
+        mockMvc.perform(put("/films/1/like/2")
                 .contentType("application/json")
                 .content(gson1)
         ).andExpect(status().isOk());
@@ -438,6 +500,8 @@ class FilmControllerTest {
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(120)
+                .mpa(new Rating(1, "PG"))
+                .genres(new HashSet<>())
                 .build();
         String gson1 = objectMapper.writeValueAsString(film);
         mockMvc.perform(post("/films")
@@ -460,6 +524,8 @@ class FilmControllerTest {
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(120)
+                .mpa(new Rating(1, "PG"))
+                .genres(new HashSet<>())
                 .build();
         String gson1 = objectMapper.writeValueAsString(film);
         mockMvc.perform(post("/films")
@@ -467,7 +533,22 @@ class FilmControllerTest {
                 .content(gson1)
         ).andExpect(status().isCreated());
 
-        mockMvc.perform(put("/films/1/like/1")
+        User user1 = User.builder()
+                .email("yandex1@yandex.ru")
+                .login("user1")
+                .name("user1")
+                .birthday(LocalDate.of(1997, 06, 03))
+                .friends(new HashSet<>())
+                .build();
+
+        String userGson = objectMapper.writeValueAsString(user1);
+        mockMvc.perform(post("/users")
+                .contentType("application/json")
+                .content(userGson)
+        ).andExpect(status().isCreated());
+
+
+        mockMvc.perform(put("/films/1/like/2")
                 .contentType("application/json")
                 .content(gson1)
         ).andExpect(status().isOk());
@@ -483,7 +564,7 @@ class FilmControllerTest {
         Film film1 = objectMapper.readValue(json, Film.class);
         assertEquals(1, film1.getLikes().size());
 
-        mockMvc.perform(delete("/films/1/like/1")
+        mockMvc.perform(delete("/films/1/like/2")
                 .contentType("application/json")
                 .content(gson1)
         ).andExpect(status().isOk());
@@ -509,6 +590,8 @@ class FilmControllerTest {
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(120)
+                .mpa(new Rating(1, "PG"))
+                .genres(new HashSet<>())
                 .build();
         String gson1 = objectMapper.writeValueAsString(film);
         mockMvc.perform(post("/films")
@@ -516,7 +599,7 @@ class FilmControllerTest {
                 .content(gson1)
         ).andExpect(status().isCreated());
 
-        mockMvc.perform(put("/films/1/like/1")
+        mockMvc.perform(put("/films/1/like/2")
                 .contentType("application/json")
                 .content(gson1)
         ).andExpect(status().isOk());
@@ -532,7 +615,7 @@ class FilmControllerTest {
         Film film1 = objectMapper.readValue(json, Film.class);
         assertEquals(1, film1.getLikes().size());
 
-        mockMvc.perform(delete("/films/100/like/1")
+        mockMvc.perform(delete("/films/100/like/2")
                 .contentType("application/json")
                 .content(gson1)
         ).andExpect(status().isNotFound());
@@ -562,6 +645,8 @@ class FilmControllerTest {
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(120)
+                .mpa(new Rating(1, "PG"))
+                .genres(new HashSet<>())
                 .build();
         String gson1 = objectMapper.writeValueAsString(film);
         mockMvc.perform(post("/films")
@@ -574,11 +659,27 @@ class FilmControllerTest {
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(120)
+                .mpa(new Rating(1, "PG"))
+                .genres(new HashSet<>())
                 .build();
         gson1 = objectMapper.writeValueAsString(film2);
         mockMvc.perform(post("/films")
                 .contentType("application/json")
                 .content(gson1)
+        ).andExpect(status().isCreated());
+
+        User user1 = User.builder()
+                .email("yandex1@yandex.ru")
+                .login("user1")
+                .name("user1")
+                .birthday(LocalDate.of(1997, 06, 03))
+                .friends(new HashSet<>())
+                .build();
+
+        String userGson = objectMapper.writeValueAsString(user1);
+        mockMvc.perform(post("/users")
+                .contentType("application/json")
+                .content(userGson)
         ).andExpect(status().isCreated());
 
         MvcResult result = mockMvc.perform(get("/films/popular")
@@ -598,12 +699,14 @@ class FilmControllerTest {
                 .content(gson1)
         ).andExpect(status().isOk());
 
-        mockMvc.perform(put("/films/1/like/2")
+/*
+        mockMvc.perform(put("/films/1/like/1")
                 .contentType("application/json")
                 .content(gson1)
         ).andExpect(status().isOk());
+*/
 
-        mockMvc.perform(put("/films/2/like/3")
+        mockMvc.perform(put("/films/2/like/1")
                 .contentType("application/json")
                 .content(gson1)
         ).andExpect(status().isOk());

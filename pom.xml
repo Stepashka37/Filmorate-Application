@@ -13,10 +13,14 @@
 	<name>filmorate</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
-		<java.version>11</java.version>
-		<javax-validation.version>2.0.1.Final</javax-validation.version>
+        <java.version>11</java.version>
+        <javax-validation.version>2.0.1.Final</javax-validation.version>
 
-	</properties>
+
+        <spring-boot.run.jvmArguments>-Dfile.encoding=UTF-8</spring-boot.run.jvmArguments>
+
+
+    </properties>
 	<distributionManagement>
 		<repository>
 			<id>internal.repo</id>

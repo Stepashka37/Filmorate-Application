@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class InMemoryFilmStorage implements FilmsStorage {
-    private Map<Integer, Film> films = new HashMap<>();
+    private final Map<Integer, Film> films = new HashMap<>();
     private int genId = 0;
 
 
@@ -50,7 +50,6 @@ public class InMemoryFilmStorage implements FilmsStorage {
         films.put(film.getId(), film);
         return films.get(film.getId());
     }
-
 
 
     @Override

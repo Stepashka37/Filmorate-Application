@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.Singular;
-import org.springframework.data.annotation.Id;
 import ru.yandex.practicum.filmorate.annotation.ValidReleaseDate;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 
@@ -23,8 +22,6 @@ import java.util.Set;
 public class Film {
     @Singular
     private Set<Integer> likes = new HashSet<>();
-    //@Positive(message = "id должен быть больше нуля")
-    @Id
     private int id;
     @NotBlank(message = "Имя не может быть пустым")
     private String name;

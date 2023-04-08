@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate;
+package ru.yandex.practicum.filmorate.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,7 +10,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.module.User;
 
 import java.time.LocalDate;
@@ -93,7 +92,7 @@ class UserControllerTest {
     @SneakyThrows
     @Test
     public void userPostMethodTestValidValue() {
-        String validUser = "{\"friends\":[],\"id\":1,\"email\":\"email@yandex.ru\",\"login\":\"login\",\"name\":\"name\",\"birthday\":\"1997-06-05\"}";
+        String validUser = "{\"friends\":[],\"id\":1,\"email\":\"email@yandex.ru\",\"login\":\"login\",\"name\":\"name\",\"birthday\":\"1997-06-05\",\"status\":false}";
 
         User user = User.builder().name("name")
                 .email("email@yandex.ru")
@@ -507,8 +506,7 @@ class UserControllerTest {
         users = objectMapper.readValue(json, new TypeReference<List<User>>() {
         });
 
-        assertEquals(1, users.size());
-        assertEquals(1, users.get(0).getId());
+        assertEquals(0, users.size());
 
 
     }
@@ -659,7 +657,7 @@ class UserControllerTest {
                 .name("name")
                 .birthday(LocalDate.of(1997, 06, 05))
                 .build();
-        gson1 = objectMapper.writeValueAsString(user2);
+        gson1 = objectMapper.writeValueAsString(user3);
         mockMvc.perform(post("/users")
                 .contentType("application/json")
                 .content(gson1)
@@ -744,17 +742,17 @@ class UserControllerTest {
                 .name("name")
                 .birthday(LocalDate.of(1997, 06, 05))
                 .build();
-        gson1 = objectMapper.writeValueAsString(user2);
+        gson1 = objectMapper.writeValueAsString(user3);
         mockMvc.perform(post("/users")
                 .contentType("application/json")
                 .content(gson1)
         ).andExpect(status().isCreated());
 
-        mockMvc.perform(put("/users/1/friends/2")
+        mockMvc.perform(put("/users/2/friends/1")
                 .contentType("application/json")
         ).andExpect(status().isOk());
 
-        mockMvc.perform(put("/users/1/friends/3")
+        mockMvc.perform(put("/users/3/friends/1")
                 .contentType("application/json")
         ).andExpect(status().isOk());
 

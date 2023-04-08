@@ -12,7 +12,7 @@ import java.util.*;
 public class InMemoryUserStorage implements UsersStorage {
 
 
-    private Map<Integer, User> users = new HashMap<>();
+    private final Map<Integer, User> users = new HashMap<>();
     private Integer genId = 0;
 
     @Override
