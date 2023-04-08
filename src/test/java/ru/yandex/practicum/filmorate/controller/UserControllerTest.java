@@ -711,7 +711,7 @@ class UserControllerTest {
 
     @SneakyThrows
     @Test
-    public void ShowCommonFriendsEmpty() {
+    public void showCommonFriendsEmpty() {
         User user1 = User.builder().name("name1")
                 .email("email1@yandex.ru")
                 .login("login")
