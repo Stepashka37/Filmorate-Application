@@ -17,11 +17,11 @@ public interface UsersStorage {
 
     User getUser(Integer id);
 
-    void deleteFriend(int initiator_id, int acceptor_id);
+    void deleteFriend(int initatorId, int acceptorId);
 
     void deleteUser(Integer id);
 
-    void addFriend(int initiator_id, int acceptor_id);
+    void addFriend(int initatorId, int acceptorId);
 
     List<User> showFriends(int id);
 }
