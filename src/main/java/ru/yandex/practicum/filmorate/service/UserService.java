@@ -54,18 +54,18 @@ public class UserService {
         storage.deleteAllUsers();
     }
 
-    public void addFriend(int initiator_id, int acceptor_id) {
-        User initiator = storage.getUser(initiator_id);
-        storage.addFriend(initiator_id, acceptor_id);
+    public void addFriend(int initiatorId, int acceptorId) {
+        User initiator = storage.getUser(initiatorId);
+        storage.addFriend(initiatorId, acceptorId);
 
 
     }
 
-    public void deleteFriend(int initiator_id, int acceptor_id) {
+    public void deleteFriend(int initiatorId, int acceptorId) {
 
-        User user = storage.getUser(initiator_id);
-        User userToDelete = storage.getUser(acceptor_id);
-        storage.deleteFriend(initiator_id, acceptor_id);
+        User user = storage.getUser(initiatorId);
+        User userToDelete = storage.getUser(acceptorId);
+        storage.deleteFriend(initiatorId, acceptorId);
 
     }
 

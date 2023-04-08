@@ -104,25 +104,25 @@ public class UserDbStorage implements UsersStorage {
     }
 
     @Override
-    public void addFriend(int initiator_id, int acceptor_id) {
+    public void addFriend(int initiatorId, int acceptorId) {
         String checkUser = "select * from USERS where USER_ID = ?";
 
-        jdbcTemplate.query("select * from USERS where USER_ID = ?", (rs, rowNum) -> makeUser(rs), initiator_id)
-                .stream().findAny().orElseThrow(() -> new UserNotFoundException("Пользователь с id" + initiator_id + "не найден"));
-        jdbcTemplate.query("select * from USERS where USER_ID = ?", (rs, rowNum) -> makeUser(rs), acceptor_id)
-                .stream().findAny().orElseThrow(() -> new UserNotFoundException("Пользователь с id" + acceptor_id + "не найден"));
+        jdbcTemplate.query("select * from USERS where USER_ID = ?", (rs, rowNum) -> makeUser(rs), initiatorId)
+                .stream().findAny().orElseThrow(() -> new UserNotFoundException("Пользователь с id" + initiatorId + "не найден"));
+        jdbcTemplate.query("select * from USERS where USER_ID = ?", (rs, rowNum) -> makeUser(rs), acceptorId)
+                .stream().findAny().orElseThrow(() -> new UserNotFoundException("Пользователь с id" + acceptorId + "не найден"));
 
         String sqlLeaveRequest = " merge into USER_FRIENDS (INITIATOR_ID, ACCEPTOR_ID, STATUS)" +
                 "values (?, ?, false)";
-        jdbcTemplate.update(sqlLeaveRequest, initiator_id, acceptor_id);
+        jdbcTemplate.update(sqlLeaveRequest, initiatorId, acceptorId);
 
     }
 
     @Override
-    public void deleteFriend(int initiator_id, int acceptor_id) {
+    public void deleteFriend(int initiatorId, int acceptorId) {
         String sqlDeleteFriend = "delete from USER_FRIENDS " +
                 "where INITIATOR_ID = ? AND ACCEPTOR_ID = ?";
-        jdbcTemplate.update(sqlDeleteFriend, initiator_id, acceptor_id);
+        jdbcTemplate.update(sqlDeleteFriend, initiatorId, acceptorId);
     }
 
     @Override
