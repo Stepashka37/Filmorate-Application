@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -28,8 +29,15 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse anyOtherExc(final Throwable p) {
+    public ErrorResponse anyOtherExc(final Exception p) {
         log.info("500: " + p.getMessage());
         return new ErrorResponse("Произошла ошибка!", p.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse annotationValidationExc(MethodArgumentNotValidException exc) {
+        log.info("400: " + exc.getMessage());
+        return new ErrorResponse("Ошибка валидации с помощью аннотаций", exc.getMessage());
     }
 }

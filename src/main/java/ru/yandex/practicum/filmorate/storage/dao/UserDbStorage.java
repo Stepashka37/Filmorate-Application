@@ -6,7 +6,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.module.User;
 import ru.yandex.practicum.filmorate.storage.interfaces.UsersStorage;
 
@@ -40,7 +39,7 @@ public class UserDbStorage implements UsersStorage {
     }
 
     @Override
-    public User addUser(User user) throws ValidationException {
+    public User addUser(User user) {
         String sql = "insert into users (LOGIN, NAME, EMAIL, BIRTHDAY)" +
                 "values (?, ?, ?, ?) ";
 

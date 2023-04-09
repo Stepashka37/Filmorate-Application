@@ -22,7 +22,7 @@ create table IF NOT EXISTS RATING_MPA
 create table IF NOT EXISTS FILM
 (
     FILM_ID      INTEGER auto_increment,
-    NAME         CHARACTER VARYING not null,
+    NAME         CHARACTER VARYING(50) not null,
     DESCRIPTION  CHARACTER VARYING(200),
     RELEASE_DATE DATE,
     DURATION     BIGINT,

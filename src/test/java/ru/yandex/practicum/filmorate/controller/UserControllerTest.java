@@ -127,7 +127,7 @@ class UserControllerTest {
         mockMvc.perform(post("/users")
                         .contentType("application/json")
                         .content(gson1)
-                ).andExpect(status().isInternalServerError())
+                ).andExpect(status().isBadRequest())
                 .andExpect(h -> h.getResponse().equals("Ошибка валидации email"));
 
         user = User.builder().name("name")
@@ -140,7 +140,7 @@ class UserControllerTest {
         mockMvc.perform(post("/users")
                         .contentType("application/json")
                         .content(gson1)
-                ).andExpect(status().isInternalServerError())
+                ).andExpect(status().isBadRequest())
                 .andExpect(h -> h.getResponse().equals("Ошибка валидации email"));
 
         User userNull = User.builder().name("name")
@@ -153,7 +153,7 @@ class UserControllerTest {
         mockMvc.perform(post("/users")
                         .contentType("application/json")
                         .content(gson1)
-                ).andExpect(status().isInternalServerError())
+                ).andExpect(status().isBadRequest())
                 .andExpect(h -> h.getResponse().equals("Ошибка валидации email"));
     }
 
@@ -170,7 +170,7 @@ class UserControllerTest {
         mockMvc.perform(post("/users")
                         .contentType("application/json")
                         .content(gson1)
-                ).andExpect(status().isInternalServerError())
+                ).andExpect(status().isBadRequest())
                 .andExpect(h -> h.getResponse().equals("Ошибка валидации login"));
 
         User userNull = User.builder().name("name")
@@ -183,7 +183,7 @@ class UserControllerTest {
         mockMvc.perform(post("/users")
                         .contentType("application/json")
                         .content(gson1)
-                ).andExpect(status().isInternalServerError())
+                ).andExpect(status().isBadRequest())
                 .andExpect(h -> h.getResponse().equals("Ошибка валидации login"));
     }
 
@@ -200,7 +200,7 @@ class UserControllerTest {
         mockMvc.perform(post("/users")
                         .contentType("application/json")
                         .content(gson1)
-                ).andExpect(status().isInternalServerError())
+                ).andExpect(status().isBadRequest())
                 .andExpect(h -> h.getResponse().equals("Ошибка валидации birthday"));
 
 
@@ -281,7 +281,7 @@ class UserControllerTest {
         mockMvc.perform(put("/users")
                         .contentType("application/json")
                         .content(gson1)
-                ).andExpect(status().isInternalServerError())
+                ).andExpect(status().isBadRequest())
                 .andExpect(h -> h.getResponse().equals("Ошибка валидации email"));
 
         userToPut = User.builder().name("name")
@@ -295,7 +295,7 @@ class UserControllerTest {
         mockMvc.perform(put("/users")
                         .contentType("application/json")
                         .content(gson1)
-                ).andExpect(status().isInternalServerError())
+                ).andExpect(status().isBadRequest())
                 .andExpect(h -> h.getResponse().equals("Ошибка валидации email"));
 
         userToPut = User.builder().name("name")
@@ -309,7 +309,7 @@ class UserControllerTest {
         mockMvc.perform(put("/users")
                         .contentType("application/json")
                         .content(gson1)
-                ).andExpect(status().isInternalServerError())
+                ).andExpect(status().isBadRequest())
                 .andExpect(h -> h.getResponse().equals("Ошибка валидации email"));
     }
 
@@ -339,7 +339,7 @@ class UserControllerTest {
         mockMvc.perform(put("/users")
                         .contentType("application/json")
                         .content(gson1)
-                ).andExpect(status().isInternalServerError())
+                ).andExpect(status().isBadRequest())
                 .andExpect(h -> h.getResponse().equals("Ошибка валидации login"));
 
         userInvalidLogin = User.builder().name("name")
@@ -353,7 +353,7 @@ class UserControllerTest {
         mockMvc.perform(put("/users")
                         .contentType("application/json")
                         .content(gson1)
-                ).andExpect(status().isInternalServerError())
+                ).andExpect(status().isBadRequest())
                 .andExpect(h -> h.getResponse().equals("Ошибка валидации login"));
     }
 
@@ -400,7 +400,7 @@ class UserControllerTest {
         mockMvc.perform(put("/users")
                         .contentType("application/json")
                         .content(gson1)
-                ).andExpect(status().isInternalServerError())
+                ).andExpect(status().isBadRequest())
                 .andExpect(h -> h.getResponse().equals("Ошибка валидации birthday"));
     }
 

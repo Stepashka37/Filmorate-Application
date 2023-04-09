@@ -6,7 +6,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.module.Film;
 import ru.yandex.practicum.filmorate.module.Genre;
 import ru.yandex.practicum.filmorate.module.Rating;
@@ -48,7 +47,7 @@ public class FilmDbStorage implements FilmsStorage {
     }
 
     @Override
-    public Film addFilm(Film film) throws ValidationException {
+    public Film addFilm(Film film) {
 
         String sql = "insert into film (NAME, DESCRIPTION, RELEASE_DATE, DURATION, RATING_ID)" +
                 "values (?, ?, ?, ?, ?) ";
@@ -83,7 +82,7 @@ public class FilmDbStorage implements FilmsStorage {
     }
 
     @Override
-    public Film updateFilm(Film film) throws ValidationException {
+    public Film updateFilm(Film film) {
 
 
         String sql = "update FILM set " +
@@ -124,10 +123,7 @@ public class FilmDbStorage implements FilmsStorage {
                 "TRUNCATE TABLE FILM_LIKES; " +
                 "SET REFERENTIAL_INTEGRITY FALSE;" +
                 "alter table FILM alter column FILM_ID restart with 1";
-        /*String sqlDeleteAllFilms = "delete from FILM ";
-        String sqlDeleteAllFilmsGenres = "delete from FILM_GENRES";
-        jdbcTemplate.update(sqlDeleteAllFilms);
-        jdbcTemplate.update(sqlDeleteAllFilmsGenres);*/
+
         jdbcTemplate.update(sql);
     }
 

@@ -8,10 +8,7 @@ import lombok.Singular;
 import ru.yandex.practicum.filmorate.annotation.ValidReleaseDate;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
@@ -37,7 +34,7 @@ public class Film {
 
     private Set<Genre> genres;
 
-
+    @NotNull
     private Rating mpa;
 
 

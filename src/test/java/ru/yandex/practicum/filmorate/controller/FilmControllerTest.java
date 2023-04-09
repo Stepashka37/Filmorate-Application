@@ -151,7 +151,7 @@ class FilmControllerTest {
         mockMvc.perform(post("/films")
                         .contentType("application/json")
                         .content(gson1)
-                ).andExpect(status().isInternalServerError())
+                ).andExpect(status().isBadRequest())
                 .andExpect(h -> h.getResponse().equals("Ошибка валидации name"));
 
 
@@ -164,7 +164,7 @@ class FilmControllerTest {
         mockMvc.perform(post("/films")
                 .contentType("application/json")
                 .content(gson1)
-        ).andExpect(status().isInternalServerError());
+        ).andExpect(status().isBadRequest());
     }
 
 
@@ -182,7 +182,7 @@ class FilmControllerTest {
         mockMvc.perform(post("/films")
                         .contentType("application/json")
                         .content(gson1)
-                ).andExpect(status().isInternalServerError())
+                ).andExpect(status().isBadRequest())
                 .andExpect(h -> h.getResponse().equals("Ошибка валидации releaseDate"));
 
         Film filmAfter = Film.builder().name("Film")
@@ -196,7 +196,7 @@ class FilmControllerTest {
         mockMvc.perform(post("/films")
                         .contentType("application/json")
                         .content(gson1)
-                ).andExpect(status().isInternalServerError())
+                ).andExpect(status().isBadRequest())
                 .andExpect(h -> h.getResponse().equals("Ошибка валидации releaseDate"));
 
     }
@@ -221,7 +221,7 @@ class FilmControllerTest {
         mockMvc.perform(post("/films")
                         .contentType("application/json")
                         .content(gson1)
-                ).andExpect(status().isInternalServerError())
+                ).andExpect(status().isBadRequest())
                 .andExpect(h -> h.getResponse().equals("Ошибка валидации description"));
 
     }
@@ -240,7 +240,7 @@ class FilmControllerTest {
         mockMvc.perform(post("/films")
                         .contentType("application/json")
                         .content(gson1)
-                ).andExpect(status().isInternalServerError())
+                ).andExpect(status().isBadRequest())
                 .andExpect(h -> h.getResponse().equals("Ошибка валидации duration"));
 
     }
@@ -274,7 +274,7 @@ class FilmControllerTest {
         mockMvc.perform(put("/films")
                 .contentType("application/json")
                 .content(gson1)
-        ).andExpect(status().isInternalServerError());
+        ).andExpect(status().isBadRequest());
     }
 
     @SneakyThrows
@@ -305,7 +305,7 @@ class FilmControllerTest {
         mockMvc.perform(put("/films")
                         .contentType("application/json")
                         .content(gson1)
-                ).andExpect(status().isInternalServerError())
+                ).andExpect(status().isBadRequest())
                 .andExpect(h -> h.getResponse().equals("Ошибка валидации release date"));
 
         Film filmAfter = Film.builder().id(1)
@@ -320,7 +320,7 @@ class FilmControllerTest {
         mockMvc.perform(put("/films")
                         .contentType("application/json")
                         .content(gson1)
-                ).andExpect(status().isInternalServerError())
+                ).andExpect(status().isBadRequest())
                 .andExpect(h -> h.getResponse().equals("Ошибка валидации release date"));
     }
 
@@ -358,7 +358,7 @@ class FilmControllerTest {
         mockMvc.perform(put("/films")
                         .contentType("application/json")
                         .content(gson1)
-                ).andExpect(status().isInternalServerError())
+                ).andExpect(status().isBadRequest())
                 .andExpect(h -> h.getResponse().equals("Ошибка валидации description"));
     }
 
@@ -390,7 +390,7 @@ class FilmControllerTest {
         mockMvc.perform(put("/films")
                         .contentType("application/json")
                         .content(gson1)
-                ).andExpect(status().isInternalServerError())
+                ).andExpect(status().isBadRequest())
                 .andExpect(h -> h.getResponse().equals("Ошибка валидации duration"));
     }
 
@@ -402,6 +402,8 @@ class FilmControllerTest {
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(120)
+                .mpa(new Rating(1, "Комедия"))
+                .genres(new HashSet<>())
                 .build();
         String gson1 = objectMapper.writeValueAsString(film);
         mockMvc.perform(put("/films")

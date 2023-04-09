@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.module;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.Singular;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 
@@ -17,6 +18,8 @@ import java.util.Set;
 
 @Data
 @Builder
+@NoArgsConstructor
+
 public class User {
     @Singular
     private Set<Integer> friends;
@@ -35,9 +38,6 @@ public class User {
     private LocalDate birthday;
 
     private boolean status;
-
-    public User() {
-    }
 
     public User(Integer id, String email, String login, String name, LocalDate birthday) {
         this.id = id;

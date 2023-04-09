@@ -79,19 +79,5 @@ public class UserService {
         List<User> secondUserFriends = storage.showFriends(idNumb2);
         firstUserFriends.retainAll(secondUserFriends);
         return firstUserFriends;
-        /*List<User> result = new ArrayList<>();
-        User userNumb1 = storage.getUser(idNumb1);
-        User userNumb2 = storage.getUser(idNumb2);
-        if (userNumb1.getFriends() == null || userNumb2.getFriends() == null) {
-            return new ArrayList<>();
-        }
-        Set<Integer> intersectSet = new HashSet<>(userNumb1.getFriends());
-        intersectSet.retainAll(userNumb2.getFriends());
-
-
-        for (Integer id : intersectSet) {
-            result.add(storage.getUser(id));
-        }
-        return result;*/
     }
 }
