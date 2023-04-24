@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.interfaces;
 
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.module.User;
@@ -15,7 +15,13 @@ public interface UsersStorage {
 
     void deleteAllUsers();
 
-    User getUser(Long id);
+    User getUser(Integer id);
 
-    void deleteUser(Long id);
+    void deleteFriend(int initatorId, int acceptorId);
+
+    void deleteUser(Integer id);
+
+    void addFriend(int initatorId, int acceptorId);
+
+    List<User> showFriends(int id);
 }

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.module.User;
+import ru.yandex.practicum.filmorate.storage.interfaces.UsersStorage;
 
 import java.util.*;
 
@@ -11,8 +12,8 @@ import java.util.*;
 public class InMemoryUserStorage implements UsersStorage {
 
 
-    private Map<Long, User> users = new HashMap<>();
-    private Long genId = 0L;
+    private final Map<Integer, User> users = new HashMap<>();
+    private Integer genId = 0;
 
     @Override
     public List<User> getUsers() {
@@ -32,11 +33,17 @@ public class InMemoryUserStorage implements UsersStorage {
     }
 
     @Override
-    public User getUser(Long id) {
+    public User getUser(Integer id) {
         if (!users.containsKey(id)) {
             throw new UserNotFoundException("Пользователь с id " + id + " не найден");
         }
         return users.get(id);
+    }
+
+    @Override
+    public void deleteFriend(int initiatorId, int acceptorId) {
+        users.get(initiatorId).deleteFriend(acceptorId);
+        users.get(acceptorId).deleteFriend(initiatorId);
     }
 
     @Override
@@ -64,16 +71,36 @@ public class InMemoryUserStorage implements UsersStorage {
     @Override
     public void deleteAllUsers() {
         users.clear();
-        genId = 0L;
+        genId = 0;
     }
 
+
     @Override
-    public void deleteUser(Long id) {
+    public void deleteUser(Integer id) {
         if (!users.containsKey(id)) {
             throw new UserNotFoundException("Пользователь с id" + id + " не найден");
         }
         users.remove(id);
     }
 
+    @Override
+    public void addFriend(int initiatorId, int acceptorId) {
+        if (!users.containsKey(initiatorId)) {
+            throw new UserNotFoundException("Пользователь с id" + initiatorId + " не найден");
+        }
+        if (!users.containsKey(acceptorId)) {
+            throw new UserNotFoundException("Пользователь с id" + acceptorId + " не найден");
+        }
+        users.get(acceptorId).addFriend(initiatorId);
+    }
+
+    @Override
+    public List<User> showFriends(int id) {
+        List<User> friends = new ArrayList<>();
+        for (Integer integer : users.get(id).getFriends()) {
+            friends.add(users.get(integer));
+        }
+        return friends;
+    }
 
 }

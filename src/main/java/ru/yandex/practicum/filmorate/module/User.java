@@ -3,23 +3,29 @@ package ru.yandex.practicum.filmorate.module;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.Singular;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Positive;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 @Data
 @Builder
+@NoArgsConstructor
+
 public class User {
     @Singular
-    private Set<Long> friends;
+    private Set<Integer> friends;
     @Positive(message = "id должен быть больше нуля")
-    private Long id;
+
+    private Integer id;
     @Email(message = "Email не может быть пустым и должен соответствовать следующему формату: email@email.ru")
 
     @NotBlank
@@ -31,6 +37,25 @@ public class User {
     @PastOrPresent(message = "Дата рождения не может быть в будущем")
     private LocalDate birthday;
 
+    private boolean status;
+
+    public User(Integer id, String email, String login, String name, LocalDate birthday) {
+        this.id = id;
+        this.email = email;
+        this.login = login;
+        this.name = name;
+        this.birthday = birthday;
+    }
+
+    public User(Set<Integer> friends, Integer id, String email, String login, String name, LocalDate birthday, boolean status) {
+        this.friends = friends;
+        this.id = id;
+        this.email = email;
+        this.login = login;
+        this.name = name;
+        this.birthday = birthday;
+        this.status = status;
+    }
 
     @Override
     public String toString() {
@@ -57,15 +82,23 @@ public class User {
         return Objects.hash(friends, id, email, login, name, birthday);
     }
 
-    public Set<Long> getFriends() {
+    public Set<Integer> getFriends() {
         return friends;
     }
 
-    public void addFriend(Long id) {
+    public void addFriend(Integer id) {
+        if (friends.isEmpty()) {
+            friends = new HashSet<>();
+            friends.add(id);
+            return;
+        }
         friends.add(id);
     }
 
-    public void deleteFriend(Long id) {
+    public void deleteFriend(Integer id) {
+        if (!friends.contains(id)) {
+            throw new UserNotFoundException("Пользователь с id " + id + " не найден");
+        }
         friends.remove(id);
     }
 

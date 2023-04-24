@@ -5,13 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.Singular;
+import ru.yandex.practicum.filmorate.annotation.ValidReleaseDate;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -19,19 +18,24 @@ import java.util.Set;
 @Builder
 public class Film {
     @Singular
-    private Set<Long> likes;
-    @Positive(message = "id должен быть больше нуля")
-    private Long id;
+    private Set<Integer> likes = new HashSet<>();
+    private int id;
     @NotBlank(message = "Имя не может быть пустым")
     private String name;
     @Size(min = 0, max = 200, message = "Максимальная длина описания - 200 символов")
     private String description;
     @Past(message = "Дата выхода фильма не может быть в будущем")
     @NonNull
+    @ValidReleaseDate
     private LocalDate releaseDate;
     @Positive(message = "Продолжительность фильма не может быть отрицательной")
     @NonNull
     private long duration;
+
+    private Set<Genre> genres;
+
+    @NotNull
+    private Rating mpa;
 
 
     @Override
@@ -59,11 +63,16 @@ public class Film {
         return Objects.hash(likes, id, name, description, releaseDate, duration);
     }
 
-    public void likeFilm(Long userId) {
+    public void likeFilm(int userId) {
+        if (likes.isEmpty()) {
+            likes = new HashSet<>();
+            likes.add(userId);
+            return;
+        }
         likes.add(userId);
     }
 
-    public void removeLike(Long userId) {
+    public void removeLike(int userId) {
         if (!likes.contains(userId)) {
             throw new UserNotFoundException("Пользователь с id " + userId + " не найден");
         }
