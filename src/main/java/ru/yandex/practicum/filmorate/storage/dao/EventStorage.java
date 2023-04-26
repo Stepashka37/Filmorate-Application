@@ -15,16 +15,17 @@ import static ru.yandex.practicum.filmorate.module.Event.Operation.*;
 
 @Repository
 @Slf4j
-public class EventDao {
+public class EventStorage implements ru.yandex.practicum.filmorate.storage.interfaces.EventStorage {
 
     private static final String QUERY_FOR_EVENT = "insert into " +
             "EVENTS(TIMESTAMP, USER_ID, ENTITY_ID, OPERATION, EVENT_TYPE) VALUES (?, ?, ?, ?, ?)";
     private final JdbcTemplate jdbcTemplate;
 
-    public EventDao(JdbcTemplate jdbcTemplate) {
+    public EventStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @Override
     public List<Event> getEvents(Integer userId) {
         String sqlQuery = "select* from EVENTS where USER_ID = ?";
         return jdbcTemplate.query(sqlQuery, this::mapRowToEvent, userId);
@@ -42,30 +43,37 @@ public class EventDao {
         jdbcTemplate.update(QUERY_FOR_EVENT, timestamp, userId, entityId, operation.toString(), eventType.toString());
     }
 
+    @Override
     public void addLike(int userId, int filmId) {
         insertIntoDB(userId, filmId, ADD, LIKE);
     }
 
+    @Override
     public void addFriend(int userId, int userId1) {
         insertIntoDB(userId, userId1, ADD, FRIEND);
     }
 
+    @Override
     public void addReview(int userId, int reviewId) {
         insertIntoDB(userId, reviewId, ADD, REVIEW);
     }
 
+    @Override
     public void removeLike(int userId, int filmId) {
         insertIntoDB(userId, filmId, REMOVE, LIKE);
     }
 
+    @Override
     public void removeFriend(int userId, int userId1) {
         insertIntoDB(userId, userId1, REMOVE, FRIEND);
     }
 
+    @Override
     public void removeReview(int userId, int reviewId) {
         insertIntoDB(userId, reviewId, REMOVE, REVIEW);
     }
 
+    @Override
     public void updateReview(int userId, int reviewId) {
         insertIntoDB(userId, reviewId, UPDATE, REVIEW);
     }
