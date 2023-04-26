@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.module.Film;
+import ru.yandex.practicum.filmorate.storage.dao.EventDao;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmsStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.UsersStorage;
 
@@ -16,11 +17,13 @@ public class FilmService {
 
     private final UsersStorage usersStorage;
     private final FilmsStorage filmsStorage;
+    private final EventDao eventDao;
 
     @Autowired
-    public FilmService(@Qualifier("userDbStorage") UsersStorage usersStorage, @Qualifier("filmDbStorage") FilmsStorage filmsStorage) {
+    public FilmService(@Qualifier("userDbStorage") UsersStorage usersStorage, @Qualifier("filmDbStorage") FilmsStorage filmsStorage, EventDao eventDao) {
         this.usersStorage = usersStorage;
         this.filmsStorage = filmsStorage;
+        this.eventDao = eventDao;
     }
 
     public List<Film> getFilms() {
@@ -43,12 +46,14 @@ public class FilmService {
         usersStorage.getUser(userId);
         filmsStorage.getFilm(id);
         filmsStorage.addLike(id, userId);
+        eventDao.addLike(userId, id);
     }
 
     public void removeLike(int id, int userId) {
         usersStorage.getUser(userId);
         filmsStorage.getFilm(id);
         filmsStorage.removeLike(id, userId);
+        eventDao.removeLike(userId, id);
     }
 
     public List<Film> getMostLikedFilms(int count) {
