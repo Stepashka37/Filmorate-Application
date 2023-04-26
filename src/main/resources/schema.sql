@@ -154,8 +154,8 @@ create table IF NOT EXISTS EVENTS
     OPERATION  CHARACTER VARYING not null,
     foreign key (USER_ID) references USERS (USER_ID),
     foreign key (ENTITY_ID) references USERS (USER_ID),
-    foreign key (ENTITY_ID) references FILM (FILM_ID),
-    foreign key (ENTITY_ID) references REVIEW (REVIEW_ID)
+    foreign key (ENTITY_ID) references FILM (FILM_ID)
+--     foreign key (ENTITY_ID) references REVIEW (REVIEW_ID)
 );
 
 
