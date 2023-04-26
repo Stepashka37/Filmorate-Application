@@ -8,6 +8,14 @@ public class Event {
     long timestamp;
     int userId;
     int entityId;
-    String eventType;
-    String operation;
+    Operation operation;
+    EventType eventType;
+
+    public enum EventType {
+        LIKE, FRIEND, REVIEW
+    }
+
+    public enum Operation {
+        ADD, UPDATE, REMOVE
+    }
 }

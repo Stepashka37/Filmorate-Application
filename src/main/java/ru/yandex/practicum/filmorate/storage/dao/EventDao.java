@@ -10,12 +10,15 @@ import java.sql.SQLException;
 import java.time.Instant;
 import java.util.List;
 
+import static ru.yandex.practicum.filmorate.module.Event.EventType.*;
+import static ru.yandex.practicum.filmorate.module.Event.Operation.*;
+
 @Repository
 @Slf4j
 public class EventDao {
 
     private static final String QUERY_FOR_EVENT = "insert into " +
-            "EVENTS(TIMESTAMP, USER_ID, ENTITY_ID, EVENT_TYPE, OPERATION) VALUES (?, ?, ?, ?, ?)";
+            "EVENTS(TIMESTAMP, USER_ID, ENTITY_ID, OPERATION, EVENT_TYPE) VALUES (?, ?, ?, ?, ?)";
     private final JdbcTemplate jdbcTemplate;
 
     public EventDao(JdbcTemplate jdbcTemplate) {
@@ -30,39 +33,40 @@ public class EventDao {
     private Event mapRowToEvent(ResultSet resultSet, int rowNum) throws SQLException {
         return new Event(resultSet.getInt("EVENT_ID"), resultSet.getLong("TIMESTAMP"),
                 resultSet.getInt("USER_ID"), resultSet.getInt("ENTITY_ID"),
-                resultSet.getString("EVENT_TYPE"), resultSet.getString("OPERATION"));
+                Event.Operation.valueOf(resultSet.getString("OPERATION")),
+                Event.EventType.valueOf(resultSet.getString("EVENT_TYPE")));
     }
 
-    private void insertIntoDB(int userId, int entityId, String eventType, String operation) {
+    private void insertIntoDB(int userId, int entityId, Event.Operation operation, Event.EventType eventType) {
         long timestamp = Instant.now().toEpochMilli();
-        jdbcTemplate.update(QUERY_FOR_EVENT, timestamp, userId, entityId, eventType, operation);
+        jdbcTemplate.update(QUERY_FOR_EVENT, timestamp, userId, entityId, operation.toString(), eventType.toString());
     }
 
     public void addLike(int userId, int filmId) {
-        insertIntoDB(userId, filmId, "LIKE", "ADD");
+        insertIntoDB(userId, filmId, ADD, LIKE);
     }
 
     public void addFriend(int userId, int userId1) {
-        insertIntoDB(userId, userId1, "FRIEND", "ADD");
+        insertIntoDB(userId, userId1, ADD, FRIEND);
     }
 
     public void addReview(int userId, int reviewId) {
-        insertIntoDB(userId, reviewId, "REVIEW", "ADD");
+        insertIntoDB(userId, reviewId, ADD, REVIEW);
     }
 
     public void removeLike(int userId, int filmId) {
-        insertIntoDB(userId, filmId, "LIKE", "REMOVE");
+        insertIntoDB(userId, filmId, REMOVE, LIKE);
     }
 
     public void removeFriend(int userId, int userId1) {
-        insertIntoDB(userId, userId1, "FRIEND", "REMOVE");
+        insertIntoDB(userId, userId1, REMOVE, FRIEND);
     }
 
     public void removeReview(int userId, int reviewId) {
-        insertIntoDB(userId, reviewId, "REVIEW", "REMOVE");
+        insertIntoDB(userId, reviewId, REMOVE, REVIEW);
     }
 
     public void updateReview(int userId, int reviewId) {
-        insertIntoDB(userId, reviewId, "REVIEW", "UPDATE");
+        insertIntoDB(userId, reviewId, UPDATE, REVIEW);
     }
 }
