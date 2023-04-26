@@ -1,10 +1,8 @@
 package ru.yandex.practicum.filmorate.storage.dao;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.module.Event;
 
 import java.sql.ResultSet;
@@ -25,13 +23,8 @@ public class EventDao {
     }
 
     public List<Event> getEvents(Integer userId) {
-        try {
-            String sqlQuery = "select* from EVENTS where USER_ID = ?";
-            return jdbcTemplate.query(sqlQuery, this::mapRowToEvent, userId);
-        } catch (EmptyResultDataAccessException e) {
-            log.warn("Ошибка валидации наличия юзера в ленте событий");
-            throw new UserNotFoundException("Юзер с таким айди в ленте событий отсутствует");
-        }
+        String sqlQuery = "select* from EVENTS where USER_ID = ?";
+        return jdbcTemplate.query(sqlQuery, this::mapRowToEvent, userId);
     }
 
     private Event mapRowToEvent(ResultSet resultSet, int rowNum) throws SQLException {

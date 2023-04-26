@@ -152,10 +152,7 @@ create table IF NOT EXISTS EVENTS
     ENTITY_ID  INTEGER not null,
     EVENT_TYPE  CHARACTER VARYING not null,
     OPERATION  CHARACTER VARYING not null,
-    foreign key (USER_ID) references USERS (USER_ID),
-    foreign key (ENTITY_ID) references USERS (USER_ID),
-    foreign key (ENTITY_ID) references FILM (FILM_ID)
---     foreign key (ENTITY_ID) references REVIEW (REVIEW_ID)
+    foreign key (USER_ID) references USERS (USER_ID)
 );
 
 
