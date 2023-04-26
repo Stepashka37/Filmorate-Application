@@ -7,7 +7,7 @@ import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.module.Event;
 import ru.yandex.practicum.filmorate.module.User;
-import ru.yandex.practicum.filmorate.storage.dao.EventStorage;
+import ru.yandex.practicum.filmorate.storage.interfaces.EventStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.UsersStorage;
 
 import java.util.List;
