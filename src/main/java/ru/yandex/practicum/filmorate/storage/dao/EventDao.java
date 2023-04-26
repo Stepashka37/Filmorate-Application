@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.module.Event;
+import ru.yandex.practicum.filmorate.storage.interfaces.EventStorage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,13 +16,13 @@ import static ru.yandex.practicum.filmorate.module.Event.Operation.*;
 
 @Repository
 @Slf4j
-public class EventStorage implements ru.yandex.practicum.filmorate.storage.interfaces.EventStorage {
+public class EventDao implements EventStorage {
 
     private static final String QUERY_FOR_EVENT = "insert into " +
             "EVENTS(TIMESTAMP, USER_ID, ENTITY_ID, OPERATION, EVENT_TYPE) VALUES (?, ?, ?, ?, ?)";
     private final JdbcTemplate jdbcTemplate;
 
-    public EventStorage(JdbcTemplate jdbcTemplate) {
+    public EventDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
