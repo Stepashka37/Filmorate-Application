@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.module.Film;
+import ru.yandex.practicum.filmorate.module.Event;
 import ru.yandex.practicum.filmorate.module.User;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.UserService;
@@ -118,4 +119,9 @@ public class UserController {
         return filmService.recommendFilms(userId);
     }
 
+    @GetMapping("/{id}/feed")
+    public List<Event> getEvents(@PathVariable Integer id) {
+        log.info("Получена лента событий для пользователя с id{}", id);
+        return usersService.getEvents(id);
+    }
 }

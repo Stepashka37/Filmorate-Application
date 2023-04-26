@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.module.Event;
 import ru.yandex.practicum.filmorate.module.User;
+import ru.yandex.practicum.filmorate.storage.dao.EventDao;
 import ru.yandex.practicum.filmorate.storage.interfaces.UsersStorage;
 
 import java.util.List;
@@ -16,10 +18,12 @@ public class UserService {
 
 
     private final UsersStorage storage;
+    private final EventDao eventDao;
 
     @Autowired
-    public UserService(@Qualifier("userDbStorage") UsersStorage storage) {
+    public UserService(@Qualifier("userDbStorage") UsersStorage storage, EventDao eventDao) {
         this.storage = storage;
+        this.eventDao = eventDao;
     }
 
     public List<User> getUsers() {
@@ -57,7 +61,7 @@ public class UserService {
     public void addFriend(int initiatorId, int acceptorId) {
         User initiator = storage.getUser(initiatorId);
         storage.addFriend(initiatorId, acceptorId);
-
+        eventDao.addFriend(initiatorId, acceptorId);
 
     }
 
@@ -66,7 +70,7 @@ public class UserService {
         User user = storage.getUser(initiatorId);
         User userToDelete = storage.getUser(acceptorId);
         storage.deleteFriend(initiatorId, acceptorId);
-
+        eventDao.removeFriend(initiatorId, acceptorId);
     }
 
     public List<User> showFriends(Integer id) {
@@ -81,4 +85,7 @@ public class UserService {
         return firstUserFriends;
     }
 
+    public List<Event> getEvents(Integer userId) {
+        return eventDao.getEvents(userId);
+    }
 }
