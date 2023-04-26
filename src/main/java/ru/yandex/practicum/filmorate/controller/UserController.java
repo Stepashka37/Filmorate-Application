@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.module.Event;
 import ru.yandex.practicum.filmorate.module.User;
@@ -113,7 +114,10 @@ public class UserController {
 
     @GetMapping("/{id}/feed")
     public List<Event> getEvents(@PathVariable Integer id) {
-        log.info("Получена лента событий для пользователя с id{}", id);
-        return usersService.getEvents(id);
+        List<Event> events = usersService.getEvents(id);
+        if (events.isEmpty()) {
+            log.warn("Ошибка валидации наличия юзера в ленте событий");
+            throw new UserNotFoundException("Юзер с таким айди в ленте событий отсутствует");
+        } else return events;
     }
 }
