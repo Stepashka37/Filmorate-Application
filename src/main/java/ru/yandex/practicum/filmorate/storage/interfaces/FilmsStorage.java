@@ -26,4 +26,7 @@ public interface FilmsStorage {
     List<Film> getPopularFilms(int count);
 
     List<Film> recommendFilms(Integer userId);
+
+    List<Film> getCommonFilms(long userId, long friendId);
+
 }
