@@ -13,6 +13,7 @@ import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Positive;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Objects;
 import java.util.Set;
 
@@ -38,6 +39,7 @@ public class User {
     private LocalDate birthday;
 
     private boolean status;
+
 
     public User(Integer id, String email, String login, String name, LocalDate birthday) {
         this.id = id;

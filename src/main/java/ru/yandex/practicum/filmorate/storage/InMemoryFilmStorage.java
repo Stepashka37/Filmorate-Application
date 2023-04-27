@@ -98,6 +98,9 @@ public class InMemoryFilmStorage implements FilmsStorage {
         return new ArrayList<>();
     } //return empty list
 
+    public List<Film> getCommonFilms(long userId, long friendId) {
+        return null;
+    }
 
 }
 
