@@ -70,7 +70,13 @@ public class FilmService {
         filmsStorage.deleteAllFilms();
     }
 
+
     public List<Film> getDirectorsFilms(int directorId, String sortBy) {
         return filmsStorage.getDirectorsFilms(directorId, sortBy);
     }
+
+    public List<Film> getCommonFilms(long id, long friendId) {
+        return filmsStorage.getCommonFilms(id, friendId);
+    }
+
 }
