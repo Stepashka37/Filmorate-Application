@@ -1,10 +1,13 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.module.Review;
+import ru.yandex.practicum.filmorate.storage.interfaces.FilmsStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.ReviewStorage;
+import ru.yandex.practicum.filmorate.storage.interfaces.UsersStorage;
 
 import java.util.List;
 
@@ -12,10 +15,15 @@ import java.util.List;
 public class ReviewService {
 
     ReviewStorage reviewStorage;
+    UsersStorage usersStorage;
+    FilmsStorage filmsStorage;
 
     @Autowired
-    public ReviewService(ReviewStorage reviewStorage) {
+    public ReviewService(ReviewStorage reviewStorage, @Qualifier("userDbStorage") UsersStorage usersStorage,
+                         @Qualifier("filmDbStorage") FilmsStorage filmsStorage) {
         this.reviewStorage = reviewStorage;
+        this.usersStorage = usersStorage;
+        this.filmsStorage = filmsStorage;
     }
 
 
@@ -63,7 +71,11 @@ public class ReviewService {
 
     private void validateReview(Review review) {
         if (review.getContent() == null || review.getContent().isBlank()) {
-            throw new ValidationException("Содерживое не должно быть пустым");
+            throw new ValidationException("Содержимое не должно быть пустым");
+        } else if (usersStorage.getUser(review.getUserId()) == null) {
+            throw new ValidationException("Пользователь с данным id не найден");
+        } else if (filmsStorage.getFilm(review.getFilmId()) == null) {
+            throw new ValidationException("Фильм с данным id не найден");
         }
     }
 }
