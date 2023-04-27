@@ -71,7 +71,7 @@ public class FilmService {
     }
 
     public List<Film> getPopularByGenreAndYear(int year, int genreId, int count) {
-        if (year == 0 && genreId == 0){
+        if (year == 0 && genreId == 0) {
             return filmsStorage.getPopularFilms(count);
         } else if (genreId == 0) {
             return filmsStorage.getPopularByYear(year, count);

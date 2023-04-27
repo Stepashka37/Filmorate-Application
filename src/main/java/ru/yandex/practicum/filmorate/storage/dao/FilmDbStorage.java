@@ -218,18 +218,19 @@ public class FilmDbStorage implements FilmsStorage {
                         "ORDER BY rate " +
                         "LIMIT ?;", (rs, rowNum) -> makeFilm(rs), year, count);
     }
-        @Override
-        public List<Film> getPopularByGenre(int genreId, int count) {
+
+    @Override
+    public List<Film> getPopularByGenre(int genreId, int count) {
         return jdbcTemplate.query(
-                    "SELECT f.*, COUNT(l.user_id) AS rate " +
-                            "FROM film AS f " +
-                            "LEFT JOIN film_likes AS l ON f.film_id = l.film_id " +
-                            "LEFT JOIN film_genres AS fg ON f.film_id = fg.film_id " +
-                            "WHERE fg.genre_id = ? " +
-                            "GROUP BY f.film_id " +
-                            "ORDER BY rate " +
-                            "LIMIT ?;", (rs, rowNum) -> makeFilm(rs), genreId, count);
-        }
+                "SELECT f.*, COUNT(l.user_id) AS rate " +
+                        "FROM film AS f " +
+                        "LEFT JOIN film_likes AS l ON f.film_id = l.film_id " +
+                        "LEFT JOIN film_genres AS fg ON f.film_id = fg.film_id " +
+                        "WHERE fg.genre_id = ? " +
+                        "GROUP BY f.film_id " +
+                        "ORDER BY rate " +
+                        "LIMIT ?;", (rs, rowNum) -> makeFilm(rs), genreId, count);
     }
+}
 
 

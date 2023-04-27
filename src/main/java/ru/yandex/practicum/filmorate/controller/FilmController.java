@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.module.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import java.util.List;
 
 @Slf4j
@@ -80,11 +79,12 @@ public class FilmController {
         filmService.deleteFilm(id);
         log.info("Удалили фильм с id{}", id);
     }
+
     @GetMapping("/popular")
     public List<Film> getPopularByGenreAndYear(
             @RequestParam(defaultValue = "10") int count,
             @RequestParam(defaultValue = "0") int genreId,
-            @RequestParam(defaultValue = "0")int year
+            @RequestParam(defaultValue = "0") int year
     ) {
         log.debug("Popular films requested");
         return filmService.getPopularByGenreAndYear(year, genreId, count);
