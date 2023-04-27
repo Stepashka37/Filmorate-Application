@@ -123,8 +123,7 @@ public class FilmDbStorage implements FilmsStorage {
             }
         }
 
-
-        if (film.getDirectors() != null ) {
+        if (film.getDirectors() != null) {
             String sqlDeleteAll = "delete from FILM_DIRECTORS WHERE film_id = ?";
             jdbcTemplate.update(sqlDeleteAll, film.getId());
             for (Director director : film.getDirectors()) {
