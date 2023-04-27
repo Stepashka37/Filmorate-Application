@@ -212,7 +212,7 @@ public class FilmDbStorage implements FilmsStorage {
         return jdbcTemplate.query(
                 "SELECT f.*, COUNT(l.user_id) AS rate " +
                         "FROM film AS f " +
-                        "LEFT JOIN film_likes AS l ON f.film_id = l.film_id " +
+                        "LEFT JOIN film_likes AS fl ON f.film_id = fl.film_id " +
                         "WHERE YEAR(f.release_date) = ? " +
                         "GROUP BY f.film_id " +
                         "ORDER BY rate " +
@@ -224,7 +224,7 @@ public class FilmDbStorage implements FilmsStorage {
         return jdbcTemplate.query(
                 "SELECT f.*, COUNT(l.user_id) AS rate " +
                         "FROM film AS f " +
-                        "LEFT JOIN film_likes AS l ON f.film_id = l.film_id " +
+                        "LEFT JOIN film_likes AS fl ON f.film_id = fl.film_id " +
                         "LEFT JOIN film_genres AS fg ON f.film_id = fg.film_id " +
                         "WHERE fg.genre_id = ? " +
                         "GROUP BY f.film_id " +
