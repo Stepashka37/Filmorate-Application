@@ -70,4 +70,7 @@ public class FilmService {
         filmsStorage.deleteAllFilms();
     }
 
+    public List<Film> getDirectorsFilms(int directorId, String sortBy) {
+        return filmsStorage.getDirectorsFilms(directorId, sortBy);
+    }
 }

@@ -19,6 +19,14 @@ create table IF NOT EXISTS RATING_MPA
         primary key (RATING_ID)
 );
 
+create table IF NOT EXISTS DIRECTORS
+(
+    DIRECTOR_ID INTEGER auto_increment,
+    NAME      CHARACTER VARYING,
+    constraint DIRECTOR_PK
+        primary key (DIRECTOR_ID)
+);
+
 create table IF NOT EXISTS FILM
 (
     FILM_ID      INTEGER auto_increment,
@@ -51,7 +59,18 @@ create table IF NOT EXISTS FILM_GENRES
         foreign key (GENRE_ID) references GENRE
 );
 
-
+create table IF NOT EXISTS FILM_DIRECTORS
+(
+    FILM_ID  INTEGER not null,
+    DIRECTOR_ID INTEGER not null,
+    constraint FILM_DIRECTORS_PK
+        primary key (FILM_ID, DIRECTOR_ID),
+    constraint FILM_DIRECTORS_FILM_ID_FK
+        foreign key (FILM_ID) references FILM,
+    constraint FILM_DIRECTORS_DIRECTOR_ID_FK
+        foreign key (DIRECTOR_ID) references DIRECTORS
+         on update set null on delete set null
+);
 
 create table IF NOT EXISTS USERS
 (
