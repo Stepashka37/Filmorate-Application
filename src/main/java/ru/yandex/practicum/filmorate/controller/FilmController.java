@@ -74,18 +74,20 @@ public class FilmController {
         return film;
     }
 
-    @GetMapping(value = {"/popular?count={count}", "/popular"})
-    public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") @Min(1) Integer count) {
-        List<Film> popularFilms = filmService.getMostLikedFilms(count);
-        log.info("Получили список из " + popularFilms.size() + " наиболее популярных фильмов");
-        return popularFilms;
-    }
 
     @DeleteMapping("/{id}")
     public void deleteFilm(@PathVariable int id) {
         filmService.deleteFilm(id);
         log.info("Удалили фильм с id{}", id);
     }
-
+    @GetMapping("/popular")
+    public List<Film> getPopularByGenreAndYear(
+            @RequestParam(defaultValue = "10") int count,
+            @RequestParam(defaultValue = "0") int genreId,
+            @RequestParam(defaultValue = "0")int year
+    ) {
+        log.debug("Popular films requested");
+        return filmService.getPopularByGenreAndYear(year, genreId, count);
+    }
 
 }

@@ -70,4 +70,16 @@ public class FilmService {
         filmsStorage.deleteAllFilms();
     }
 
+    public List<Film> getPopularByGenreAndYear(int year, int genreId, int count) {
+        if (year == 0 && genreId == 0){
+            return filmsStorage.getPopularFilms(count);
+        } else if (genreId == 0) {
+            return filmsStorage.getPopularByYear(year, count);
+        } else if (year == 0) {
+            return filmsStorage.getPopularByGenre(genreId, count);
+        } else {
+            return filmsStorage.getPopularByGenreAndYear(year, genreId, count);
+        }
+    }
+
 }

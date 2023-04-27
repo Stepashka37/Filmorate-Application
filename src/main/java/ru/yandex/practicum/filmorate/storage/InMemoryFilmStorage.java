@@ -93,6 +93,21 @@ public class InMemoryFilmStorage implements FilmsStorage {
         return values.subList(0, count);
     }
 
+    @Override
+    public List<Film> getPopularByYear(int year, int count) {
+        return null;
+    }
+
+    @Override
+    public List<Film> getPopularByGenreAndYear(int year, int genreId, int count) {
+        return null;
+    }
+
+    @Override
+    public List<Film> getPopularByGenre(int genreId, int count) {
+        return null;
+    }
+
 
 }
 

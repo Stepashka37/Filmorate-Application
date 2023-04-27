@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.dao;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -19,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 
 @Component
+@Slf4j
 public class FilmDbStorage implements FilmsStorage {
     private final GenreDao genreDao;
     private final JdbcTemplate jdbcTemplate;
@@ -190,5 +192,44 @@ public class FilmDbStorage implements FilmsStorage {
 
     }
 
+    @Override
+    public List<Film> getPopularByGenreAndYear(int year, int genreId, int count) {
+        log.debug("Popular films are ");
+        return jdbcTemplate.query(
+                "SELECT f.* " +
+                        "FROM film AS f " +
+                        "LEFT JOIN film_likes AS l ON f.film_id = l.film_id " +
+                        "LEFT JOIN film_genres AS fg ON f.film_id = fg.film_id " +
+                        "WHERE YEAR(f.release_date) = ? AND fg.genre_id = ? " +
+                        "GROUP BY f.film_id " +
+                        "ORDER BY COUNT(l.user_id) " +
+                        "LIMIT ?;", (rs, rowNum) -> makeFilm(rs), year, genreId, count);
+    }
 
-}
+    @Override
+    public List<Film> getPopularByYear(int year, int count) {
+        log.debug("Popular films are ");
+        return jdbcTemplate.query(
+                "SELECT f.*, COUNT(l.user_id) AS rate " +
+                        "FROM film AS f " +
+                        "LEFT JOIN film_likes AS l ON f.film_id = l.film_id " +
+                        "WHERE YEAR(f.release_date) = ? " +
+                        "GROUP BY f.film_id " +
+                        "ORDER BY rate " +
+                        "LIMIT ?;", (rs, rowNum) -> makeFilm(rs), year, count);
+    }
+        @Override
+        public List<Film> getPopularByGenre(int genreId, int count) {
+        return jdbcTemplate.query(
+                    "SELECT f.*, COUNT(l.user_id) AS rate " +
+                            "FROM film AS f " +
+                            "LEFT JOIN film_likes AS l ON f.film_id = l.film_id " +
+                            "LEFT JOIN film_genres AS fg ON f.film_id = fg.film_id " +
+                            "WHERE fg.genre_id = ? " +
+                            "GROUP BY f.film_id " +
+                            "ORDER BY rate " +
+                            "LIMIT ?;", (rs, rowNum) -> makeFilm(rs), genreId, count);
+        }
+    }
+
+
