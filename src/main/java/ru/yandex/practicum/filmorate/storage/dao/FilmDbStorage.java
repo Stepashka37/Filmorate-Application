@@ -36,7 +36,6 @@ public class FilmDbStorage implements FilmsStorage {
     public Film getFilm(int id) {
         String sql = "select *  from film where  film_id = ?";
 
-
         return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), id)
                 .stream().findAny().orElseThrow(() -> new FilmNotFoundException("Фильм с id " + id + " не найден"));
 
@@ -85,7 +84,6 @@ public class FilmDbStorage implements FilmsStorage {
 
     @Override
     public Film updateFilm(Film film) {
-
 
         String sql = "update FILM set " +
                 "NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, DURATION = ?, RATING_ID = ? " +
@@ -149,7 +147,6 @@ public class FilmDbStorage implements FilmsStorage {
 
     @Override
     public void removeLike(int filmId, int userId) {
-
         String sqlRemoveLike = "delete from FILM_LIKES " +
                 "where film_id = ? and user_id = ?";
         jdbcTemplate.update(sqlRemoveLike, filmId, userId);
@@ -195,7 +192,6 @@ public class FilmDbStorage implements FilmsStorage {
 
     @Override
     public List<Film> getPopularByGenreAndYear(int year, int genreId, int count) {
-        log.debug("Popular films are ");
         return jdbcTemplate.query(
                 "SELECT f.* " +
                         "FROM film AS f " +
@@ -209,7 +205,6 @@ public class FilmDbStorage implements FilmsStorage {
 
     @Override
     public List<Film> getPopularByYear(int year, int count) {
-        log.debug("Popular films are ");
         return jdbcTemplate.query(
                 "SELECT f.*, COUNT(fl.user_id) AS rate " +
                         "FROM film AS f " +
@@ -222,7 +217,6 @@ public class FilmDbStorage implements FilmsStorage {
 
     @Override
     public List<Film> getCommonFilms(long userId, long friendId) {
-        log.debug("Common films are: ");
         String query = "SELECT f.* FROM film f " +
                 "WHERE f.film_id IN (SELECT l1.film_id FROM film_likes l1 WHERE l1.user_id = ?) " +
                 "AND f.film_id IN (SELECT l2.film_id FROM film_likes l2 WHERE l2.user_id = ?)";
