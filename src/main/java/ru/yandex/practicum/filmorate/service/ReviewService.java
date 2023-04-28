@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.module.Film;
 import ru.yandex.practicum.filmorate.module.Review;
+import ru.yandex.practicum.filmorate.module.User;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmsStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.ReviewStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.UsersStorage;
@@ -71,11 +73,8 @@ public class ReviewService {
     }
 
     private void validateReview(Review review) {
-        if (usersStorage.getUser(review.getUserId()) == null) {
-            throw new UserNotFoundException("Пользователь с данным id не найден");
-        } else if (filmsStorage.getFilm(review.getFilmId()) == null) {
-            throw new FilmNotFoundException("Фильм с данным id не найден");
-        }
+        usersStorage.getUser(review.getUserId());
+        filmsStorage.getFilm(review.getFilmId());
     }
 }
 
