@@ -1,4 +1,4 @@
-drop table if exists GENRE, RATING_MPA, FILM_DIRECTORS, DIRECTORS, FILM, FILM_GENRES, USERS, FILM_LIKES, USER_FRIENDS, REVIEW, REVIEW_LIKES;
+drop table if exists GENRE, RATING_MPA, FILM_DIRECTORS, DIRECTORS, FILM, FILM_GENRES, USERS, FILM_LIKES, USER_FRIENDS, REVIEW, REVIEW_LIKES, EVENTS;
 
 
 create table IF NOT EXISTS GENRE
@@ -116,6 +116,8 @@ create table IF NOT EXISTS USER_FRIENDS
         foreign key (ACCEPTOR_ID) references USERS
 );
 
+create type if not exists EVENT as ENUM ('LIKE', 'FRIEND', 'REVIEW');
+create type if not exists OPERATION as ENUM ('ADD', 'UPDATE', 'REMOVE');
 create table IF NOT EXISTS REVIEW
 (
     REVIEW_ID INTEGER auto_increment,
