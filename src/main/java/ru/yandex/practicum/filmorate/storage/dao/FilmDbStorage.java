@@ -34,7 +34,6 @@ public class FilmDbStorage implements FilmsStorage {
     public Film getFilm(int id) {
         String sql = "select *  from film where  film_id = ?";
 
-
         return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), id)
                 .stream().findAny().orElseThrow(() -> new FilmNotFoundException("Фильм с id " + id + " не найден"));
 
@@ -84,11 +83,9 @@ public class FilmDbStorage implements FilmsStorage {
     @Override
     public Film updateFilm(Film film) {
 
-
         String sql = "update FILM set " +
                 "NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, DURATION = ?, RATING_ID = ? " +
                 "WHERE FILM_ID = ?";
-
 
         jdbcTemplate.update(sql,
                 film.getName(),
@@ -97,7 +94,6 @@ public class FilmDbStorage implements FilmsStorage {
                 film.getDuration(),
                 film.getMpa().getId(),
                 film.getId());
-
 
         if (film.getGenres() != null) {
             String sqlDeleteAll = "delete from FILM_GENRES WHERE film_id = ?";
@@ -208,6 +204,5 @@ public class FilmDbStorage implements FilmsStorage {
         return filmBuilt;
 
     }
-
 
 }
