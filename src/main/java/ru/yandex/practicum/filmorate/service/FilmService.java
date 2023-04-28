@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.module.Film;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmsStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.UsersStorage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -72,6 +73,22 @@ public class FilmService {
 
     public void deleteAllFilms() {
         filmsStorage.deleteAllFilms();
+    }
+
+    public List<Film> searchFilms(String query, List<String> by) {
+        if (by.size() == 1 && by.get(0).equals("director")) {
+            return filmsStorage.getFilmByDirectorQuery(query);
+        } else if (by.size() == 1 && by.get(0).equals("title")) {
+            return filmsStorage.getFilmByFilmQuery(query);
+        }
+
+        if (by.size() == 2 && (by.get(0).equals("director") && by.get(1).equals("title") ||
+                (by.get(0).equals("title") && by.get(1).equals("director")))) {
+            List<Film> films = filmsStorage.getFilmByDirectorQuery(query);
+            films.addAll(filmsStorage.getFilmByFilmQuery(query));
+            return films;
+        }
+        return new ArrayList<>();
     }
 
     public List<Film> getDirectorsFilms(int directorId, String sortBy) {

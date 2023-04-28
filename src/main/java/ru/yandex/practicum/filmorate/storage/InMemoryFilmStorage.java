@@ -97,5 +97,15 @@ public class InMemoryFilmStorage implements FilmsStorage {
     public List<Film> recommendFilms(Integer userId) {
         return new ArrayList<>();
     }
+    @Override
+    public List<Film> getFilmByDirectorQuery(String query) {
+        return null;
+    }
+
+    @Override
+    public List<Film> getFilmByFilmQuery(String query) {
+        return null;
+    }
+
 
 }

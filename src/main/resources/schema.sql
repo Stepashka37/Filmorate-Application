@@ -32,7 +32,7 @@ create table IF NOT EXISTS DIRECTORS
 create table IF NOT EXISTS FILM
 (
     FILM_ID      INTEGER auto_increment,
-    NAME         CHARACTER VARYING(50) not null,
+    NAME         VARCHAR_IGNORECASE(50) not null,
     DESCRIPTION  CHARACTER VARYING(200),
     RELEASE_DATE DATE,
     DURATION     BIGINT,
