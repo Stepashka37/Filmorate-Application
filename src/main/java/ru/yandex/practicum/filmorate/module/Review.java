@@ -26,7 +26,6 @@ public class Review {
     @JsonProperty(value = "isPositive")
     private Boolean isPositive;
 
-    @NonNull
     @NotNull
     private Integer userId;
 
