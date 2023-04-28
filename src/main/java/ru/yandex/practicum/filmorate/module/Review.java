@@ -1,10 +1,7 @@
 package ru.yandex.practicum.filmorate.module;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
