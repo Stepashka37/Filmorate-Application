@@ -92,6 +92,7 @@ public class InMemoryFilmStorage implements FilmsStorage {
         Collections.reverse(values);
         return values.subList(0, count);
     }
+
     @Override
     public List<Film> getCommonFilms(int userId, int friendId) {
         return null;
