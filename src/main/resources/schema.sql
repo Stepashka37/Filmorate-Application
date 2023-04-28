@@ -1,5 +1,3 @@
-drop table if exists GENRE, RATING_MPA, FILM, FILM_GENRES, FILM_LIKES, USER_FRIENDS, USERS, REVIEW, REVIEW_LIKES;
-
 create table IF NOT EXISTS GENRE
 (
     GENRE_ID INTEGER auto_increment,
