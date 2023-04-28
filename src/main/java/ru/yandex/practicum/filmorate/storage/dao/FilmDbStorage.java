@@ -219,6 +219,7 @@ public class FilmDbStorage implements FilmsStorage {
                         "ORDER BY rate " +
                         "LIMIT ?;", (rs, rowNum) -> makeFilm(rs), year, count);
     }
+
     @Override
     public List<Film> getCommonFilms(long userId, long friendId) {
         log.debug("Common films are: ");
