@@ -75,7 +75,9 @@ public class ReviewService {
         } else if (usersStorage.getUser(review.getUserId()) == null) {
             throw new ValidationException("Пользователь с данным id не найден");
         } else if (filmsStorage.getFilm(review.getFilmId()) == null) {
-            throw new ValidationException("Фильм с данным id не найден");
+            throw new ValidationException("Ревью с данным id не найдено");
+        } else if (review.getUserId() == null || review.getFilmId() == null || review.getIsPositive() == null) {
+            throw new ValidationException("Неверные параметры запроса");
         }
     }
 }

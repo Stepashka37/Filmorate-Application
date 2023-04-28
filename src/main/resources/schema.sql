@@ -1,3 +1,5 @@
+drop table if exists GENRE, RATING_MPA, FILM, FILM_GENRES, USERS, FILM_LIKES, USER_FRIENDS, REVIEW, REVIEW_LIKES;
+
 create table IF NOT EXISTS GENRE
 (
     GENRE_ID INTEGER auto_increment,
@@ -7,7 +9,7 @@ create table IF NOT EXISTS GENRE
 create unique index IF NOT EXISTS GENRE_GENRE_ID_UINDEX
     on GENRE (GENRE_ID);
 
-alter table  GENRE
+alter table GENRE
     add constraint IF NOT EXISTS GENRE_PK
         primary key (GENRE_ID);
 
@@ -26,7 +28,7 @@ create table IF NOT EXISTS FILM
     DESCRIPTION  CHARACTER VARYING(200),
     RELEASE_DATE DATE,
     DURATION     BIGINT,
-    RATING_ID    INTEGER           not null,
+    RATING_ID    INTEGER               not null,
     constraint FILM_RATING_MPA_RATING_ID_FK
         foreign key (RATING_ID) references RATING_MPA
             on update set null on delete set null
@@ -83,8 +85,8 @@ create table IF NOT EXISTS FILM_LIKES
 
 create table IF NOT EXISTS USER_FRIENDS
 (
-    INITIATOR_ID INTEGER not null,
-    ACCEPTOR_ID  INTEGER not null,
+    INITIATOR_ID INTEGER              not null,
+    ACCEPTOR_ID  INTEGER              not null,
     STATUS       BOOLEAN default NULL not null,
     constraint USER_FRIENDS_PK
         primary key (INITIATOR_ID, ACCEPTOR_ID),
@@ -94,32 +96,33 @@ create table IF NOT EXISTS USER_FRIENDS
         foreign key (ACCEPTOR_ID) references USERS
 );
 
-    create table IF NOT EXISTS REVIEW (
-          REVIEW_ID INTEGER auto_increment,
-          CONTENT CHARACTER VARYING(5000) not null,
-          POSITIVE BOOLEAN not null,
-          USER_ID INTEGER not null,
-          FILM_ID INTEGER not null,
-          constraint REVIEW_PK
-              primary key (REVIEW_ID),
-          constraint REVIEW_USERS_USER_ID_FK
-              foreign key (USER_ID) references USERS(USER_ID) ON DELETE CASCADE,
-          constraint REVIEW_FILM_FILM_ID_FK_2
-              foreign key (FILM_ID) references FILM(FILM_ID) ON DELETE CASCADE
-    );
+create table IF NOT EXISTS REVIEW
+(
+    REVIEW_ID INTEGER auto_increment,
+    CONTENT   CHARACTER VARYING(5000) not null,
+    POSITIVE  BOOLEAN                 not null,
+    USER_ID   INTEGER                 not null,
+    FILM_ID   INTEGER                 not null,
+    constraint REVIEW_PK
+        primary key (REVIEW_ID),
+    constraint REVIEW_USERS_USER_ID_FK
+        foreign key (USER_ID) references USERS (USER_ID) ON DELETE CASCADE,
+    constraint REVIEW_FILM_FILM_ID_FK_2
+        foreign key (FILM_ID) references FILM (FILM_ID) ON DELETE CASCADE
+);
 
-    create table IF NOT EXISTS REVIEW_LIKES
-    (
-        REVIEW_ID INTEGER not null,
-        USER_ID  INTEGER not null,
-        HELPFUL BOOLEAN not null,
-        constraint REVIEW_LIKES_PK
-            primary key (REVIEW_ID, USER_ID),
-        constraint REVIEW_LIKES_USERS_USER_ID_FK
-            foreign key (USER_ID) references USERS(USER_ID) ON DELETE CASCADE,
-        constraint REVIEW_LIKES_REVIEW_REVIEW_ID_FK_2
-            foreign key (REVIEW_ID) references REVIEW(REVIEW_ID) ON DELETE CASCADE
-    );
+create table IF NOT EXISTS REVIEW_LIKES
+(
+    REVIEW_ID INTEGER not null,
+    USER_ID   INTEGER not null,
+    HELPFUL   BOOLEAN not null,
+    constraint REVIEW_LIKES_PK
+        primary key (REVIEW_ID, USER_ID),
+    constraint REVIEW_LIKES_USERS_USER_ID_FK
+        foreign key (USER_ID) references USERS (USER_ID) ON DELETE CASCADE,
+    constraint REVIEW_LIKES_REVIEW_REVIEW_ID_FK_2
+        foreign key (REVIEW_ID) references REVIEW (REVIEW_ID) ON DELETE CASCADE
+);
 
 
 

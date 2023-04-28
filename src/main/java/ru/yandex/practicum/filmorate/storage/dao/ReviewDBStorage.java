@@ -36,7 +36,7 @@ public class ReviewDBStorage implements ReviewStorage {
         jdbcTemplate.update(connection -> {
             PreparedStatement stmt = connection.prepareStatement(sql, new String[]{"review_id"});
             stmt.setString(1, review.getContent());
-            stmt.setBoolean(2, review.isPositive());
+            stmt.setBoolean(2, review.getIsPositive());
             stmt.setInt(3, review.getUserId());
             stmt.setInt(4, review.getFilmId());
             return stmt;
@@ -51,7 +51,7 @@ public class ReviewDBStorage implements ReviewStorage {
     @Override
     public Review updateReview(Review review) throws ReviewNotFoundException {
         String sql = "update REVIEW set CONTENT = ?, POSITIVE = ? where REVIEW_ID = ?";
-        int rowsUpdated = jdbcTemplate.update(sql, review.getContent(), review.isPositive(), review.getReviewId());
+        int rowsUpdated = jdbcTemplate.update(sql, review.getContent(), review.getIsPositive(), review.getReviewId());
         if (rowsUpdated == 0) {
             throw new ReviewNotFoundException("Ревью с id " + review.getReviewId() + " не найден");
         }
@@ -77,7 +77,11 @@ public class ReviewDBStorage implements ReviewStorage {
     @Override
     public List<Review> getAllReviews(int count) {
         log.info("Получили все ревью");
-        return jdbcTemplate.query("select * from REVIEW LIMIT ?", (rs, rowNum) -> makeReview(rs), count);
+        String sql = "select * from REVIEW order by " +
+                "(select count(*) from REVIEW_LIKES where REVIEW_ID = REVIEW.REVIEW_ID and HELPFUL = true) - " +
+                "(select count(*) from REVIEW_LIKES where REVIEW_ID = REVIEW.REVIEW_ID and HELPFUL = false) desc " +
+                "LIMIT ?";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> makeReview(rs), count);
     }
 
     @Override
@@ -90,7 +94,7 @@ public class ReviewDBStorage implements ReviewStorage {
     }
 
     @Override
-    public void likeReview(int id, int userId)  {
+    public void likeReview(int id, int userId) {
         String sqlAddLike = "merge into REVIEW_LIKES (review_id, user_id, helpful) values (?, ?, true)";
         jdbcTemplate.update(sqlAddLike, id, userId);
         log.info("Поcтавили лайк ревью с ID: " + id);
@@ -105,14 +109,14 @@ public class ReviewDBStorage implements ReviewStorage {
     }
 
     @Override
-    public void dislikeReview(int id, int userId){
+    public void dislikeReview(int id, int userId) {
         String sqlAddLike = "merge into REVIEW_LIKES (review_id, user_id, helpful) values (?, ?, false)";
         jdbcTemplate.update(sqlAddLike, id, userId);
         log.info("Поcтавили дислайк ревью с ID: " + id);
     }
 
     @Override
-    public void removeDislike(int id, int userId){
+    public void removeDislike(int id, int userId) {
         String sqlRemoveLike = "delete from REVIEW_LIKES " +
                 "where review_id = ? and user_id = ?";
         jdbcTemplate.update(sqlRemoveLike, id, userId);
