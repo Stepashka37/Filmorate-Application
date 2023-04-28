@@ -72,11 +72,7 @@ public class ReviewService {
     }
 
     private void validateReview(Review review) {
-        if (review.getContent() == null || review.getContent().isBlank()) {
-            throw new ValidationException("Содержимое не должно быть пустым");
-        } else if (review.getUserId() == null || review.getFilmId() == null || review.getIsPositive() == null) {
-            throw new ValidationException("Неверные параметры запроса");
-        } else if (usersStorage.getUser(review.getUserId()) == null) {
+        if (usersStorage.getUser(review.getUserId()) == null) {
             throw new UserNotFoundException("Пользователь с данным id не найден");
         } else if (filmsStorage.getFilm(review.getFilmId()) == null) {
             throw new FilmNotFoundException("Фильм с данным id не найден");

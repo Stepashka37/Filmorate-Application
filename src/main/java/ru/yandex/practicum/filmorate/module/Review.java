@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -17,17 +18,19 @@ public class Review {
     private Integer reviewId;
 
     @NonNull
+    @NotBlank
     @Size(min = 1, max = 5000)
     private String content;
 
-    @NotNull
+    @NonNull
     @JsonProperty(value = "isPositive")
     private Boolean isPositive;
 
+    @NonNull
     @NotNull
     private Integer userId;
 
-    @NotNull
+    @NonNull
     private Integer filmId;
 
     private int useful;
