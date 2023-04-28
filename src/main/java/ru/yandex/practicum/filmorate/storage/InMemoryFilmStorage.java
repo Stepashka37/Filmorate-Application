@@ -112,7 +112,5 @@ public class InMemoryFilmStorage implements FilmsStorage {
     public List<Film> getCommonFilms(long userId, long friendId) {
         return null;
     }
-
-
 }
 

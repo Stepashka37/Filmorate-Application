@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.dao;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -20,7 +19,6 @@ import java.util.HashSet;
 import java.util.List;
 
 @Component
-@Slf4j
 public class FilmDbStorage implements FilmsStorage {
     private final GenreDao genreDao;
     private final JdbcTemplate jdbcTemplate;
@@ -134,10 +132,9 @@ public class FilmDbStorage implements FilmsStorage {
         String sqlDeleteFIlm = "delete from FILM where FILM_ID = ? ";
         String sqlDeleteFilmGenres = "delete from FILM_GENRES where FILM_ID = ?";
         String sqlDeleteFilmLikes = "delete from FILM_LIKES where FILM_ID = ?";
+        jdbcTemplate.update(sqlDeleteFIlm, id);
         jdbcTemplate.update(sqlDeleteFilmGenres, id);
         jdbcTemplate.update(sqlDeleteFilmLikes, id);
-        jdbcTemplate.update(sqlDeleteFIlm, id);
-
     }
 
     @Override
@@ -192,6 +189,7 @@ public class FilmDbStorage implements FilmsStorage {
         return filmBuilt;
 
     }
+
 
     @Override
     public List<Film> getPopularByGenreAndYear(int year, int genreId, int count) {
