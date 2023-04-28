@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 public class ErrorHandler {
 
-
     @ExceptionHandler({UserNotFoundException.class, FilmNotFoundException.class, GenreNotFoundException.class, MpaNotFoundException.class, ReviewNotFoundException.class})
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse userNotFoundExc(final RuntimeException p) {
         log.info("404: " + p.getMessage());
