@@ -38,7 +38,6 @@ public class FilmService {
         return filmsStorage.updateFilm(film);
     }
 
-
     public void likeFilm(int id, int userId) {
         usersStorage.getUser(userId);
         filmsStorage.getFilm(id);
@@ -73,4 +72,5 @@ public class FilmService {
     public List<Film> getDirectorsFilms(int directorId, String sortBy) {
         return filmsStorage.getDirectorsFilms(directorId, sortBy);
     }
+
 }
