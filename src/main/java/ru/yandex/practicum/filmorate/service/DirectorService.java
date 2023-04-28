@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.DirectorNotFoundException;
 import ru.yandex.practicum.filmorate.module.Director;
 import ru.yandex.practicum.filmorate.storage.dao.DirectorDao;
 
@@ -23,9 +22,6 @@ public class DirectorService {
     }
 
     public Director updateDirector(Director director) {
-        if (directorDao.findById(director.getId()) == null) {
-            throw new DirectorNotFoundException("Режиссер с id" + director.getId() + " не найден");
-        }
         return directorDao.updateDirector(director);
     }
 

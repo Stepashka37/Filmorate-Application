@@ -65,9 +65,13 @@ public class DirectorDao implements DirectorStorage {
                 "NAME = ? " +
                 "WHERE DIRECTOR_ID = ?";
 
-        jdbcTemplate.update(sql,
+        int checkNum = jdbcTemplate.update(sql,
                 director.getName(),
                 director.getId());
+
+        if (checkNum == 0) {
+            throw new DirectorNotFoundException("Режиссер с id" + director.getId() + " не найден");
+        }
 
         return jdbcTemplate.query("select * from directors where director_id = ?", (rs, rowNum) -> makeDirector(rs), director.getId())
                 .stream().findAny().orElse(null);

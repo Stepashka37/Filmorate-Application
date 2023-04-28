@@ -39,9 +39,9 @@ public class DirectorController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Director addDirector(@Valid @RequestBody Director director) {
-        Director addDirector = directorService.addDirector(director);
-        log.info("Добавили режиссера с id{}", addDirector.getId());
-        return addDirector;
+        Director newDirector = directorService.addDirector(director);
+        log.info("Добавили режиссера с id{}", newDirector.getId());
+        return newDirector;
     }
 
     @PutMapping
