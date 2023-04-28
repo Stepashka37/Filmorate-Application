@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.module.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @Slf4j
@@ -73,13 +74,20 @@ public class FilmController {
         return film;
     }
 
-
     @DeleteMapping("/{id}")
     public void deleteFilm(@PathVariable int id) {
         filmService.deleteFilm(id);
         log.info("Удалили фильм с id{}", id);
     }
 
+    @GetMapping("/common")
+    public List<Film> getCommonFilms(
+            @RequestParam long userId,
+            @RequestParam long friendId
+    ) {
+        log.debug("try get common films");
+        return filmService.getCommonFilms(userId, friendId);
+    }
     @GetMapping("/popular")
     public List<Film> getPopularByGenreAndYear(
             @RequestParam(defaultValue = "10") int count,
@@ -89,5 +97,4 @@ public class FilmController {
         log.debug("Popular films requested");
         return filmService.getPopularByGenreAndYear(year, genreId, count);
     }
-
 }
