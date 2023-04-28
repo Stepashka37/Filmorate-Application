@@ -1,4 +1,3 @@
-
 create table IF NOT EXISTS GENRE
 (
     GENRE_ID INTEGER auto_increment,

@@ -12,24 +12,22 @@ import javax.validation.constraints.Size;
 
 @Data
 @Builder
-@RequiredArgsConstructor
 public class Review {
 
     private Integer reviewId;
 
-    @NonNull
+    @NotNull
     @NotBlank
     @Size(min = 1, max = 5000)
     private String content;
 
-    @NonNull
-    @JsonProperty(value = "isPositive")
+    @NotNull
     private Boolean isPositive;
 
     @NotNull
     private Integer userId;
 
-    @NonNull
+    @NotNull
     private Integer filmId;
 
     private int useful;
