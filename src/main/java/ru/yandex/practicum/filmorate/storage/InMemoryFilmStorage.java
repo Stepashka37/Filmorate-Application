@@ -96,10 +96,6 @@ public class InMemoryFilmStorage implements FilmsStorage {
     @Override
     public List<Film> getDirectorsFilms(int directorId, String sortBy) {
         return new ArrayList<>();
-    } //return empty list
-
-    public List<Film> getCommonFilms(long userId, long friendId) {
-        return null;
     }
 
 }

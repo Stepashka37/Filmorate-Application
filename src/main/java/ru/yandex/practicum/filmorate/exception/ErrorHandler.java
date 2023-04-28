@@ -13,6 +13,7 @@ public class ErrorHandler {
 
     @ExceptionHandler({UserNotFoundException.class, FilmNotFoundException.class, GenreNotFoundException.class, MpaNotFoundException.class, DirectorNotFoundException.class})
 
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse userNotFoundExc(final RuntimeException p) {
         log.info("404: " + p.getMessage());
