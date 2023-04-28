@@ -39,7 +39,6 @@ public class User {
 
     private boolean status;
 
-
     public User(Integer id, String email, String login, String name, LocalDate birthday) {
         this.id = id;
         this.email = email;
