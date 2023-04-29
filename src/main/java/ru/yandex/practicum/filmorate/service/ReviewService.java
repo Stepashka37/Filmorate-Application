@@ -36,36 +36,30 @@ public class ReviewService {
         return reviewStorage.updateReview(review);
     }
 
-    public void deleteReview(int id) {
-        reviewStorage.deleteReview(id);
+    public void deleteReview(int reviewId) {
+        reviewStorage.deleteReview(reviewId);
     }
 
-    public Review getReview(int id) {
-        return reviewStorage.getReview(id);
+    public Review getReview(int reviewId) {
+        return reviewStorage.getReview(reviewId);
     }
 
-    public void likeReview(int id, int userId) {
-        reviewStorage.getReview(id);
-        usersStorage.getUser(userId);
-        reviewStorage.likeReview(id, userId);
+    public void likeReview(int reviewId, int userId) {
+        validateLike(reviewId, userId);
+        reviewStorage.likeReview(reviewId, userId);
     }
 
     public void removeLike(int id, int userId) {
-        reviewStorage.getReview(id);
-        usersStorage.getUser(userId);
         reviewStorage.removeLike(id, userId);
     }
 
-    public void dislikeReview(int id, int userId) {
-        reviewStorage.getReview(id);
-        usersStorage.getUser(userId);
-        reviewStorage.dislikeReview(id, userId);
+    public void dislikeReview(int reviewId, int userId) {
+        validateLike(reviewId, userId);
+        reviewStorage.dislikeReview(reviewId, userId);
     }
 
-    public void removeDislike(int id, int userId) {
-        reviewStorage.getReview(id);
-        usersStorage.getUser(userId);
-        reviewStorage.removeDislike(id, userId);
+    public void removeDislike(int reviewId, int userId) {
+        reviewStorage.removeDislike(reviewId, userId);
     }
 
     public List<Review> getReviews(int filmId, int count) {
@@ -74,6 +68,11 @@ public class ReviewService {
         } else {
             return reviewStorage.getFilmReviews(filmId, count);
         }
+    }
+
+    private void validateLike(int reviewId, int userId) {
+        reviewStorage.getReview(reviewId);
+        usersStorage.getUser(userId);
     }
 
     private void validateReview(Review review) {
