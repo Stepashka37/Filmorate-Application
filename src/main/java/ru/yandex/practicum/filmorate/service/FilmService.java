@@ -81,8 +81,4 @@ public class FilmService {
             return filmsStorage.getPopularByGenreAndYear(year, genreId, count);
         }
     }
-
-    public List<Film> getCommonFilms(long id, long friendId) {
-        return filmsStorage.getCommonFilms(id, friendId);
-    }
 }

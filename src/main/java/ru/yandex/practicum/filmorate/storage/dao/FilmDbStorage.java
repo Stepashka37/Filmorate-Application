@@ -184,9 +184,7 @@ public class FilmDbStorage implements FilmsStorage {
         filmBuilt.setGenres(new HashSet<>(genres));
         filmBuilt.setLikes(new HashSet<>(jdbcTemplate.queryForList(sqlQueryForLikes, Integer.class)));
         return filmBuilt;
-
     }
-
 
     @Override
     public List<Film> getPopularByGenreAndYear(int year, int genreId, int count) {
@@ -211,14 +209,6 @@ public class FilmDbStorage implements FilmsStorage {
                         "GROUP BY f.film_id " +
                         "ORDER BY rate " +
                         "LIMIT ?;", (rs, rowNum) -> makeFilm(rs), year, count);
-    }
-
-    @Override
-    public List<Film> getCommonFilms(long userId, long friendId) {
-        String query = "SELECT f.* FROM film f " +
-                "WHERE f.film_id IN (SELECT l1.film_id FROM film_likes l1 WHERE l1.user_id = ?) " +
-                "AND f.film_id IN (SELECT l2.film_id FROM film_likes l2 WHERE l2.user_id = ?)";
-        return jdbcTemplate.query(query, (rs, rowNum) -> makeFilm(rs), userId, friendId);
     }
 
     @Override
