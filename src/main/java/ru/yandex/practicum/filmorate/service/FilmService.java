@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.module.Film;
+import ru.yandex.practicum.filmorate.module.User;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmsStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.UsersStorage;
 
@@ -75,8 +76,23 @@ public class FilmService {
     }
 
     public List<Film> getCommonFilms(int userId, int friendId) {
-        usersStorage.getUser(userId);
-        usersStorage.getUser(friendId);
+        List<User> users = usersStorage.getUsers();
+        boolean userFound = false;
+        boolean friendFound = false;
+        for (User user : users) {
+            if (user.getId() == userId) {
+                userFound = true;
+            }
+            if (user.getId() == friendId) {
+                friendFound = true;
+            }
+        }
+        if (!userFound) {
+            throw new UserNotFoundException("Пользователь с данным id не найден " + userId);
+        }
+        if (!friendFound) {
+            throw new UserNotFoundException("Пользователь с данным id не найден " + friendId);
+        }
         return filmsStorage.getCommonFilms(userId, friendId);
     }
 
