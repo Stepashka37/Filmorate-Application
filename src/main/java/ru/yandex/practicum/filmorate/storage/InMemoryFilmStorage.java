@@ -99,12 +99,12 @@ public class InMemoryFilmStorage implements FilmsStorage {
     }
     @Override
     public List<Film> getFilmByDirectorQuery(String query) {
-        return null;
+        return new ArrayList<>();
     }
 
     @Override
     public List<Film> getFilmByFilmQuery(String query) {
-        return null;
+        return new ArrayList<>();
     }
 
 

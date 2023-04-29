@@ -1,5 +1,6 @@
 drop table if exists GENRE, RATING_MPA, FILM_DIRECTORS, DIRECTORS, FILM, FILM_GENRES, USERS, FILM_LIKES, USER_FRIENDS;
 
+
 create table IF NOT EXISTS GENRE
 (
     GENRE_ID INTEGER auto_increment,
@@ -24,7 +25,7 @@ create table IF NOT EXISTS RATING_MPA
 create table IF NOT EXISTS DIRECTORS
 (
     DIRECTOR_ID INTEGER auto_increment,
-    NAME      CHARACTER VARYING,
+    NAME      VARCHAR_IGNORECASE(50),
     constraint DIRECTOR_PK
         primary key (DIRECTOR_ID)
 );

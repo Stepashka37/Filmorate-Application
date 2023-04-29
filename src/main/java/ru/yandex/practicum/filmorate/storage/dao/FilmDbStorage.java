@@ -18,6 +18,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -170,12 +171,13 @@ public class FilmDbStorage implements FilmsStorage {
     @Override
     public List<Film> getFilmByDirectorQuery(String query) {
         String sql = "select  F.FILM_ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION, F.RATING_ID from FILM AS F " +
-                "left join FILM_DIRECTOR AS FD on F.DIRECTOR_ID = FD.FILM_ID " +
+                "left join FILM_DIRECTORS AS FD on F.FILM_ID = FD.FILM_ID " +
+                "left join DIRECTORS AS D on FD.DIRECTOR_ID = D.DIRECTOR_ID " +
                 "left  join FILM_LIKES FL on F.FILM_ID = FL.FILM_ID " +
-                "where FD.NAME LIKE ?" +
+                "where D.NAME LIKE ? " +
                 "group by F.FILM_ID " +
-                "order by count(FL.USER_ID) DESC ";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), query + "%");
+                "order by count(FL.USER_ID) DESC";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), "%" + query + "%");
     }
 
     @Override
@@ -185,7 +187,7 @@ public class FilmDbStorage implements FilmsStorage {
                 "where NAME LIKE ?" +
                 "group by F.FILM_ID " +
                 "order by count(FL.USER_ID) DESC ";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), query + "%");
+        return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), "%" + query + "%");
     }
 
 
