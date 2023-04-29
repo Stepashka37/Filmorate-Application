@@ -90,8 +90,7 @@ public class InMemoryFilmStorage implements FilmsStorage {
 
     @Override
     public List<Film> recommendFilms(Integer userId) {
-        return null;
+        return new ArrayList<>();
     }
 
 }
-
