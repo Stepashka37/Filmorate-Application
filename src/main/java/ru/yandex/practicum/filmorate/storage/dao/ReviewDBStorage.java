@@ -97,7 +97,7 @@ public class ReviewDBStorage implements ReviewStorage {
     public void likeReview(int id, int userId) {
         String sqlAddLike = "merge into REVIEW_LIKES (review_id, user_id, helpful) values (?, ?, true)";
         jdbcTemplate.update(sqlAddLike, id, userId);
-        log.info("Поcтавили лайк ревью с ID: " + id);
+        log.info("Лайк ревью с ID: " + id);
     }
 
     @Override
