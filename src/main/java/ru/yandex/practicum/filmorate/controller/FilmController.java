@@ -51,7 +51,6 @@ public class FilmController {
     public void deleteAllFilms() {
         filmService.deleteAllFilms();
         log.info("Все фильмы были удален");
-
     }
 
     @PutMapping("/{id}/like/{userId}")

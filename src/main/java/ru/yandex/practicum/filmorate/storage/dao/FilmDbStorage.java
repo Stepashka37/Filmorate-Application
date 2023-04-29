@@ -231,13 +231,13 @@ public class FilmDbStorage implements FilmsStorage {
     }
 
     @Override
-
     public List<Film> getCommonFilms(int userId, int friendId) {
         log.debug("Common films are: ");
         String query = "SELECT f.* FROM film f " +
                 "WHERE f.film_id IN (SELECT l1.film_id FROM film_likes l1 WHERE l1.user_id = ?) " +
                 "AND f.film_id IN (SELECT l2.film_id FROM film_likes l2 WHERE l2.user_id = ?)";
         return jdbcTemplate.query(query, (rs, rowNum) -> makeFilm(rs), userId, friendId);
+    }
 
     public List<Film> getDirectorsFilms(int directorId, String sortBy) {
         final String sqlQueryForCheck = "select COUNT(d.director_id) " +
@@ -301,5 +301,4 @@ public class FilmDbStorage implements FilmsStorage {
             }
         });
     }
-
 }
