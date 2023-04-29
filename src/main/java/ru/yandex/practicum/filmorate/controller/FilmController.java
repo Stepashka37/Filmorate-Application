@@ -87,7 +87,6 @@ public class FilmController {
         log.info("Удалили фильм с id{}", id);
     }
 
-
     @GetMapping("/director/{directorId}")
     public List<Film> getDirectorsFilms(@PathVariable Integer directorId,
                                         @RequestParam String sortBy) {

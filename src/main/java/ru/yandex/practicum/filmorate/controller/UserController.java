@@ -1,12 +1,13 @@
 package ru.yandex.practicum.filmorate.controller;
 
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.module.Film;
 import ru.yandex.practicum.filmorate.module.User;
+import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
@@ -19,10 +20,12 @@ import java.util.List;
 public class UserController {
 
     private final UserService usersService;
+    private final FilmService filmService;
 
     @Autowired
-    public UserController(UserService usersService) {
+    public UserController(UserService usersService, FilmService filmService) {
         this.usersService = usersService;
+        this.filmService = filmService;
     }
 
     @GetMapping
@@ -110,5 +113,9 @@ public class UserController {
 
     }
 
+    @GetMapping("/{id}/recommendations")
+    public List<Film> recommendFilms(@PathVariable(value = "id") Integer userId) {
+        return filmService.recommendFilms(userId);
+    }
 
 }

@@ -8,12 +8,10 @@ import ru.yandex.practicum.filmorate.storage.interfaces.FilmsStorage;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
 @Component
 public class InMemoryFilmStorage implements FilmsStorage {
     private final Map<Integer, Film> films = new HashMap<>();
     private int genId = 0;
-
 
     @Override
     public Film getFilm(int id) {
@@ -23,12 +21,10 @@ public class InMemoryFilmStorage implements FilmsStorage {
         return films.get(id);
     }
 
-
     @Override
     public List<Film> getFilms() {
         return new ArrayList<>(films.values());
     }
-
 
     @Override
     public Film addFilm(Film film) {
@@ -50,7 +46,6 @@ public class InMemoryFilmStorage implements FilmsStorage {
         films.put(film.getId(), film);
         return films.get(film.getId());
     }
-
 
     @Override
     public void deleteAllFilms() {
@@ -97,6 +92,10 @@ public class InMemoryFilmStorage implements FilmsStorage {
     public List<Film> getDirectorsFilms(int directorId, String sortBy) {
         return new ArrayList<>();
     }
+    
+    @Override
+    public List<Film> recommendFilms(Integer userId) {
+        return new ArrayList<>();
+    }
 
 }
-
