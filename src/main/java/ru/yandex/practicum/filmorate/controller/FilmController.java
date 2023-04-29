@@ -78,7 +78,6 @@ public class FilmController {
         log.info("Удалили фильм с id{}", id);
     }
 
-
     @GetMapping("/popular")
     public List<Film> getPopularByGenreAndYear(
             @RequestParam(defaultValue = "10") int count,
@@ -88,4 +87,5 @@ public class FilmController {
         log.debug("Popular films requested");
         return filmService.getPopularByGenreAndYear(year, genreId, count);
     }
+
 }

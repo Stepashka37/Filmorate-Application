@@ -135,7 +135,6 @@ public class UserDbStorage implements UsersStorage {
         return jdbcTemplate.query(sqlShowFriends, (rs, rowNum) -> makeUser(rs), id);
     }
 
-
     private User makeUser(ResultSet rs) throws SQLException {
         User userBuilt = User.builder()
                 .id(rs.getInt("user_id"))
