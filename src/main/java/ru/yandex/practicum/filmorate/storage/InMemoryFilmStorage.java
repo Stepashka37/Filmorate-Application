@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.module.Film;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmsStorage;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -95,13 +96,14 @@ public class InMemoryFilmStorage implements FilmsStorage {
         return new ArrayList<>();
     }
 
-        @Override
-        public List<Film> getPopularByGenre ( int genreId, int count){
-            return new ArrayList<>();
-        }
-        @Override
-        public List<Film> recommendFilms (Integer userId){
-            return new ArrayList<>();
-        }
-
+    @Override
+    public List<Film> getPopularByGenre(int genreId, int count) {
+        return new ArrayList<>();
     }
+
+    @Override
+    public List<Film> recommendFilms(Integer userId) {
+        return new ArrayList<>();
+    }
+
+}
