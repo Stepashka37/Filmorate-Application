@@ -1,5 +1,3 @@
-
-
 MERGE INTO GENRE KEY (GENRE_ID)
 VALUES (1, 'Комедия'),
        (2, 'Драма'),
