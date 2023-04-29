@@ -34,7 +34,6 @@ public class FilmDbStorage implements FilmsStorage {
     public Film getFilm(int id) {
         String sql = "select *  from film where  film_id = ?";
 
-
         return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), id)
                 .stream().findAny().orElseThrow(() -> new FilmNotFoundException("Фильм с id " + id + " не найден"));
 
@@ -84,11 +83,9 @@ public class FilmDbStorage implements FilmsStorage {
     @Override
     public Film updateFilm(Film film) {
 
-
         String sql = "update FILM set " +
                 "NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, DURATION = ?, RATING_ID = ? " +
                 "WHERE FILM_ID = ?";
-
 
         jdbcTemplate.update(sql,
                 film.getName(),
@@ -97,7 +94,6 @@ public class FilmDbStorage implements FilmsStorage {
                 film.getDuration(),
                 film.getMpa().getId(),
                 film.getId());
-
 
         if (film.getGenres() != null) {
             String sqlDeleteAll = "delete from FILM_GENRES WHERE film_id = ?";
@@ -162,6 +158,24 @@ public class FilmDbStorage implements FilmsStorage {
         return jdbcTemplate.query(sqlGetPopularFilms, (rs, rowNum) -> makeFilm(rs), count);
     }
 
+    @Override
+    public List<Film> recommendFilms(Integer userId) {
+        String thisUserLikes = "select fl.film_id" +
+                " from film_likes as fl " +
+                " where fl.user_id = " + userId;
+        String usersWithSameLikes = "select user_id" +
+                " from film_likes" +
+                " where film_id in (" + thisUserLikes + ") and user_id != " + userId +
+                " group by user_id" +
+                " order by count(user_id) desc";
+        String recommendedFilmsIds = "select film_id" +
+                " from film_likes as fl" +
+                " where user_id in (" + usersWithSameLikes +
+                ") and film_id not in (" + thisUserLikes + ")";
+        String findFilms = "select * from film where  film_id in (" + recommendedFilmsIds + ")";
+        return jdbcTemplate.query(findFilms, (rs, rowNum) -> makeFilm(rs));
+    }
+
     private Film makeFilm(ResultSet rs) throws SQLException {
         Film filmBuilt = Film.builder()
                 .id(rs.getInt("film_id"))
@@ -189,6 +203,5 @@ public class FilmDbStorage implements FilmsStorage {
         return filmBuilt;
 
     }
-
 
 }

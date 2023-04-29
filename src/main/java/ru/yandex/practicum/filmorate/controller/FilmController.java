@@ -86,6 +86,4 @@ public class FilmController {
         filmService.deleteFilm(id);
         log.info("Удалили фильм с id{}", id);
     }
-
-
 }
