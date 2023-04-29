@@ -80,6 +80,7 @@ class FilmControllerTest {
                 .duration(120)
                 .genres(new HashSet<>())
                 .mpa(new Rating(1, "G"))
+                .directors((new HashSet<>()))
                 .build();
 
 
@@ -106,7 +107,7 @@ class FilmControllerTest {
     @SneakyThrows
     @Test
     public void filmPostMethodTestValidValue() {
-        String validFilm = "{\"likes\":[],\"id\":1,\"name\":\"name\",\"description\":\"Film description\",\"releaseDate\":\"2016-03-04\",\"duration\":120,\"genres\":[],\"mpa\":{\"id\":1,\"name\":\"G\"}}";
+        String validFilm = "{\"likes\":[],\"id\":1,\"name\":\"name\",\"description\":\"Film description\",\"releaseDate\":\"2016-03-04\",\"duration\":120,\"genres\":[],\"mpa\":{\"id\":1,\"name\":\"G\"},\"directors\":[]}";
         Film filmCreated = Film.builder().name("name")
                 .likes(new HashSet<>())
                 .id(1)
@@ -115,6 +116,7 @@ class FilmControllerTest {
                 .duration(120)
                 .genres(new HashSet<>())
                 .mpa(new Rating(1, "G"))
+                .directors(new HashSet<>())
                 .build();
         Film film = Film.builder().name("name")
                 .description("Film description")
@@ -184,21 +186,6 @@ class FilmControllerTest {
                         .content(gson1)
                 ).andExpect(status().isBadRequest())
                 .andExpect(h -> h.getResponse().equals("Ошибка валидации releaseDate"));
-
-        Film filmAfter = Film.builder().name("Film")
-                .description("Film description")
-                .releaseDate(LocalDate.now().plusDays(1))
-                .duration(120)
-                .mpa(new Rating(1, "PG"))
-                .genres(new HashSet<>())
-                .build();
-        gson1 = objectMapper.writeValueAsString(filmAfter);
-        mockMvc.perform(post("/films")
-                        .contentType("application/json")
-                        .content(gson1)
-                ).andExpect(status().isBadRequest())
-                .andExpect(h -> h.getResponse().equals("Ошибка валидации releaseDate"));
-
     }
 
     @SneakyThrows
@@ -302,21 +289,6 @@ class FilmControllerTest {
                 .genres(new HashSet<>())
                 .build();
         gson1 = objectMapper.writeValueAsString(filmBefore);
-        mockMvc.perform(put("/films")
-                        .contentType("application/json")
-                        .content(gson1)
-                ).andExpect(status().isBadRequest())
-                .andExpect(h -> h.getResponse().equals("Ошибка валидации release date"));
-
-        Film filmAfter = Film.builder().id(1)
-                .name("name")
-                .description("Film description")
-                .releaseDate(LocalDate.of(2123, 03, 04))
-                .duration(120)
-                .mpa(new Rating(1, "PG"))
-                .genres(new HashSet<>())
-                .build();
-        gson1 = objectMapper.writeValueAsString(filmAfter);
         mockMvc.perform(put("/films")
                         .contentType("application/json")
                         .content(gson1)

@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.module;
 
-
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
@@ -24,7 +23,6 @@ public class Film {
     private String name;
     @Size(min = 0, max = 200, message = "Максимальная длина описания - 200 символов")
     private String description;
-    @Past(message = "Дата выхода фильма не может быть в будущем")
     @NonNull
     @ValidReleaseDate
     private LocalDate releaseDate;
@@ -37,6 +35,7 @@ public class Film {
     @NotNull
     private Rating mpa;
 
+    private Set<Director> directors;
 
     @Override
     public String toString() {
@@ -47,6 +46,9 @@ public class Film {
                 ", description='" + description + '\'' +
                 ", releaseDate=" + releaseDate +
                 ", duration=" + duration +
+                ", genres=" + genres +
+                ", mpa=" + mpa +
+                ", directors=" + directors +
                 '}';
     }
 
@@ -55,12 +57,12 @@ public class Film {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Film film = (Film) o;
-        return duration == film.duration && Objects.equals(likes, film.likes) && Objects.equals(id, film.id) && Objects.equals(name, film.name) && Objects.equals(description, film.description) && releaseDate.equals(film.releaseDate);
+        return id == film.id && duration == film.duration && Objects.equals(likes, film.likes) && Objects.equals(name, film.name) && Objects.equals(description, film.description) && releaseDate.equals(film.releaseDate) && Objects.equals(genres, film.genres) && Objects.equals(mpa, film.mpa) && Objects.equals(directors, film.directors);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(likes, id, name, description, releaseDate, duration);
+        return Objects.hash(likes, id, name, description, releaseDate, duration, genres, mpa, directors);
     }
 
     public void likeFilm(int userId) {
