@@ -58,6 +58,11 @@ public class FilmService {
         return filmsStorage.getPopularFilms(count);
     }
 
+    public List<Film> recommendFilms(Integer userId) {
+        usersStorage.getUser(userId);
+        return filmsStorage.recommendFilms(userId);
+    }
+
     public Film getFilm(int id) {
         return filmsStorage.getFilm(id);
     }
