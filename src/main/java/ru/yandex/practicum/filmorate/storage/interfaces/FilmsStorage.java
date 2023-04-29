@@ -30,7 +30,7 @@ public interface FilmsStorage {
     List<Film> getPopularByGenreAndYear(int year, int genreId, int count);
 
     List<Film> getPopularByGenre(int genreId, int count);
-    
+
     List<Film> recommendFilms(Integer userId);
 
 }

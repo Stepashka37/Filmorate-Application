@@ -96,13 +96,13 @@ public class InMemoryFilmStorage implements FilmsStorage {
     public List<Film> getPopularByGenreAndYear(int year, int genreId, int count) {
         return new ArrayList<>();
 
-    @Override
-    public List<Film> getPopularByGenre(int genreId, int count) {
-          return new ArrayList<>();
-    }
+        @Override
+        public List<Film> getPopularByGenre ( int genreId, int count){
+            return new ArrayList<>();
+        }
 
-    public List<Film> recommendFilms(Integer userId) {
-        return new ArrayList<>();
-    }
+        public List<Film> recommendFilms (Integer userId){
+            return new ArrayList<>();
+        }
 
-}
+    }
