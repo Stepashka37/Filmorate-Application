@@ -45,23 +45,31 @@ public class ReviewService {
     }
 
     public void likeReview(int id, int userId) {
+        reviewStorage.getReview(id);
+        usersStorage.getUser(userId);
         reviewStorage.likeReview(id, userId);
     }
 
     public void removeLike(int id, int userId) {
+        reviewStorage.getReview(id);
+        usersStorage.getUser(userId);
         reviewStorage.removeLike(id, userId);
     }
 
     public void dislikeReview(int id, int userId) {
+        reviewStorage.getReview(id);
+        usersStorage.getUser(userId);
         reviewStorage.dislikeReview(id, userId);
     }
 
     public void removeDislike(int id, int userId) {
+        reviewStorage.getReview(id);
+        usersStorage.getUser(userId);
         reviewStorage.removeDislike(id, userId);
     }
 
     public List<Review> getReviews(int filmId, int count) {
-        if (filmId == 0) {
+        if (filmId == 0 || filmsStorage.getFilm(filmId) == null) {
             return reviewStorage.getAllReviews(count);
         } else {
             return reviewStorage.getFilmReviews(filmId, count);
