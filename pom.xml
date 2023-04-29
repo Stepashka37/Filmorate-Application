@@ -13,21 +13,17 @@
 	<name>filmorate</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
-        <java.version>11</java.version>
-        <javax-validation.version>2.0.1.Final</javax-validation.version>
-
-
-        <spring-boot.run.jvmArguments>-Dfile.encoding=UTF-8</spring-boot.run.jvmArguments>
-
-
-    </properties>
-	<distributionManagement>
+		<java.version>11</java.version>
+		<javax-validation.version>2.0.1.Final</javax-validation.version>
+		<spring-boot.run.jvmArguments>-Dfile.encoding=UTF-8</spring-boot.run.jvmArguments>
+	</properties>
+	<!--<distributionManagement>
 		<repository>
 			<id>internal.repo</id>
 			<name>Internal repo</name>
 			<url>C:\Users\1\.m2</url>
 		</repository>
-	</distributionManagement>
+	</distributionManagement>-->
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -43,20 +39,15 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.20</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
 
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
 			<version>2.0.1.Final</version>
+
         </dependency>
 
         <dependency>
@@ -82,7 +73,9 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
-    </dependencies>
+		</dependency>
+
+	</dependencies>
 
 	<build>
 		<plugins>
