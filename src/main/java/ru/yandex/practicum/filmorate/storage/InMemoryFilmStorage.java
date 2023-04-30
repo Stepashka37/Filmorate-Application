@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.module.Film;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmsStorage;
@@ -8,7 +7,7 @@ import ru.yandex.practicum.filmorate.storage.interfaces.FilmsStorage;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Component
+
 public class InMemoryFilmStorage implements FilmsStorage {
     private final Map<Integer, Film> films = new HashMap<>();
     private int genId = 0;
@@ -89,6 +88,23 @@ public class InMemoryFilmStorage implements FilmsStorage {
     }
 
     public List<Film> getCommonFilms(int userId, int friendId) {
+
+    public List<Film> getPopularByYear(int year, int count) {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Film> getPopularByGenreAndYear(int year, int genreId, int count) {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Film> getPopularByGenre(int genreId, int count) {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Film> getDirectorsFilms(int directorId, String sortBy) {
         return new ArrayList<>();
     }
 
@@ -97,6 +113,16 @@ public class InMemoryFilmStorage implements FilmsStorage {
     }
 
     public List<Film> getDirectorsFilms(int directorId, String sortBy) {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Film> getFilmByDirectorQuery(String query) {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Film> getFilmByFilmQuery(String query) {
         return new ArrayList<>();
     }
 

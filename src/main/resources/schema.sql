@@ -1,5 +1,6 @@
 drop table if exists GENRE, RATING_MPA, FILM_DIRECTORS, DIRECTORS, FILM, FILM_GENRES, USERS, FILM_LIKES, USER_FRIENDS, REVIEW, REVIEW_LIKES;
 
+
 create table IF NOT EXISTS GENRE
 (
     GENRE_ID INTEGER auto_increment,
@@ -24,7 +25,7 @@ create table IF NOT EXISTS RATING_MPA
 create table IF NOT EXISTS DIRECTORS
 (
     DIRECTOR_ID INTEGER auto_increment,
-    NAME        CHARACTER VARYING,
+    NAME      VARCHAR_IGNORECASE(50),
     constraint DIRECTOR_PK
         primary key (DIRECTOR_ID)
 );
@@ -32,7 +33,7 @@ create table IF NOT EXISTS DIRECTORS
 create table IF NOT EXISTS FILM
 (
     FILM_ID      INTEGER auto_increment,
-    NAME         CHARACTER VARYING(50) not null,
+    NAME         VARCHAR_IGNORECASE(50) not null,
     DESCRIPTION  CHARACTER VARYING(200),
     RELEASE_DATE DATE,
     DURATION     BIGINT,
@@ -113,6 +114,34 @@ create table IF NOT EXISTS USER_FRIENDS
         foreign key (INITIATOR_ID) references USERS,
     constraint USER_FRIENDS_USERS_USER_ID_FK_2
         foreign key (ACCEPTOR_ID) references USERS
+);
+
+create table IF NOT EXISTS REVIEW
+(
+    REVIEW_ID INTEGER auto_increment,
+    CONTENT   CHARACTER VARYING(5000) not null,
+    POSITIVE  BOOLEAN                 not null,
+    USER_ID   INTEGER                 not null,
+    FILM_ID   INTEGER                 not null,
+    constraint REVIEW_PK
+        primary key (REVIEW_ID),
+    constraint REVIEW_USERS_USER_ID_FK
+        foreign key (USER_ID) references USERS (USER_ID) ON DELETE CASCADE,
+    constraint REVIEW_FILM_FILM_ID_FK_2
+        foreign key (FILM_ID) references FILM (FILM_ID) ON DELETE CASCADE
+);
+
+create table IF NOT EXISTS REVIEW_LIKES
+(
+    REVIEW_ID INTEGER not null,
+    USER_ID   INTEGER not null,
+    HELPFUL   BOOLEAN not null,
+    constraint REVIEW_LIKES_PK
+        primary key (REVIEW_ID, USER_ID),
+    constraint REVIEW_LIKES_USERS_USER_ID_FK
+        foreign key (USER_ID) references USERS (USER_ID) ON DELETE CASCADE,
+    constraint REVIEW_LIKES_REVIEW_REVIEW_ID_FK_2
+        foreign key (REVIEW_ID) references REVIEW (REVIEW_ID) ON DELETE CASCADE
 );
 
 

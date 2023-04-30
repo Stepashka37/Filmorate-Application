@@ -141,6 +141,7 @@ public class FilmDbStorage implements FilmsStorage {
         String sqlDeleteFilmLikes = "delete from FILM_LIKES where FILM_ID = ?";
         jdbcTemplate.update(sqlDeleteFilmGenres, id);
         jdbcTemplate.update(sqlDeleteFilmLikes, id);
+        jdbcTemplate.update(sqlDeleteFIlm, id);
 
         jdbcTemplate.update(sqlDeleteFIlm, id);
     }
@@ -154,7 +155,6 @@ public class FilmDbStorage implements FilmsStorage {
 
     @Override
     public void removeLike(int filmId, int userId) {
-
         String sqlRemoveLike = "delete from FILM_LIKES " +
                 "where film_id = ? and user_id = ?";
         jdbcTemplate.update(sqlRemoveLike, filmId, userId);
@@ -169,6 +169,29 @@ public class FilmDbStorage implements FilmsStorage {
                 "limit ?";
         return jdbcTemplate.query(sqlGetPopularFilms, (rs, rowNum) -> makeFilm(rs), count);
     }
+
+    @Override
+    public List<Film> getFilmByDirectorQuery(String query) {
+        String sql = "select  F.FILM_ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION, F.RATING_ID from FILM AS F " +
+                "left join FILM_DIRECTORS AS FD on F.FILM_ID = FD.FILM_ID " +
+                "left join DIRECTORS AS D on FD.DIRECTOR_ID = D.DIRECTOR_ID " +
+                "left  join FILM_LIKES FL on F.FILM_ID = FL.FILM_ID " +
+                "where D.NAME LIKE ? " +
+                "group by F.FILM_ID " +
+                "order by count(FL.USER_ID) DESC";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), "%" + query + "%");
+    }
+
+    @Override
+    public List<Film> getFilmByFilmQuery(String query) {
+        String sql = "select F.FILM_ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION, F.RATING_ID from FILM as F " +
+                "left join FILM_LIKES AS FL on F.FILM_ID = FL.FILM_ID " +
+                "where NAME LIKE ?" +
+                "group by F.FILM_ID " +
+                "order by count(FL.USER_ID) DESC ";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), "%" + query + "%");
+    }
+
 
     @Override
     public List<Film> recommendFilms(Integer userId) {
@@ -227,7 +250,44 @@ public class FilmDbStorage implements FilmsStorage {
 
         filmBuilt.setLikes(new HashSet<>(jdbcTemplate.queryForList(sqlQueryForLikes, Integer.class)));
         return filmBuilt;
+    }
 
+    @Override
+    public List<Film> getPopularByGenreAndYear(int year, int genreId, int count) {
+        return jdbcTemplate.query(
+                "SELECT f.* " +
+                        "FROM film AS f " +
+                        "LEFT JOIN film_likes AS fl ON f.film_id = fl.film_id " +
+                        "LEFT JOIN film_genres AS fg ON f.film_id = fg.film_id " +
+                        "WHERE YEAR(f.release_date) = ? AND fg.genre_id = ? " +
+                        "GROUP BY f.film_id " +
+                        "ORDER BY COUNT(fl.user_id) " +
+                        "LIMIT ?;", (rs, rowNum) -> makeFilm(rs), year, genreId, count);
+    }
+
+    @Override
+    public List<Film> getPopularByYear(int year, int count) {
+        return jdbcTemplate.query(
+                "SELECT f.*, COUNT(fl.user_id) AS rate " +
+                        "FROM film AS f " +
+                        "LEFT JOIN film_likes AS fl ON f.film_id = fl.film_id " +
+                        "WHERE YEAR(f.release_date) = ? " +
+                        "GROUP BY f.film_id " +
+                        "ORDER BY rate " +
+                        "LIMIT ?;", (rs, rowNum) -> makeFilm(rs), year, count);
+    }
+
+    @Override
+    public List<Film> getPopularByGenre(int genreId, int count) {
+        return jdbcTemplate.query(
+                "SELECT f.*, COUNT(fl.user_id) AS rate " +
+                        "FROM film AS f " +
+                        "LEFT JOIN film_likes AS fl ON f.film_id = fl.film_id " +
+                        "LEFT JOIN film_genres AS fg ON f.film_id = fg.film_id " +
+                        "WHERE fg.genre_id = ? " +
+                        "GROUP BY f.film_id " +
+                        "ORDER BY rate " +
+                        "LIMIT ?;", (rs, rowNum) -> makeFilm(rs), genreId, count);
     }
 
     @Override

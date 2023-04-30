@@ -43,7 +43,6 @@ public class FilmController {
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
         Film updateFilm = filmService.updateFilm(film);
-
         log.info("Обновили фильм с id{}", film.getId());
         return updateFilm;
     }
@@ -74,13 +73,6 @@ public class FilmController {
         return film;
     }
 
-    @GetMapping(value = {"/popular?count={count}", "/popular"})
-    public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") @Min(1) Integer count) {
-        List<Film> popularFilms = filmService.getMostLikedFilms(count);
-        log.info("Получили список из " + popularFilms.size() + " наиболее популярных фильмов");
-        return popularFilms;
-    }
-
     @DeleteMapping("/{id}")
     public void deleteFilm(@PathVariable int id) {
         filmService.deleteFilm(id);
@@ -94,6 +86,23 @@ public class FilmController {
     ) throws SQLException {
         log.debug("try to get common films");
         return filmService.getCommonFilms(userId, friendId);
+
+    @GetMapping("/search")
+    public List<Film> searchFilms(@RequestParam String query, @RequestParam List<String> by) {
+        List<Film> films = filmService.searchFilms(query, by);
+        log.info("Нашли фильмы по запросу {}", query);
+        return films;
+    }
+
+    @GetMapping("/popular")
+    public List<Film> getPopularByGenreAndYear(
+            @RequestParam(defaultValue = "10") int count,
+            @RequestParam(defaultValue = "0") int genreId,
+            @RequestParam(defaultValue = "0") int year
+    ) {
+        log.debug("Popular films requested");
+        return filmService.getPopularByGenreAndYear(year, genreId, count);
+
     }
 
     @GetMapping("/director/{directorId}")
