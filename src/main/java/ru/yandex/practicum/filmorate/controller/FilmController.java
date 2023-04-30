@@ -8,6 +8,8 @@ import ru.yandex.practicum.filmorate.module.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import java.sql.SQLException;
 import java.util.List;
 
 @Slf4j
@@ -49,7 +51,6 @@ public class FilmController {
     public void deleteAllFilms() {
         filmService.deleteAllFilms();
         log.info("Все фильмы были удален");
-
     }
 
     @PutMapping("/{id}/like/{userId}")
@@ -78,6 +79,14 @@ public class FilmController {
         log.info("Удалили фильм с id{}", id);
     }
 
+    @GetMapping("/common")
+    public List<Film> getCommonFilms(
+            @RequestParam int userId,
+            @RequestParam int friendId
+    ) throws SQLException {
+        log.debug("try to get common films");
+        return filmService.getCommonFilms(userId, friendId);
+
     @GetMapping("/search")
     public List<Film> searchFilms(@RequestParam String query, @RequestParam List<String> by) {
         List<Film> films = filmService.searchFilms(query, by);
@@ -93,6 +102,7 @@ public class FilmController {
     ) {
         log.debug("Popular films requested");
         return filmService.getPopularByGenreAndYear(year, genreId, count);
+
     }
 
     @GetMapping("/director/{directorId}")

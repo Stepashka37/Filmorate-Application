@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage.interfaces;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.module.User;
 
+import java.sql.SQLException;
 import java.util.List;
 
 
@@ -24,4 +25,6 @@ public interface UsersStorage {
     void addFriend(int initatorId, int acceptorId);
 
     List<User> showFriends(int id);
+
+    boolean checkBothUsersExist(int userId, int friendId) throws SQLException;
 }

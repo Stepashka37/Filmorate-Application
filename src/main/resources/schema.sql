@@ -64,7 +64,7 @@ create table IF NOT EXISTS FILM_GENRES
 
 create table IF NOT EXISTS FILM_DIRECTORS
 (
-    FILM_ID  INTEGER not null,
+    FILM_ID     INTEGER not null,
     DIRECTOR_ID INTEGER not null,
     constraint FILM_DIRECTORS_PK
         primary key (FILM_ID, DIRECTOR_ID),
@@ -72,7 +72,7 @@ create table IF NOT EXISTS FILM_DIRECTORS
         foreign key (FILM_ID) references FILM,
     constraint FILM_DIRECTORS_DIRECTOR_ID_FK
         foreign key (DIRECTOR_ID) references DIRECTORS
-         on update set null on delete set null
+            on update set null on delete set null
 );
 
 create table IF NOT EXISTS USERS

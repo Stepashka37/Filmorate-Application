@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.module.User;
 import ru.yandex.practicum.filmorate.storage.interfaces.UsersStorage;
 
+import java.sql.SQLException;
 import java.util.*;
 
 @Component
@@ -101,6 +102,11 @@ public class InMemoryUserStorage implements UsersStorage {
             friends.add(users.get(integer));
         }
         return friends;
+    }
+
+    @Override
+    public boolean checkBothUsersExist(int userId, int friendId) throws SQLException {
+        return false;
     }
 
 }

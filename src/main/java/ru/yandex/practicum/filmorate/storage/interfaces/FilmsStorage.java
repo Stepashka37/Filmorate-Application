@@ -25,6 +25,8 @@ public interface FilmsStorage {
 
     List<Film> getPopularFilms(int count);
 
+    List<Film> getCommonFilms(int userId, int friendId);
+
     List<Film> getFilmByDirectorQuery(String query);
 
     List<Film> getFilmByFilmQuery(String query);
@@ -38,5 +40,4 @@ public interface FilmsStorage {
     List<Film> getDirectorsFilms(int directorId, String sortBy);
 
     List<Film> recommendFilms(Integer userId);
-
 }
