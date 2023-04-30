@@ -137,9 +137,9 @@ public class FilmDbStorage implements FilmsStorage {
         String sqlDeleteFIlm = "delete from FILM where FILM_ID = ? ";
         String sqlDeleteFilmGenres = "delete from FILM_GENRES where FILM_ID = ?";
         String sqlDeleteFilmLikes = "delete from FILM_LIKES where FILM_ID = ?";
-        jdbcTemplate.update(sqlDeleteFIlm, id);
         jdbcTemplate.update(sqlDeleteFilmGenres, id);
         jdbcTemplate.update(sqlDeleteFilmLikes, id);
+        jdbcTemplate.update(sqlDeleteFIlm, id);
 
     }
 
@@ -166,6 +166,29 @@ public class FilmDbStorage implements FilmsStorage {
                 "limit ?";
         return jdbcTemplate.query(sqlGetPopularFilms, (rs, rowNum) -> makeFilm(rs), count);
     }
+
+    @Override
+    public List<Film> getFilmByDirectorQuery(String query) {
+        String sql = "select  F.FILM_ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION, F.RATING_ID from FILM AS F " +
+                "left join FILM_DIRECTORS AS FD on F.FILM_ID = FD.FILM_ID " +
+                "left join DIRECTORS AS D on FD.DIRECTOR_ID = D.DIRECTOR_ID " +
+                "left  join FILM_LIKES FL on F.FILM_ID = FL.FILM_ID " +
+                "where D.NAME LIKE ? " +
+                "group by F.FILM_ID " +
+                "order by count(FL.USER_ID) DESC";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), "%" + query + "%");
+    }
+
+    @Override
+    public List<Film> getFilmByFilmQuery(String query) {
+        String sql = "select F.FILM_ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION, F.RATING_ID from FILM as F " +
+                "left join FILM_LIKES AS FL on F.FILM_ID = FL.FILM_ID " +
+                "where NAME LIKE ?" +
+                "group by F.FILM_ID " +
+                "order by count(FL.USER_ID) DESC ";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), "%" + query + "%");
+    }
+
 
     @Override
     public List<Film> recommendFilms(Integer userId) {
