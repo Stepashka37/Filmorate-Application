@@ -152,7 +152,6 @@ public class FilmDbStorage implements FilmsStorage {
 
     @Override
     public void removeLike(int filmId, int userId) {
-
         String sqlRemoveLike = "delete from FILM_LIKES " +
                 "where film_id = ? and user_id = ?";
         jdbcTemplate.update(sqlRemoveLike, filmId, userId);
@@ -225,7 +224,44 @@ public class FilmDbStorage implements FilmsStorage {
 
         filmBuilt.setLikes(new HashSet<>(jdbcTemplate.queryForList(sqlQueryForLikes, Integer.class)));
         return filmBuilt;
+    }
 
+    @Override
+    public List<Film> getPopularByGenreAndYear(int year, int genreId, int count) {
+        return jdbcTemplate.query(
+                "SELECT f.* " +
+                        "FROM film AS f " +
+                        "LEFT JOIN film_likes AS fl ON f.film_id = fl.film_id " +
+                        "LEFT JOIN film_genres AS fg ON f.film_id = fg.film_id " +
+                        "WHERE YEAR(f.release_date) = ? AND fg.genre_id = ? " +
+                        "GROUP BY f.film_id " +
+                        "ORDER BY COUNT(fl.user_id) " +
+                        "LIMIT ?;", (rs, rowNum) -> makeFilm(rs), year, genreId, count);
+    }
+
+    @Override
+    public List<Film> getPopularByYear(int year, int count) {
+        return jdbcTemplate.query(
+                "SELECT f.*, COUNT(fl.user_id) AS rate " +
+                        "FROM film AS f " +
+                        "LEFT JOIN film_likes AS fl ON f.film_id = fl.film_id " +
+                        "WHERE YEAR(f.release_date) = ? " +
+                        "GROUP BY f.film_id " +
+                        "ORDER BY rate " +
+                        "LIMIT ?;", (rs, rowNum) -> makeFilm(rs), year, count);
+    }
+
+    @Override
+    public List<Film> getPopularByGenre(int genreId, int count) {
+        return jdbcTemplate.query(
+                "SELECT f.*, COUNT(fl.user_id) AS rate " +
+                        "FROM film AS f " +
+                        "LEFT JOIN film_likes AS fl ON f.film_id = fl.film_id " +
+                        "LEFT JOIN film_genres AS fg ON f.film_id = fg.film_id " +
+                        "WHERE fg.genre_id = ? " +
+                        "GROUP BY f.film_id " +
+                        "ORDER BY rate " +
+                        "LIMIT ?;", (rs, rowNum) -> makeFilm(rs), genreId, count);
     }
 
     @Override
