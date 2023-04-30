@@ -89,7 +89,6 @@ create table IF NOT EXISTS USERS
 create unique index IF NOT EXISTS USERS_USER_ID_UINDEX
     on USERS (USER_ID);
 
-
 create table IF NOT EXISTS FILM_LIKES
 (
     FILM_ID INTEGER not null,
@@ -101,7 +100,6 @@ create table IF NOT EXISTS FILM_LIKES
     constraint FILM_LIKES_USERS_USER_ID_FK
         foreign key (USER_ID) references USERS
 );
-
 
 create table IF NOT EXISTS USER_FRIENDS
 (
@@ -116,8 +114,6 @@ create table IF NOT EXISTS USER_FRIENDS
         foreign key (ACCEPTOR_ID) references USERS
 );
 
-create type if not exists EVENT as ENUM ('LIKE', 'FRIEND', 'REVIEW');
-create type if not exists OPERATION as ENUM ('ADD', 'UPDATE', 'REMOVE');
 create table IF NOT EXISTS REVIEW
 (
     REVIEW_ID INTEGER auto_increment,

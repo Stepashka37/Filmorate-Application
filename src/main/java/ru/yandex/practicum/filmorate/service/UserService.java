@@ -86,6 +86,10 @@ public class UserService {
     }
 
     public List<Event> getEvents(Integer userId) {
-        return eventStorage.getEvents(userId);
+        List<Event> events = eventStorage.getEvents(userId);
+        if (events.isEmpty()) {
+            storage.getUser(userId);
+        }
+        return events;
     }
 }

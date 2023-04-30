@@ -86,6 +86,8 @@ public class FilmService {
             return filmsStorage.getCommonFilms(userId, friendId);
         } else {
             throw new UserNotFoundException("Пользователь не найден");
+        }
+    }
 
     public List<Film> searchFilms(String query, List<String> by) {
         if (by.size() == 1) {
@@ -102,6 +104,7 @@ public class FilmService {
             return films;
         }
         return new ArrayList<>();
+    }
 
     public List<Film> getPopularByGenreAndYear(int year, int genreId, int count) {
         if (year == 0 && genreId == 0) {

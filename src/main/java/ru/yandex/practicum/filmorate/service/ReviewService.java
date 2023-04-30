@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.module.Review;
+import ru.yandex.practicum.filmorate.storage.interfaces.EventStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmsStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.ReviewStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.UsersStorage;
@@ -16,28 +17,36 @@ public class ReviewService {
     ReviewStorage reviewStorage;
     UsersStorage usersStorage;
     FilmsStorage filmsStorage;
+    private final EventStorage eventStorage;
 
     @Autowired
     public ReviewService(ReviewStorage reviewStorage, @Qualifier("userDbStorage") UsersStorage usersStorage,
-                         @Qualifier("filmDbStorage") FilmsStorage filmsStorage) {
+                         @Qualifier("filmDbStorage") FilmsStorage filmsStorage, EventStorage eventStorage) {
         this.reviewStorage = reviewStorage;
         this.usersStorage = usersStorage;
         this.filmsStorage = filmsStorage;
+        this.eventStorage = eventStorage;
     }
 
 
     public Review addReview(Review review) {
         validateReview(review);
-        return reviewStorage.addReview(review);
+        Review addedReview = reviewStorage.addReview(review);
+        eventStorage.addReview(addedReview.getUserId(), addedReview.getReviewId());
+        return addedReview;
     }
 
     public Review updateReview(Review review) {
         validateReview(review);
-        return reviewStorage.updateReview(review);
+        Review updatedReview = reviewStorage.updateReview(review);
+        eventStorage.updateReview(updatedReview.getUserId(), updatedReview.getReviewId());
+        return updatedReview;
     }
 
     public void deleteReview(int reviewId) {
+        Review deletedReview = reviewStorage.getReview(reviewId);
         reviewStorage.deleteReview(reviewId);
+        eventStorage.removeReview(deletedReview.getUserId(), reviewId);
     }
 
     public Review getReview(int reviewId) {
