@@ -80,4 +80,5 @@ public class UserService {
         firstUserFriends.retainAll(secondUserFriends);
         return firstUserFriends;
     }
+
 }
