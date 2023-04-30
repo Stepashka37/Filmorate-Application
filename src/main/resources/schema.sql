@@ -9,7 +9,7 @@ create table IF NOT EXISTS GENRE
 create unique index IF NOT EXISTS GENRE_GENRE_ID_UINDEX
     on GENRE (GENRE_ID);
 
-alter table  GENRE
+alter table GENRE
     add constraint IF NOT EXISTS GENRE_PK
         primary key (GENRE_ID);
 
@@ -24,7 +24,7 @@ create table IF NOT EXISTS RATING_MPA
 create table IF NOT EXISTS DIRECTORS
 (
     DIRECTOR_ID INTEGER auto_increment,
-    NAME      CHARACTER VARYING,
+    NAME        CHARACTER VARYING,
     constraint DIRECTOR_PK
         primary key (DIRECTOR_ID)
 );
@@ -36,7 +36,7 @@ create table IF NOT EXISTS FILM
     DESCRIPTION  CHARACTER VARYING(200),
     RELEASE_DATE DATE,
     DURATION     BIGINT,
-    RATING_ID    INTEGER           not null,
+    RATING_ID    INTEGER               not null,
     constraint FILM_RATING_MPA_RATING_ID_FK
         foreign key (RATING_ID) references RATING_MPA
             on update set null on delete set null
@@ -63,7 +63,7 @@ create table IF NOT EXISTS FILM_GENRES
 
 create table IF NOT EXISTS FILM_DIRECTORS
 (
-    FILM_ID  INTEGER not null,
+    FILM_ID     INTEGER not null,
     DIRECTOR_ID INTEGER not null,
     constraint FILM_DIRECTORS_PK
         primary key (FILM_ID, DIRECTOR_ID),
@@ -71,7 +71,7 @@ create table IF NOT EXISTS FILM_DIRECTORS
         foreign key (FILM_ID) references FILM,
     constraint FILM_DIRECTORS_DIRECTOR_ID_FK
         foreign key (DIRECTOR_ID) references DIRECTORS
-         on update set null on delete set null
+            on update set null on delete set null
 );
 
 create table IF NOT EXISTS USERS
@@ -104,8 +104,8 @@ create table IF NOT EXISTS FILM_LIKES
 
 create table IF NOT EXISTS USER_FRIENDS
 (
-    INITIATOR_ID INTEGER not null,
-    ACCEPTOR_ID  INTEGER not null,
+    INITIATOR_ID INTEGER              not null,
+    ACCEPTOR_ID  INTEGER              not null,
     STATUS       BOOLEAN default NULL not null,
     constraint USER_FRIENDS_PK
         primary key (INITIATOR_ID, ACCEPTOR_ID),
