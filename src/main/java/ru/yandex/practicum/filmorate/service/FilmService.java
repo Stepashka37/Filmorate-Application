@@ -76,14 +76,16 @@ public class FilmService {
     }
 
     public List<Film> searchFilms(String query, List<String> by) {
-        if (by.size() == 1 && by.get(0).equals("director")) {
-            return filmsStorage.getFilmByDirectorQuery(query);
-        } else if (by.size() == 1 && by.get(0).equals("title")) {
-            return filmsStorage.getFilmByFilmQuery(query);
+        if (by.size() == 1) {
+            if (by.contains("director")) {
+                return filmsStorage.getFilmByDirectorQuery(query);
+            } else if (by.contains("title")) {
+                return filmsStorage.getFilmByFilmQuery(query);
+            }
         }
 
-        if (by.size() == 2 && (by.get(0).equals("director") && by.get(1).equals("title") ||
-                (by.get(0).equals("title") && by.get(1).equals("director")))) {
+
+        if (by.size() == 2 && by.containsAll(List.of("director", "title"))) {
             List<Film> films = filmsStorage.getFilmByDirectorQuery(query);
             films.addAll(filmsStorage.getFilmByFilmQuery(query));
             return films;
