@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.module.Film;
+import ru.yandex.practicum.filmorate.storage.interfaces.EventStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmsStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.UsersStorage;
 
@@ -18,11 +19,13 @@ public class FilmService {
 
     private final UsersStorage usersStorage;
     private final FilmsStorage filmsStorage;
+    private final EventStorage eventStorage;
 
     @Autowired
-    public FilmService(@Qualifier("userDbStorage") UsersStorage usersStorage, @Qualifier("filmDbStorage") FilmsStorage filmsStorage) {
+    public FilmService(@Qualifier("userDbStorage") UsersStorage usersStorage, @Qualifier("filmDbStorage") FilmsStorage filmsStorage, EventStorage eventStorage) {
         this.usersStorage = usersStorage;
         this.filmsStorage = filmsStorage;
+        this.eventStorage = eventStorage;
     }
 
     public List<Film> getFilms() {
@@ -44,12 +47,14 @@ public class FilmService {
         usersStorage.getUser(userId);
         filmsStorage.getFilm(id);
         filmsStorage.addLike(id, userId);
+        eventStorage.addLike(userId, id);
     }
 
     public void removeLike(int id, int userId) {
         usersStorage.getUser(userId);
         filmsStorage.getFilm(id);
         filmsStorage.removeLike(id, userId);
+        eventStorage.removeLike(userId, id);
     }
 
     public List<Film> getMostLikedFilms(int count) {
@@ -81,6 +86,8 @@ public class FilmService {
             return filmsStorage.getCommonFilms(userId, friendId);
         } else {
             throw new UserNotFoundException("Пользователь не найден");
+        }
+    }
 
     public List<Film> searchFilms(String query, List<String> by) {
         if (by.size() == 1) {
@@ -97,6 +104,7 @@ public class FilmService {
             return films;
         }
         return new ArrayList<>();
+    }
 
     public List<Film> getPopularByGenreAndYear(int year, int genreId, int count) {
         if (year == 0 && genreId == 0) {

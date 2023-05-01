@@ -88,6 +88,8 @@ public class InMemoryFilmStorage implements FilmsStorage {
     }
 
     public List<Film> getCommonFilms(int userId, int friendId) {
+        return new ArrayList<>();
+    }
 
     public List<Film> getPopularByYear(int year, int count) {
         return new ArrayList<>();
@@ -109,10 +111,6 @@ public class InMemoryFilmStorage implements FilmsStorage {
     }
 
     public List<Film> recommendFilms(Integer userId) {
-        return new ArrayList<>();
-    }
-
-    public List<Film> getDirectorsFilms(int directorId, String sortBy) {
         return new ArrayList<>();
     }
 
