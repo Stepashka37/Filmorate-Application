@@ -96,10 +96,14 @@ public class UserDbStorage implements UsersStorage {
         String sqlDeleteUserFromFriends1 = "delete from USER_FRIENDS where INITIATOR_ID = ?";
         String sqlDeleteUserFromFriends2 = "delete from USER_FRIENDS where ACCEPTOR_ID = ?";
         String sqlDeleteUserLike = "delete from FILM_LIKES where USER_ID = ?";
+        String sqlDeleteReviewLike = "delete from REVIEW_LIKES where USER_ID = ?";
+        String sqlDeleteEvent = "delete from EVENTS where USER_ID = ?";
         jdbcTemplate.update(sqlDeleteUserFromFriends1, id);
         jdbcTemplate.update(sqlDeleteUserFromFriends2, id);
-        jdbcTemplate.update(sqlDeleteUser, id);
+        jdbcTemplate.update(sqlDeleteReviewLike, id);
+        jdbcTemplate.update(sqlDeleteEvent, id);
         jdbcTemplate.update(sqlDeleteUserLike, id);
+        jdbcTemplate.update(sqlDeleteUser, id);
     }
 
     @Override
