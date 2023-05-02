@@ -142,8 +142,6 @@ public class FilmDbStorage implements FilmsStorage {
         jdbcTemplate.update(sqlDeleteFilmGenres, id);
         jdbcTemplate.update(sqlDeleteFilmLikes, id);
         jdbcTemplate.update(sqlDeleteFIlm, id);
-
-        jdbcTemplate.update(sqlDeleteFIlm, id);
     }
 
     @Override

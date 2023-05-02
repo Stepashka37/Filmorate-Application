@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 public class ReviewDBStorage implements ReviewStorage {
 
-    JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
     public ReviewDBStorage(JdbcTemplate jdbcTemplate) {

@@ -26,5 +26,5 @@ public interface UsersStorage {
 
     List<User> showFriends(int id);
 
-    boolean checkBothUsersExist(int userId, int friendId) throws SQLException;
+    boolean checkBothUsersExist(int userId, int friendId);
 }
