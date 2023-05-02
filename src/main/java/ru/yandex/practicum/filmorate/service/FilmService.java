@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.storage.interfaces.EventStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmsStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.UsersStorage;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,7 +80,7 @@ public class FilmService {
         filmsStorage.deleteAllFilms();
     }
 
-    public List<Film> getCommonFilms(int userId, int friendId) throws SQLException {
+    public List<Film> getCommonFilms(int userId, int friendId) {
         if (usersStorage.checkBothUsersExist(userId, friendId)) {
             return filmsStorage.getCommonFilms(userId, friendId);
         } else {

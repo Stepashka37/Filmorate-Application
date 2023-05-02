@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.module.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
-import java.sql.SQLException;
 import java.util.List;
 
 @Slf4j
@@ -79,10 +78,7 @@ public class FilmController {
     }
 
     @GetMapping("/common")
-    public List<Film> getCommonFilms(
-            @RequestParam int userId,
-            @RequestParam int friendId
-    ) throws SQLException {
+    public List<Film> getCommonFilms(@RequestParam int userId, @RequestParam int friendId) {
         log.debug("try to get common films");
         return filmService.getCommonFilms(userId, friendId);
     }

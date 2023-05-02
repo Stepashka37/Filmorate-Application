@@ -13,7 +13,6 @@ public class Review {
 
     private Integer reviewId;
 
-    @NotNull
     @NotBlank
     @Size(min = 1, max = 5000)
     private String content;

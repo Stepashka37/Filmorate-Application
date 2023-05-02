@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.dao;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.module.Event;
@@ -15,7 +14,6 @@ import static ru.yandex.practicum.filmorate.module.Event.EventType.*;
 import static ru.yandex.practicum.filmorate.module.Event.Operation.*;
 
 @Repository
-@Slf4j
 public class EventDao implements EventStorage {
 
     private static final String QUERY_FOR_EVENT = "insert into " +
