@@ -155,8 +155,7 @@ public class UserDbStorage implements UsersStorage {
 
     @Override
     public boolean checkBothUsersExist(int userId, int friendId) {
-        String sql = "SELECT* FROM users WHERE EXISTS (SELECT* from users as u cross join users where u.USER_ID = ? " +
-                "and users.USER_ID = ?)";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, userId, friendId);
+        String sql = "SELECT COUNT(*) FROM users WHERE user_id IN (?, ?)";
+        return jdbcTemplate.queryForObject(sql, Integer.class, userId, friendId) == 2;
     }
 }

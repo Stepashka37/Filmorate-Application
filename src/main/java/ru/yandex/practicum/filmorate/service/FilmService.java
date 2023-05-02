@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.storage.interfaces.EventStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmsStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.UsersStorage;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 

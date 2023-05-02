@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.storage.interfaces;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.module.User;
 
-import java.sql.SQLException;
 import java.util.List;
 
 
