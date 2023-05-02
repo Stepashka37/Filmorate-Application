@@ -28,6 +28,10 @@ public class Review {
 
     private int useful;
 
+    public Review() {
+        useful = 0;
+    }
+
     public Review(Integer reviewId, String content, boolean isPositive, Integer userId, Integer filmId, Integer useful) {
         this.reviewId = reviewId;
         this.content = content;
