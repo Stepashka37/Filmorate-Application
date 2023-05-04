@@ -144,7 +144,7 @@ create table IF NOT EXISTS REVIEW_LIKES
         foreign key (REVIEW_ID) references REVIEW (REVIEW_ID) ON DELETE CASCADE
 );
 
-create type if not exists EVENT as ENUM ('LIKE', 'FRIEND', 'REVIEW');
+create type if not exists EVENT as ENUM ('SCORE', 'FRIEND', 'REVIEW');
 create type if not exists OPERATION as ENUM ('ADD', 'UPDATE', 'REMOVE');
 create table IF NOT EXISTS EVENTS
 (
