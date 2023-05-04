@@ -94,6 +94,7 @@ create table IF NOT EXISTS FILM_LIKES
 (
     FILM_ID INTEGER not null,
     USER_ID INTEGER not null,
+    SCORE INTEGER NOT NULL CHECK(SCORE BETWEEN 1 AND 10),
     constraint FILM_LIKES_PK
         primary key (FILM_ID, USER_ID),
     constraint FILM_LIKES_FILM_FILM_ID_FK

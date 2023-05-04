@@ -26,14 +26,11 @@ import java.util.List;
 @Component
 @Slf4j
 public class FilmDbStorage implements FilmsStorage {
-    private final GenreDao genreDao;
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public FilmDbStorage(JdbcTemplate jdbcTemplate, GenreDao genreDao) {
-
+    public FilmDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.genreDao = genreDao;
     }
 
     @Override
@@ -78,10 +75,8 @@ public class FilmDbStorage implements FilmsStorage {
         if (film.getDirectors() != null) {
             addDirectors(film);
         }
-
         return jdbcTemplate.query("select * from film where film_id = ?", (rs, rowNum) -> makeFilm(rs), key)
                 .stream().findAny().orElse(null);
-
     }
 
     @Override
@@ -145,17 +140,17 @@ public class FilmDbStorage implements FilmsStorage {
     }
 
     @Override
-    public void addLike(int filmId, int userId) {
-        String sqlAddLike = "merge into FILM_LIKES (FILM_ID, USER_ID) " +
-                "values (?, ?)";
-        jdbcTemplate.update(sqlAddLike, filmId, userId);
+    public void addScore(int filmId, int userId, int score) {
+        String sqlAddScore = "merge into FILM_LIKES (FILM_ID, USER_ID, SCORE) " +
+                "values (?, ?, ?)";
+        jdbcTemplate.update(sqlAddScore, filmId, userId, score);
     }
 
     @Override
-    public void removeLike(int filmId, int userId) {
-        String sqlRemoveLike = "delete from FILM_LIKES " +
+    public void removeScore(int filmId, int userId) {
+        String sqlRemoveScore = "delete from FILM_LIKES " +
                 "where film_id = ? and user_id = ?";
-        jdbcTemplate.update(sqlRemoveLike, filmId, userId);
+        jdbcTemplate.update(sqlRemoveScore, filmId, userId);
     }
 
     @Override
@@ -222,7 +217,8 @@ public class FilmDbStorage implements FilmsStorage {
                 "join FILM_GENRES FG ON FG.GENRE_ID = G.GENRE_ID WHERE FG.FILM_ID = " + filmBuilt.getId();
         String sqlQueryForDirectors = "select D.DIRECTOR_ID, D.NAME from DIRECTORS as D " +
                 "join FILM_DIRECTORS as FD ON FD.DIRECTOR_ID = D.DIRECTOR_ID WHERE FD.FILM_ID = " + filmBuilt.getId();
-        String sqlQueryForLikes = "select USER_ID from film_likes where film_id = " + filmBuilt.getId();
+
+        String sqlQueryForScore = "select AVG(SCORE) from film_likes where film_id = ?";
 
         filmBuilt.setMpa(new Rating(rs.getInt("rating_id"), jdbcTemplate.queryForObject(sqlQueryForRating, String.class)));
 
@@ -245,8 +241,8 @@ public class FilmDbStorage implements FilmsStorage {
                         )
         );
         filmBuilt.setDirectors(new HashSet<>(directors));
-
-        filmBuilt.setLikes(new HashSet<>(jdbcTemplate.queryForList(sqlQueryForLikes, Integer.class)));
+        Double score = jdbcTemplate.queryForObject(sqlQueryForScore, Double.class, filmBuilt.getId());
+        if (score != null) filmBuilt.setScore(score);
         return filmBuilt;
     }
 
