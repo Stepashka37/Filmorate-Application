@@ -463,7 +463,7 @@ class FilmControllerTest {
 
     @SneakyThrows
     @Test
-    public void likeFilmInvalidId() {
+    public void scoreFilmInvalidId() {
         Film film = Film.builder().name("Name")
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
@@ -486,7 +486,7 @@ class FilmControllerTest {
 
     @SneakyThrows
     @Test
-    public void removeLike() {
+    public void removeScore() {
         Film film = Film.builder().name("Name")
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))

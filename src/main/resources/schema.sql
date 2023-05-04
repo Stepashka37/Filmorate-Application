@@ -1,4 +1,4 @@
-drop table if exists GENRE, RATING_MPA, FILM_DIRECTORS, DIRECTORS, FILM, FILM_GENRES, USERS, FILM_LIKES, USER_FRIENDS,
+drop table if exists GENRE, RATING_MPA, FILM_DIRECTORS, DIRECTORS, FILM, FILM_GENRES, USERS, FILM_SCORES, USER_FRIENDS,
     REVIEW, REVIEW_LIKES, EVENTS;
 
 
@@ -90,16 +90,16 @@ create table IF NOT EXISTS USERS
 create unique index IF NOT EXISTS USERS_USER_ID_UINDEX
     on USERS (USER_ID);
 
-create table IF NOT EXISTS FILM_LIKES
+create table IF NOT EXISTS FILM_SCORES
 (
     FILM_ID INTEGER not null,
     USER_ID INTEGER not null,
     SCORE INTEGER NOT NULL CHECK(SCORE BETWEEN 1 AND 10),
-    constraint FILM_LIKES_PK
+    constraint FILM_SCORES_PK
         primary key (FILM_ID, USER_ID),
-    constraint FILM_LIKES_FILM_FILM_ID_FK
+    constraint FILM_SCORES_FILM_FILM_ID_FK
         foreign key (FILM_ID) references FILM,
-    constraint FILM_LIKES_USERS_USER_ID_FK
+    constraint FILM_SCORES_USERS_USER_ID_FK
         foreign key (USER_ID) references USERS
 );
 

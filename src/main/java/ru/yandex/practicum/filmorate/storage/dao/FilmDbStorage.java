@@ -122,7 +122,7 @@ public class FilmDbStorage implements FilmsStorage {
         String sql = "SET REFERENTIAL_INTEGRITY FALSE;" +
                 "TRUNCATE TABLE   FILM; " +
                 "TRUNCATE TABLE FILM_GENRES; " +
-                "TRUNCATE TABLE FILM_LIKES; " +
+                "TRUNCATE TABLE FILM_SCORES; " +
                 "SET REFERENTIAL_INTEGRITY FALSE;" +
                 "alter table FILM alter column FILM_ID restart with 1";
 
@@ -133,7 +133,7 @@ public class FilmDbStorage implements FilmsStorage {
     public void deleteFilm(int id) {
         String sqlDeleteFIlm = "delete from FILM where FILM_ID = ? ";
         String sqlDeleteFilmGenres = "delete from FILM_GENRES where FILM_ID = ?";
-        String sqlDeleteFilmLikes = "delete from FILM_LIKES where FILM_ID = ?";
+        String sqlDeleteFilmLikes = "delete from FILM_SCORES where FILM_ID = ?";
         jdbcTemplate.update(sqlDeleteFilmGenres, id);
         jdbcTemplate.update(sqlDeleteFilmLikes, id);
         jdbcTemplate.update(sqlDeleteFIlm, id);
@@ -141,14 +141,14 @@ public class FilmDbStorage implements FilmsStorage {
 
     @Override
     public void addScore(int filmId, int userId, int score) {
-        String sqlAddScore = "merge into FILM_LIKES (FILM_ID, USER_ID, SCORE) " +
+        String sqlAddScore = "merge into FILM_SCORES (FILM_ID, USER_ID, SCORE) " +
                 "values (?, ?, ?)";
         jdbcTemplate.update(sqlAddScore, filmId, userId, score);
     }
 
     @Override
     public void removeScore(int filmId, int userId) {
-        String sqlRemoveScore = "delete from FILM_LIKES " +
+        String sqlRemoveScore = "delete from FILM_SCORES " +
                 "where film_id = ? and user_id = ?";
         jdbcTemplate.update(sqlRemoveScore, filmId, userId);
     }
@@ -156,7 +156,7 @@ public class FilmDbStorage implements FilmsStorage {
     @Override
     public List<Film> getPopularFilms(int count) {
         String sqlGetPopularFilms = "select  F.FILM_ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION, F.RATING_ID from FILM AS F " +
-                "left join FILM_LIKES AS FL on F.FILM_ID = FL.FILM_ID " +
+                "left join FILM_SCORES AS FL on F.FILM_ID = FL.FILM_ID " +
                 "group by F.FILM_ID " +
                 "order by count(FL.USER_ID) DESC " +
                 "limit ?";
@@ -168,7 +168,7 @@ public class FilmDbStorage implements FilmsStorage {
         String sql = "select  F.FILM_ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION, F.RATING_ID from FILM AS F " +
                 "left join FILM_DIRECTORS AS FD on F.FILM_ID = FD.FILM_ID " +
                 "left join DIRECTORS AS D on FD.DIRECTOR_ID = D.DIRECTOR_ID " +
-                "left  join FILM_LIKES FL on F.FILM_ID = FL.FILM_ID " +
+                "left  join FILM_SCORES FL on F.FILM_ID = FL.FILM_ID " +
                 "where D.NAME LIKE ? " +
                 "group by F.FILM_ID " +
                 "order by count(FL.USER_ID) DESC";
@@ -178,7 +178,7 @@ public class FilmDbStorage implements FilmsStorage {
     @Override
     public List<Film> getFilmByFilmQuery(String query) {
         String sql = "select F.FILM_ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION, F.RATING_ID from FILM as F " +
-                "left join FILM_LIKES AS FL on F.FILM_ID = FL.FILM_ID " +
+                "left join FILM_SCORES AS FL on F.FILM_ID = FL.FILM_ID " +
                 "where NAME LIKE ?" +
                 "group by F.FILM_ID " +
                 "order by count(FL.USER_ID) DESC ";
@@ -189,15 +189,15 @@ public class FilmDbStorage implements FilmsStorage {
     @Override
     public List<Film> recommendFilms(Integer userId) {
         String thisUserLikes = "select fl.film_id" +
-                " from film_likes as fl " +
+                " from FILM_SCORES as fl " +
                 " where fl.user_id = " + userId;
         String usersWithSameLikes = "select user_id" +
-                " from film_likes" +
+                " from FILM_SCORES" +
                 " where film_id in (" + thisUserLikes + ") and user_id != " + userId +
                 " group by user_id" +
                 " order by count(user_id) desc";
         String recommendedFilmsIds = "select film_id" +
-                " from film_likes as fl" +
+                " from FILM_SCORES as fl" +
                 " where user_id in (" + usersWithSameLikes +
                 ") and film_id not in (" + thisUserLikes + ")";
         String findFilms = "select * from film where  film_id in (" + recommendedFilmsIds + ")";
@@ -218,7 +218,7 @@ public class FilmDbStorage implements FilmsStorage {
         String sqlQueryForDirectors = "select D.DIRECTOR_ID, D.NAME from DIRECTORS as D " +
                 "join FILM_DIRECTORS as FD ON FD.DIRECTOR_ID = D.DIRECTOR_ID WHERE FD.FILM_ID = " + filmBuilt.getId();
 
-        String sqlQueryForScore = "select AVG(SCORE) from film_likes where film_id = ?";
+        String sqlQueryForScore = "select AVG(SCORE) from FILM_SCORES where film_id = ?";
 
         filmBuilt.setMpa(new Rating(rs.getInt("rating_id"), jdbcTemplate.queryForObject(sqlQueryForRating, String.class)));
 
@@ -251,7 +251,7 @@ public class FilmDbStorage implements FilmsStorage {
         return jdbcTemplate.query(
                 "SELECT f.* " +
                         "FROM film AS f " +
-                        "LEFT JOIN film_likes AS fl ON f.film_id = fl.film_id " +
+                        "LEFT JOIN FILM_SCORES AS fl ON f.film_id = fl.film_id " +
                         "LEFT JOIN film_genres AS fg ON f.film_id = fg.film_id " +
                         "WHERE YEAR(f.release_date) = ? AND fg.genre_id = ? " +
                         "GROUP BY f.film_id " +
@@ -264,7 +264,7 @@ public class FilmDbStorage implements FilmsStorage {
         return jdbcTemplate.query(
                 "SELECT f.*, COUNT(fl.user_id) AS rate " +
                         "FROM film AS f " +
-                        "LEFT JOIN film_likes AS fl ON f.film_id = fl.film_id " +
+                        "LEFT JOIN FILM_SCORES AS fl ON f.film_id = fl.film_id " +
                         "WHERE YEAR(f.release_date) = ? " +
                         "GROUP BY f.film_id " +
                         "ORDER BY rate " +
@@ -276,7 +276,7 @@ public class FilmDbStorage implements FilmsStorage {
         return jdbcTemplate.query(
                 "SELECT f.*, COUNT(fl.user_id) AS rate " +
                         "FROM film AS f " +
-                        "LEFT JOIN film_likes AS fl ON f.film_id = fl.film_id " +
+                        "LEFT JOIN FILM_SCORES AS fl ON f.film_id = fl.film_id " +
                         "LEFT JOIN film_genres AS fg ON f.film_id = fg.film_id " +
                         "WHERE fg.genre_id = ? " +
                         "GROUP BY f.film_id " +
@@ -288,8 +288,8 @@ public class FilmDbStorage implements FilmsStorage {
     public List<Film> getCommonFilms(int userId, int friendId) {
         log.debug("Common films are: ");
         String query = "SELECT f.* FROM film f " +
-                "WHERE f.film_id IN (SELECT l1.film_id FROM film_likes l1 WHERE l1.user_id = ?) " +
-                "AND f.film_id IN (SELECT l2.film_id FROM film_likes l2 WHERE l2.user_id = ?)";
+                "WHERE f.film_id IN (SELECT l1.film_id FROM FILM_SCORES l1 WHERE l1.user_id = ?) " +
+                "AND f.film_id IN (SELECT l2.film_id FROM FILM_SCORES l2 WHERE l2.user_id = ?)";
         return jdbcTemplate.query(query, (rs, rowNum) -> makeFilm(rs), userId, friendId);
     }
 
@@ -312,7 +312,7 @@ public class FilmDbStorage implements FilmsStorage {
             sql = "select F.FILM_ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION, F.RATING_ID " +
                     " from film_directors as fd " +
                     " join film as f on fd.film_id = f.film_id " +
-                    " left join film_likes fl on f.film_id =  fl.film_id " +
+                    " left join FILM_SCORES fl on f.film_id =  fl.film_id " +
                     "where fd.director_id = " + directorId +
                     " group by f.film_id " +
                     "order by count(f.film_id) desc";
