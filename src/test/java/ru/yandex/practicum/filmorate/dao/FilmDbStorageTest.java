@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import ru.yandex.practicum.filmorate.module.Film;
 import ru.yandex.practicum.filmorate.module.Rating;
 import ru.yandex.practicum.filmorate.module.User;
@@ -18,8 +19,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
@@ -110,7 +110,7 @@ public class FilmDbStorageTest {
     }
 
     @Test
-    public void addfilmTest() {
+    public void addFilmTest(){
         Film film4 = Film.builder()
                 .name("film4")
                 .description("film4Description")
@@ -158,27 +158,40 @@ public class FilmDbStorageTest {
     }
 
     @Test
-    public void addLikeTest() {
-        filmDbStorage.addLike(1, 2);
-
-        assertEquals(1, filmDbStorage.getFilm(1).getLikes().size());
+    public void addScoreTest() {
+        filmDbStorage.addScore(1, 2, 6);
+        Film film = filmDbStorage.getFilm(1);
+        assertEquals(6, film.getScore());
     }
 
     @Test
-    public void removeLikeTest() {
+    public void addScoreAvgTest() {
+        filmDbStorage.addScore(1, 2, 10);
+        filmDbStorage.addScore(1, 1, 2);
+        Film film = filmDbStorage.getFilm(1);
+        assertEquals(6, film.getScore());
+    }
 
-        filmDbStorage.addLike(1, 2);
+    @Test
+    public void addWrongScoreTest() {
+        assertThrows(DataIntegrityViolationException.class, () -> filmDbStorage.addScore(1, 2, 1000));
+        assertThrows(DataIntegrityViolationException.class, () -> filmDbStorage.addScore(1, 1, -222));
+        assertThrows(DataIntegrityViolationException.class, () -> filmDbStorage.addScore(1, 1, 11));
+        assertDoesNotThrow(() -> filmDbStorage.addScore(1, 1, 10));
+        assertDoesNotThrow(() -> filmDbStorage.addScore(1, 1, 1));
+    }
 
-        assertEquals(1, filmDbStorage.getFilm(1).getLikes().size());
-
-        filmDbStorage.removeLike(1, 2);
-
-        assertEquals(0, filmDbStorage.getFilm(1).getLikes().size());
+    @Test
+    public void removeScoreTest() {
+        filmDbStorage.addScore(1, 2, 9);
+        assertEquals(9, filmDbStorage.getFilm(1).getScore());
+        filmDbStorage.removeScore(1, 2);
+        assertEquals(0.0, filmDbStorage.getFilm(1).getScore());
     }
 
     @Test
     public void getPopularFilms() {
-        filmDbStorage.addLike(1, 2);
+        filmDbStorage.addScore(1, 2, 7);
         List<Film> popularFilms = filmDbStorage.getPopularFilms(1);
         Film popularFilm = filmDbStorage.getFilm(1);
         assertEquals(popularFilm, popularFilms.get(0));

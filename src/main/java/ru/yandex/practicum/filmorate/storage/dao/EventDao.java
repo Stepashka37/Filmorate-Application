@@ -44,7 +44,7 @@ public class EventDao implements EventStorage {
 
     @Override
     public void addLike(int userId, int filmId) {
-        insertIntoDB(userId, filmId, ADD, LIKE);
+        insertIntoDB(userId, filmId, ADD, SCORE);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class EventDao implements EventStorage {
 
     @Override
     public void removeLike(int userId, int filmId) {
-        insertIntoDB(userId, filmId, REMOVE, LIKE);
+        insertIntoDB(userId, filmId, REMOVE, SCORE);
     }
 
     @Override

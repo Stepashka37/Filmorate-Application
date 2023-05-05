@@ -42,17 +42,17 @@ public class FilmService {
         return filmsStorage.updateFilm(film);
     }
 
-    public void likeFilm(int id, int userId) {
+    public void scoreFilm(int id, int userId, int score) {
         usersStorage.getUser(userId);
         filmsStorage.getFilm(id);
-        filmsStorage.addLike(id, userId);
+        filmsStorage.addScore(id, userId, score);
         eventStorage.addLike(userId, id);
     }
 
-    public void removeLike(int id, int userId) {
+    public void removeScore(int id, int userId) {
         usersStorage.getUser(userId);
         filmsStorage.getFilm(id);
-        filmsStorage.removeLike(id, userId);
+        filmsStorage.removeScore(id, userId);
         eventStorage.removeLike(userId, id);
     }
 

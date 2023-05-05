@@ -118,7 +118,7 @@ Template repository for Filmorate project.
    SELECT f.name as name
           COUNT(fl.user_id) as likes_number
    FROM Film as f
-   LEFT JOIN FIlm_likes AS fl ON fl.film_id = f.film_id
+   LEFT JOIN FILM_SCORES AS fl ON fl.film_id = f.film_id
    GROUP BY f.name 
    ORDER BY likes_number DESC
    LIMIT <your_limit>;
