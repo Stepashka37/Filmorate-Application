@@ -156,9 +156,9 @@ public class FilmDbStorage implements FilmsStorage {
     @Override
     public List<Film> getPopularFilms(int count) {
         String sqlGetPopularFilms = "select  F.FILM_ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION, F.RATING_ID from FILM AS F " +
-                "left join FILM_SCORES AS FL on F.FILM_ID = FL.FILM_ID " +
+                "left join FILM_SCORES AS FS on F.FILM_ID = FS.FILM_ID " +
                 "group by F.FILM_ID " +
-                "order by count(FL.USER_ID) DESC " +
+                "order by count(FS.USER_ID) DESC " +
                 "limit ?";
         return jdbcTemplate.query(sqlGetPopularFilms, (rs, rowNum) -> makeFilm(rs), count);
     }
@@ -168,20 +168,20 @@ public class FilmDbStorage implements FilmsStorage {
         String sql = "select  F.FILM_ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION, F.RATING_ID from FILM AS F " +
                 "left join FILM_DIRECTORS AS FD on F.FILM_ID = FD.FILM_ID " +
                 "left join DIRECTORS AS D on FD.DIRECTOR_ID = D.DIRECTOR_ID " +
-                "left  join FILM_SCORES FL on F.FILM_ID = FL.FILM_ID " +
+                "left  join FILM_SCORES FS on F.FILM_ID = FS.FILM_ID " +
                 "where D.NAME LIKE ? " +
                 "group by F.FILM_ID " +
-                "order by count(FL.USER_ID) DESC";
+                "order by count(FS.USER_ID) DESC";
         return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), "%" + query + "%");
     }
 
     @Override
     public List<Film> getFilmByFilmQuery(String query) {
         String sql = "select F.FILM_ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION, F.RATING_ID from FILM as F " +
-                "left join FILM_SCORES AS FL on F.FILM_ID = FL.FILM_ID " +
+                "left join FILM_SCORES AS FS on F.FILM_ID = FS.FILM_ID " +
                 "where NAME LIKE ?" +
                 "group by F.FILM_ID " +
-                "order by count(FL.USER_ID) DESC ";
+                "order by count(FS.USER_ID) DESC ";
         return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), "%" + query + "%");
     }
 
@@ -308,14 +308,14 @@ public class FilmDbStorage implements FilmsStorage {
                     "join FILM_DIRECTORS as FD ON F.FILM_ID = FD.FILM_ID WHERE FD.DIRECTOR_ID = " + directorId +
                     " order by f.release_date";
 
-        } else if (sortBy.equals("likes")) {
+        } else if (sortBy.equals("score")) {
             sql = "select F.FILM_ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION, F.RATING_ID " +
                     " from film_directors as fd " +
                     " join film as f on fd.film_id = f.film_id " +
-                    " left join FILM_SCORES fl on f.film_id =  fl.film_id " +
+                    " left join film_scores as fs on f.film_id =  fs.film_id " +
                     "where fd.director_id = " + directorId +
                     " group by f.film_id " +
-                    "order by count(f.film_id) desc";
+                    "order by AVG(fs.score) desc";
 
         }
 
