@@ -3,16 +3,20 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.module.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @Slf4j
 @RestController
 @RequestMapping("/films")
+@Validated
 public class FilmController {
 
     private final FilmService filmService;
@@ -52,7 +56,9 @@ public class FilmController {
     }
 
     @PutMapping("/{id}/score/{userId}")
-    public void scoreFilm(@PathVariable int id, @PathVariable int userId, @RequestParam int score) {
+    public void scoreFilm(@PathVariable int id, @PathVariable int userId, @RequestParam
+    @Min(value = 1, message = "Минимальный рейтинг, который можно поставить фильму: 1")
+    @Max(value = 10, message = "Максимальный рейтинг, который можно поставить фильму: 10") int score) {
         filmService.scoreFilm(id, userId, score);
         log.info("Пользователь с id{}", userId + " поставил оценку" + score + " фильму с id " + id);
     }
