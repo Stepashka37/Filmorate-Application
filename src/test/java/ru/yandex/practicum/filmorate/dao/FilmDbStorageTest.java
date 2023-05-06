@@ -18,6 +18,7 @@ import ru.yandex.practicum.filmorate.storage.dao.FilmDbStorage;
 import ru.yandex.practicum.filmorate.storage.dao.UserDbStorage;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -261,6 +262,44 @@ public class FilmDbStorageTest {
         assertEquals(film4, directorsFilms.get(1));
         assertEquals(film6, directorsFilms.get(2));
         assertEquals(3, directorsFilms.size());
+    }
+
+    @Test
+    public void getRecommendation() {
+        User user4 = User.builder()
+                .email("yandex4@yandex.ru")
+                .login("user4")
+                .name("user4")
+                .birthday(LocalDate.of(1995, 06, 03))
+                .build();
+        userDbStorage.addUser(user4);
+
+        filmDbStorage.addScore(1, 1, 7);
+        filmDbStorage.addScore(1, 2, 9);
+        filmDbStorage.addScore(1, 3, 5);
+        filmDbStorage.addScore(1, 4, 7);
+
+        filmDbStorage.addScore(2, 1, 2);
+        filmDbStorage.addScore(2, 2, 1);
+        filmDbStorage.addScore(2, 3, 6);
+        filmDbStorage.addScore(2, 4, 3);
+
+        // user1 не оценивал film3 и должен получить его по рекомендации user2
+        // так же рекомендован user4, но дублирования не должно быть
+        filmDbStorage.addScore(3, 2, 6);
+        filmDbStorage.addScore(3, 3, 4);
+        filmDbStorage.addScore(3, 4, 7);
+
+        // user1 не оценивал film4 и должен получить его по рекомендации user4
+        filmDbStorage.addScore(4, 2, 3);
+        filmDbStorage.addScore(4, 3, 8);
+        filmDbStorage.addScore(4, 4, 9);
+
+        List<Film> recommendedFilms = filmDbStorage.recommendFilms(1);
+        List<Film> checkList = new ArrayList<>();
+        checkList.add(filmDbStorage.getFilm(3));
+        checkList.add(filmDbStorage.getFilm(4));
+        assertEquals(recommendedFilms, checkList, "Должны быть рекомендованы фильмы 3 и 4.");
     }
 
 }
