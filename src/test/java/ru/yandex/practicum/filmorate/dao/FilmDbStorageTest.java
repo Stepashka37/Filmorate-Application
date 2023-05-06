@@ -9,15 +9,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import ru.yandex.practicum.filmorate.module.Director;
 import ru.yandex.practicum.filmorate.module.Film;
 import ru.yandex.practicum.filmorate.module.Rating;
 import ru.yandex.practicum.filmorate.module.User;
+import ru.yandex.practicum.filmorate.storage.dao.DirectorDao;
 import ru.yandex.practicum.filmorate.storage.dao.FilmDbStorage;
 import ru.yandex.practicum.filmorate.storage.dao.UserDbStorage;
 
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,9 +30,19 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FilmDbStorageTest {
     private final FilmDbStorage filmDbStorage;
     private final UserDbStorage userDbStorage;
+    private final DirectorDao directorDao;
 
     @BeforeEach
     public void setData() {
+        Director director = Director.builder()
+                .name("director1")
+                .build();
+
+        directorDao.addDirector(director);
+
+        Set<Director> filmDirectors = new HashSet<>();
+        filmDirectors.add(directorDao.findById(1));
+
         Film film1 = Film.builder()
                 .name("film1")
                 .description("film1Description")
@@ -38,6 +51,7 @@ public class FilmDbStorageTest {
                 .mpa(new Rating(1, "Drama"))
                 .genres(new HashSet<>())
                 .build();
+
         Film film2 = Film.builder()
                 .name("film2")
                 .description("film2Description")
@@ -46,6 +60,7 @@ public class FilmDbStorageTest {
                 .mpa(new Rating(1, "Drama"))
                 .genres(new HashSet<>())
                 .build();
+
         Film film3 = Film.builder()
                 .name("film3")
                 .description("film3Description")
@@ -55,9 +70,42 @@ public class FilmDbStorageTest {
                 .genres(new HashSet<>())
                 .build();
 
+        Film film4 = Film.builder()
+                .name("film4")
+                .description("film4Description")
+                .releaseDate(LocalDate.of(2018, 03, 04))
+                .duration(120)
+                .mpa(new Rating(1, "Drama"))
+                .genres(new HashSet<>())
+                .directors(filmDirectors)
+                .build();
+
+        Film film5 = Film.builder()
+                .name("film5")
+                .description("film5Description")
+                .releaseDate(LocalDate.of(2020, 03, 04))
+                .duration(120)
+                .mpa(new Rating(1, "Drama"))
+                .genres(new HashSet<>())
+                .directors(filmDirectors)
+                .build();
+
+        Film film6 = Film.builder()
+                .name("film6")
+                .description("film6Description")
+                .releaseDate(LocalDate.of(2021, 03, 04))
+                .duration(120)
+                .mpa(new Rating(1, "Drama"))
+                .genres(new HashSet<>())
+                .directors(filmDirectors)
+                .build();
+
         filmDbStorage.addFilm(film1);
         filmDbStorage.addFilm(film2);
         filmDbStorage.addFilm(film3);
+        filmDbStorage.addFilm(film4);
+        filmDbStorage.addFilm(film5);
+        filmDbStorage.addFilm(film6);
 
         User user1 = User.builder()
                 .email("yandex1@yandex.ru")
@@ -84,7 +132,6 @@ public class FilmDbStorageTest {
         userDbStorage.addUser(user2);
         userDbStorage.addUser(user3);
 
-
     }
 
     @AfterEach
@@ -106,11 +153,11 @@ public class FilmDbStorageTest {
     public void getFilmsTest() {
         List<Film> films = filmDbStorage.getFilms();
 
-        assertEquals(3, films.size());
+        assertEquals(6, films.size());
     }
 
     @Test
-    public void addFilmTest(){
+    public void addFilmTest() {
         Film film4 = Film.builder()
                 .name("film4")
                 .description("film4Description")
@@ -121,8 +168,8 @@ public class FilmDbStorageTest {
                 .build();
         Film film1Created = filmDbStorage.addFilm(film4);
 
-        assertEquals(4, film1Created.getId());
-        assertEquals(4, filmDbStorage.getFilms().size());
+        assertEquals(7, film1Created.getId());
+        assertEquals(7, filmDbStorage.getFilms().size());
 
     }
 
@@ -140,14 +187,14 @@ public class FilmDbStorageTest {
         Film filmUpdated = filmDbStorage.updateFilm(filmUpd);
 
         assertEquals("film1Upd", filmUpdated.getName());
-        assertEquals(3, filmDbStorage.getFilms().size());
+        assertEquals(6, filmDbStorage.getFilms().size());
     }
 
     @Test
     public void deleteFilmTest() {
         filmDbStorage.deleteFilm(1);
 
-        assertEquals(2, filmDbStorage.getFilms().size());
+        assertEquals(5, filmDbStorage.getFilms().size());
     }
 
     @Test
@@ -198,6 +245,22 @@ public class FilmDbStorageTest {
 
         popularFilms = filmDbStorage.getPopularFilms(3);
         assertEquals(3, popularFilms.size());
+    }
+
+    @Test
+    public void getDirectorsFilmsSortByScoreSuccess() {
+        filmDbStorage.addScore(4, 2, 10);
+        filmDbStorage.addScore(4, 1, 3);
+        filmDbStorage.addScore(5, 2, 8);
+        filmDbStorage.addScore(5, 1, 6);
+        final List<Film> directorsFilms = filmDbStorage.getDirectorsFilms(1, "score");
+        final Film film4 = filmDbStorage.getFilm(4);
+        final Film film5 = filmDbStorage.getFilm(5);
+        final Film film6 = filmDbStorage.getFilm(6);
+        assertEquals(film5, directorsFilms.get(0));
+        assertEquals(film4, directorsFilms.get(1));
+        assertEquals(film6, directorsFilms.get(2));
+        assertEquals(3, directorsFilms.size());
     }
 
 }
