@@ -1,4 +1,4 @@
-drop table if exists GENRE, RATING_MPA, FILM_DIRECTORS, FILM_LIKES, DIRECTORS, FILM, FILM_GENRES, USERS, FILM_SCORES, USER_FRIENDS,
+drop table if exists GENRE, RATING_MPA, FILM_DIRECTORS, DIRECTORS, FILM, FILM_GENRES, USERS, FILM_SCORES, USER_FRIENDS,
     REVIEW, REVIEW_LIKES, EVENTS;
 
 
@@ -126,9 +126,9 @@ create table IF NOT EXISTS REVIEW
     constraint REVIEW_PK
         primary key (REVIEW_ID),
     constraint REVIEW_USERS_USER_ID_FK
-        foreign key (USER_ID) references USERS (USER_ID) ON DELETE CASCADE,
+        foreign key (USER_ID) references USERS (USER_ID) ON delete CASCADE,
     constraint REVIEW_FILM_FILM_ID_FK_2
-        foreign key (FILM_ID) references FILM (FILM_ID) ON DELETE CASCADE
+        foreign key (FILM_ID) references FILM (FILM_ID) ON delete CASCADE
 );
 
 create table IF NOT EXISTS REVIEW_LIKES
@@ -139,9 +139,9 @@ create table IF NOT EXISTS REVIEW_LIKES
     constraint REVIEW_LIKES_PK
         primary key (REVIEW_ID, USER_ID),
     constraint REVIEW_LIKES_USERS_USER_ID_FK
-        foreign key (USER_ID) references USERS (USER_ID) ON DELETE CASCADE,
+        foreign key (USER_ID) references USERS (USER_ID) ON delete CASCADE,
     constraint REVIEW_LIKES_REVIEW_REVIEW_ID_FK_2
-        foreign key (REVIEW_ID) references REVIEW (REVIEW_ID) ON DELETE CASCADE
+        foreign key (REVIEW_ID) references REVIEW (REVIEW_ID) ON delete CASCADE
 );
 
 create type if not exists EVENT as ENUM ('SCORE', 'FRIEND', 'REVIEW');
