@@ -188,19 +188,22 @@ public class FilmDbStorage implements FilmsStorage {
 
     @Override
     public List<Film> recommendFilms(Integer userId) {
-        String thisUserLikes = "select fl.film_id" +
-                " from FILM_SCORES as fl " +
-                " where fl.user_id = " + userId;
-        String usersWithSameLikes = "select user_id" +
-                " from FILM_SCORES" +
-                " where film_id in (" + thisUserLikes + ") and user_id != " + userId +
-                " group by user_id" +
-                " order by count(user_id) desc";
-        String recommendedFilmsIds = "select film_id" +
-                " from FILM_SCORES as fl" +
-                " where user_id in (" + usersWithSameLikes +
-                ") and film_id not in (" + thisUserLikes + ")";
-        String findFilms = "select * from film where  film_id in (" + recommendedFilmsIds + ")";
+        String findFilms = "SELECT *" +
+                " FROM FILM AS f " +
+                " WHERE f.FILM_ID IN (SELECT DISTINCT sc.FILM_ID" +
+                " FROM FILM_SCORES AS sc" +
+                " JOIN (SELECT fs.USER_ID AS other_user_id" +
+                " FROM FILM_SCORES AS fs " +
+                " JOIN (select fs.film_id as film_id, fs.score as aim_score" +
+                "                 from FILM_SCORES as fs " +
+                "                 where fs.user_id = " + userId + ") as aus ON fs.FILM_ID = aus.film_id" +
+                " WHERE fs.USER_ID != " + userId  +
+                " AND ( " +
+                " (fs.SCORE BETWEEN 1 AND 5 AND aus.aim_score BETWEEN 1 AND 5)" +
+                " OR (fs.SCORE BETWEEN 6 AND 10 AND aus.aim_score BETWEEN 6 AND 10)" +
+                " ) GROUP BY fs.USER_ID) AS ur ON ur.other_user_id = sc.USER_ID" +
+                " WHERE sc.FILM_ID NOT IN (SELECT fs.film_id FROM FILM_SCORES as fs WHERE fs.user_id = " + userId + ")" +
+                " AND sc.score BETWEEN 6 AND 10);";
         return jdbcTemplate.query(findFilms, (rs, rowNum) -> makeFilm(rs));
     }
 
