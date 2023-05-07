@@ -158,7 +158,7 @@ public class FilmDbStorage implements FilmsStorage {
         String sqlGetPopularFilms = "select  F.FILM_ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION, F.RATING_ID from FILM AS F " +
                 "left join FILM_SCORES AS FS on F.FILM_ID = FS.FILM_ID " +
                 "group by F.FILM_ID " +
-                "order by count(FS.USER_ID) DESC " +
+                "order by AVG(FS.score) DESC " +
                 "limit ?";
         return jdbcTemplate.query(sqlGetPopularFilms, (rs, rowNum) -> makeFilm(rs), count);
     }
@@ -171,7 +171,7 @@ public class FilmDbStorage implements FilmsStorage {
                 "left  join FILM_SCORES FS on F.FILM_ID = FS.FILM_ID " +
                 "where D.NAME LIKE ? " +
                 "group by F.FILM_ID " +
-                "order by count(FS.USER_ID) DESC";
+                "order by AVG(FS.score) DESC";
         return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), "%" + query + "%");
     }
 
@@ -181,7 +181,7 @@ public class FilmDbStorage implements FilmsStorage {
                 "left join FILM_SCORES AS FS on F.FILM_ID = FS.FILM_ID " +
                 "where NAME LIKE ?" +
                 "group by F.FILM_ID " +
-                "order by count(FS.USER_ID) DESC ";
+                "order by AVG(FS.score) DESC ";
         return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), "%" + query + "%");
     }
 
@@ -254,36 +254,36 @@ public class FilmDbStorage implements FilmsStorage {
         return jdbcTemplate.query(
                 "SELECT f.* " +
                         "FROM film AS f " +
-                        "LEFT JOIN FILM_SCORES AS fl ON f.film_id = fl.film_id " +
+                        "LEFT JOIN FILM_SCORES AS fs ON f.film_id = fs.film_id " +
                         "LEFT JOIN film_genres AS fg ON f.film_id = fg.film_id " +
                         "WHERE YEAR(f.release_date) = ? AND fg.genre_id = ? " +
                         "GROUP BY f.film_id " +
-                        "ORDER BY COUNT(fl.user_id) " +
+                        "ORDER BY AVG(fs.score) desc " +
                         "LIMIT ?;", (rs, rowNum) -> makeFilm(rs), year, genreId, count);
     }
 
     @Override
     public List<Film> getPopularByYear(int year, int count) {
         return jdbcTemplate.query(
-                "SELECT f.*, COUNT(fl.user_id) AS rate " +
+                "SELECT f.*, AVG(fs.score) AS rate " +
                         "FROM film AS f " +
-                        "LEFT JOIN FILM_SCORES AS fl ON f.film_id = fl.film_id " +
+                        "LEFT JOIN FILM_SCORES AS fs ON f.film_id = fs.film_id " +
                         "WHERE YEAR(f.release_date) = ? " +
                         "GROUP BY f.film_id " +
-                        "ORDER BY rate " +
+                        "ORDER BY rate desc " +
                         "LIMIT ?;", (rs, rowNum) -> makeFilm(rs), year, count);
     }
 
     @Override
     public List<Film> getPopularByGenre(int genreId, int count) {
         return jdbcTemplate.query(
-                "SELECT f.*, COUNT(fl.user_id) AS rate " +
+                "SELECT f.*, AVG(fs.score) AS rate " +
                         "FROM film AS f " +
-                        "LEFT JOIN FILM_SCORES AS fl ON f.film_id = fl.film_id " +
+                        "LEFT JOIN FILM_SCORES AS fs ON f.film_id = fs.film_id " +
                         "LEFT JOIN film_genres AS fg ON f.film_id = fg.film_id " +
                         "WHERE fg.genre_id = ? " +
                         "GROUP BY f.film_id " +
-                        "ORDER BY rate " +
+                        "ORDER BY rate desc " +
                         "LIMIT ?;", (rs, rowNum) -> makeFilm(rs), genreId, count);
     }
 
