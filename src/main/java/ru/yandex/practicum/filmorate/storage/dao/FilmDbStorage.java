@@ -27,10 +27,10 @@ import java.util.List;
 @Slf4j
 public class FilmDbStorage implements FilmsStorage {
     private final JdbcTemplate jdbcTemplate;
-    private static final int MOST_NEGATIVE_SCORE = 1;
-    private static final int LEAST_NEGATVE_SCORE = 5;
-    private static final int LEAST_POSITIVE_SCORE = 6;
-    private static final int MOST_POSITIVE_SCORE = 10;
+    private final static int MOST_NEGATIVE_SCORE = 1;
+    private final static int LEAST_NEGATVE_SCORE = 5;
+    private final static int LEAST_POSITIVE_SCORE = 6;
+    private final static int MOST_POSITIVE_SCORE = 10;
 
     @Autowired
     public FilmDbStorage(JdbcTemplate jdbcTemplate) {
@@ -192,7 +192,6 @@ public class FilmDbStorage implements FilmsStorage {
 
     @Override
     public List<Film> recommendFilms(Integer userId) {
-
         String aimUserReviews = "(SELECT fs.film_id FROM FILM_SCORES as fs WHERE fs.user_id = " + userId + ")";
         String aimUserScores = " (select fs.film_id as film_id, fs.score as aim_score " +
                 " from FILM_SCORES as fs " +
@@ -211,7 +210,6 @@ public class FilmDbStorage implements FilmsStorage {
         String makeFilms = "SELECT * FROM FILM AS f " +
                 " WHERE f.FILM_ID IN" + findFilmsIds;
         return jdbcTemplate.query(makeFilms, (rs, rowNum) -> makeFilm(rs));
-
     }
 
     private Film makeFilm(ResultSet rs) throws SQLException {
