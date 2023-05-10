@@ -7,13 +7,13 @@ import java.util.List;
 public interface EventStorage {
     List<Event> getEvents(Integer userId);
 
-    void addLike(int userId, int filmId);
+    void addScore(int userId, int filmId);
 
     void addFriend(int userId, int userId1);
 
     void addReview(int userId, int reviewId);
 
-    void removeLike(int userId, int filmId);
+    void removeScore(int userId, int filmId);
 
     void removeFriend(int userId, int userId1);
 

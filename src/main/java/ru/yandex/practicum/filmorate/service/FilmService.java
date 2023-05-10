@@ -46,14 +46,14 @@ public class FilmService {
         usersStorage.getUser(userId);
         filmsStorage.getFilm(id);
         filmsStorage.addScore(id, userId, score);
-        eventStorage.addLike(userId, id);
+        eventStorage.addScore(userId, id);
     }
 
     public void removeScore(int id, int userId) {
         usersStorage.getUser(userId);
         filmsStorage.getFilm(id);
         filmsStorage.removeScore(id, userId);
-        eventStorage.removeLike(userId, id);
+        eventStorage.removeScore(userId, id);
     }
 
     public List<Film> getMostLikedFilms(int count) {
