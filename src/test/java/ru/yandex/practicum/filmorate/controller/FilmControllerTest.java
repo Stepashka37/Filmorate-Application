@@ -415,7 +415,7 @@ class FilmControllerTest {
 
     @SneakyThrows
     @Test
-    public void likeFilm() {
+    public void scoreFilm() {
         Film film = Film.builder().name("Name")
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
@@ -471,17 +471,67 @@ class FilmControllerTest {
                 .mpa(new Rating(1, "PG"))
                 .genres(new HashSet<>())
                 .build();
+        User user1 = User.builder()
+                .email("yandex1@yandex.ru")
+                .login("user1")
+                .name("user1")
+                .birthday(LocalDate.of(1997, 06, 03))
+                .friends(new HashSet<>())
+                .build();
+        String userGson = objectMapper.writeValueAsString(user1);
+        mockMvc.perform(post("/users")
+                .contentType("application/json")
+                .content(userGson)
+        ).andExpect(status().isCreated());
         String gson1 = objectMapper.writeValueAsString(film);
         mockMvc.perform(post("/films")
                 .contentType("application/json")
                 .content(gson1)
         ).andExpect(status().isCreated());
 
-        mockMvc.perform(put("/films/10/like/1")
+        mockMvc.perform(put("/films/10/score/1?score=1")
                 .contentType("application/json")
                 .content(gson1)
         ).andExpect(status().isNotFound());
+    }
 
+    @SneakyThrows
+    @Test
+    public void scoreFilmWrongScore() {
+        Film film = Film.builder().name("Name")
+                .description("Film description")
+                .releaseDate(LocalDate.of(2016, 3, 4))
+                .duration(120)
+                .mpa(new Rating(1, "PG"))
+                .genres(new HashSet<>())
+                .build();
+        User user1 = User.builder()
+                .email("yandex1@yandex.ru")
+                .login("user1")
+                .name("user1")
+                .birthday(LocalDate.of(1997, 06, 03))
+                .friends(new HashSet<>())
+                .build();
+        String userGson = objectMapper.writeValueAsString(user1);
+        mockMvc.perform(post("/users")
+                .contentType("application/json")
+                .content(userGson)
+        ).andExpect(status().isCreated());
+        String gson1 = objectMapper.writeValueAsString(film);
+        mockMvc.perform(post("/films")
+                .contentType("application/json")
+                .content(gson1)
+        ).andExpect(status().isCreated());
+
+        mockMvc.perform(put("/films/1/score/1?score=0")
+                .contentType("application/json")
+                .content(gson1)
+        ).andExpect(status().isBadRequest());
+
+        mockMvc.perform(put("/films/1/score/1?score=11")
+                .contentType("application/json")
+                .content(gson1)
+        ).andExpect(status().isBadRequest());
     }
 
     @SneakyThrows
