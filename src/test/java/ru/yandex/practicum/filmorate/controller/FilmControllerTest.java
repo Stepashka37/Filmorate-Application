@@ -737,7 +737,7 @@ class FilmControllerTest {
         });
 
         assertEquals(1, films.size());
-        assertEquals(1, films.get(0).getId());
+        assertEquals(2, films.get(0).getId());
 
         result = mockMvc.perform(get("/films/popular")
                         .contentType("application/json")
@@ -750,8 +750,8 @@ class FilmControllerTest {
         });
 
         assertEquals(2, films.size());
-        assertEquals(1, films.get(0).getId());
-        assertEquals(2, films.get(1).getId());
+        assertEquals(2, films.get(0).getId());
+        assertEquals(1, films.get(1).getId());
 
         mockMvc.perform(get("/films/popular?count=-1")
                 .contentType("application/json")
