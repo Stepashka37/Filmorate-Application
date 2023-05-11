@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ConstraintViolationException;
+
 @RestControllerAdvice
 @Slf4j
 public class ErrorHandler {
@@ -38,6 +40,13 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse annotationValidationExc(MethodArgumentNotValidException exc) {
+        log.info("400: " + exc.getMessage());
+        return new ErrorResponse("Ошибка валидации с помощью аннотаций", exc.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse annotationValidationExc(ConstraintViolationException exc) {
         log.info("400: " + exc.getMessage());
         return new ErrorResponse("Ошибка валидации с помощью аннотаций", exc.getMessage());
     }
