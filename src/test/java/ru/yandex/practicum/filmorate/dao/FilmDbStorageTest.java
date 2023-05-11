@@ -15,9 +15,11 @@ import ru.yandex.practicum.filmorate.module.Rating;
 import ru.yandex.practicum.filmorate.module.User;
 import ru.yandex.practicum.filmorate.storage.dao.DirectorDao;
 import ru.yandex.practicum.filmorate.storage.dao.FilmDbStorage;
+import ru.yandex.practicum.filmorate.storage.dao.GenreDao;
 import ru.yandex.practicum.filmorate.storage.dao.UserDbStorage;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,9 +33,11 @@ public class FilmDbStorageTest {
     private final FilmDbStorage filmDbStorage;
     private final UserDbStorage userDbStorage;
     private final DirectorDao directorDao;
+    private final GenreDao genreDao;
 
     @BeforeEach
     public void setData() {
+
         Director director = Director.builder()
                 .name("director1")
                 .build();
@@ -86,7 +90,7 @@ public class FilmDbStorageTest {
                 .releaseDate(LocalDate.of(2020, 03, 04))
                 .duration(120)
                 .mpa(new Rating(1, "Drama"))
-                .genres(new HashSet<>())
+                .genres(new HashSet<>(List.of(genreDao.findById(1))))
                 .directors(filmDirectors)
                 .build();
 
@@ -96,9 +100,10 @@ public class FilmDbStorageTest {
                 .releaseDate(LocalDate.of(2021, 03, 04))
                 .duration(120)
                 .mpa(new Rating(1, "Drama"))
-                .genres(new HashSet<>())
+                .genres(new HashSet<>(List.of(genreDao.findById(1))))
                 .directors(filmDirectors)
                 .build();
+
 
         filmDbStorage.addFilm(film1);
         filmDbStorage.addFilm(film2);
@@ -239,9 +244,12 @@ public class FilmDbStorageTest {
     @Test
     public void getPopularFilms() {
         filmDbStorage.addScore(1, 2, 7);
-        List<Film> popularFilms = filmDbStorage.getPopularFilms(1);
-        Film popularFilm = filmDbStorage.getFilm(1);
-        assertEquals(popularFilm, popularFilms.get(0));
+        filmDbStorage.addScore(2, 2, 8);
+        filmDbStorage.addScore(3, 2, 9);
+        List<Film> popularFilms = filmDbStorage.getPopularFilms(3);
+        assertEquals(filmDbStorage.getFilm(3), popularFilms.get(0));
+        assertEquals(filmDbStorage.getFilm(2), popularFilms.get(1));
+        assertEquals(filmDbStorage.getFilm(1), popularFilms.get(2));
 
         popularFilms = filmDbStorage.getPopularFilms(3);
         assertEquals(3, popularFilms.size());
@@ -261,6 +269,139 @@ public class FilmDbStorageTest {
         assertEquals(film4, directorsFilms.get(1));
         assertEquals(film6, directorsFilms.get(2));
         assertEquals(3, directorsFilms.size());
+    }
+
+    @Test
+    public void getRecommendation() {
+        User user4 = User.builder()
+                .email("yandex4@yandex.ru")
+                .login("user4")
+                .name("user4")
+                .birthday(LocalDate.of(1995, 06, 03))
+                .build();
+        userDbStorage.addUser(user4);
+
+        filmDbStorage.addScore(1, 1, 7);
+        filmDbStorage.addScore(1, 2, 9);
+        filmDbStorage.addScore(1, 3, 5);
+        filmDbStorage.addScore(1, 4, 7);
+
+        filmDbStorage.addScore(2, 1, 2);
+        filmDbStorage.addScore(2, 2, 1);
+        filmDbStorage.addScore(2, 3, 6);
+        filmDbStorage.addScore(2, 4, 3);
+
+        // user1 не оценивал film3 и должен получить его по рекомендации user2
+        // так же рекомендован user4, но дублирования не должно быть
+        filmDbStorage.addScore(3, 2, 6);
+        filmDbStorage.addScore(3, 3, 4);
+        filmDbStorage.addScore(3, 4, 7);
+
+        // user1 не оценивал film4 и должен получить его по рекомендации user4
+        filmDbStorage.addScore(4, 2, 3);
+        filmDbStorage.addScore(4, 3, 8);
+        filmDbStorage.addScore(4, 4, 9);
+
+        List<Film> recommendedFilms = filmDbStorage.recommendFilms(1);
+        List<Film> checkList = new ArrayList<>();
+        checkList.add(filmDbStorage.getFilm(3));
+        checkList.add(filmDbStorage.getFilm(4));
+        assertEquals(recommendedFilms, checkList, "Должны быть рекомендованы фильмы 3 и 4.");
+    }
+
+    @Test
+    public void getFilmByDirectorQueryTest() {
+        filmDbStorage.addScore(4, 2, 7);
+        filmDbStorage.addScore(5, 2, 8);
+        filmDbStorage.addScore(6, 2, 9);
+
+        List<Film> films = filmDbStorage.getFilmByDirectorQuery("dir");
+        assertEquals(films.size(), 3);
+        assertEquals(filmDbStorage.getFilm(6), films.get(0));
+        assertEquals(filmDbStorage.getFilm(5), films.get(1));
+        assertEquals(filmDbStorage.getFilm(4), films.get(2));
+    }
+
+    @Test
+    public void getFilmByFilmQueryTest() {
+        filmDbStorage.addScore(4, 2, 7);
+        filmDbStorage.addScore(5, 2, 8);
+        filmDbStorage.addScore(6, 2, 9);
+
+        List<Film> films = filmDbStorage.getFilmByFilmQuery("fil");
+        assertEquals(films.size(), 6);
+        assertEquals(filmDbStorage.getFilm(6), films.get(0));
+        assertEquals(filmDbStorage.getFilm(5), films.get(1));
+        assertEquals(filmDbStorage.getFilm(4), films.get(2));
+    }
+
+    @Test
+    public void getPopularByGenreAndYearTest() {
+        Film film7 = Film.builder()
+                .name("film7")
+                .description("film7Description")
+                .releaseDate(LocalDate.of(2021, 04, 04))
+                .duration(120)
+                .mpa(new Rating(1, "Drama"))
+                .genres(new HashSet<>(List.of(genreDao.findById(1))))
+                .build();
+
+        filmDbStorage.addFilm(film7);
+
+        filmDbStorage.addScore(6, 2, 7);
+        filmDbStorage.addScore(7, 2, 9);
+
+        List<Film> films = filmDbStorage.getPopularByGenreAndYear(2021, 1, 2);
+
+        assertEquals(filmDbStorage.getFilm(7), films.get(0));
+        assertEquals(filmDbStorage.getFilm(6), films.get(1));
+
+    }
+
+    @Test
+    public void getPopularByGenreTest() {
+        Film film7 = Film.builder()
+                .name("film7")
+                .description("film7Description")
+                .releaseDate(LocalDate.of(2021, 04, 04))
+                .duration(120)
+                .mpa(new Rating(1, "Drama"))
+                .genres(new HashSet<>(List.of(genreDao.findById(1))))
+                .build();
+
+        filmDbStorage.addFilm(film7);
+
+        filmDbStorage.addScore(6, 2, 7);
+        filmDbStorage.addScore(7, 2, 9);
+
+        List<Film> films = filmDbStorage.getPopularByGenre(1, 2);
+
+        assertEquals(filmDbStorage.getFilm(7), films.get(0));
+        assertEquals(filmDbStorage.getFilm(6), films.get(1));
+
+    }
+
+    @Test
+    public void getPopularByYearTest() {
+        Film film7 = Film.builder()
+                .name("film7")
+                .description("film7Description")
+                .releaseDate(LocalDate.of(2021, 04, 04))
+                .duration(120)
+                .mpa(new Rating(1, "Drama"))
+                .genres(new HashSet<>(List.of(genreDao.findById(1))))
+                .build();
+
+        filmDbStorage.addFilm(film7);
+
+        filmDbStorage.addScore(6, 2, 7);
+        filmDbStorage.addScore(7, 2, 9);
+
+        List<Film> films = filmDbStorage.getPopularByYear(2021, 2);
+
+        assertEquals(filmDbStorage.getFilm(7), films.get(0));
+        assertEquals(filmDbStorage.getFilm(6), films.get(1));
+
     }
 
 }
