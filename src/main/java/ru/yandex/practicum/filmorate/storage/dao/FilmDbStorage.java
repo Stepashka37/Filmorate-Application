@@ -27,10 +27,10 @@ import java.util.List;
 @Slf4j
 public class FilmDbStorage implements FilmsStorage {
     private final JdbcTemplate jdbcTemplate;
-    private final static int MOST_NEGATIVE_SCORE = 1;
-    private final static int LEAST_NEGATVE_SCORE = 5;
-    private final static int LEAST_POSITIVE_SCORE = 6;
-    private final static int MOST_POSITIVE_SCORE = 10;
+    private static final int MOST_NEGATIVE_SCORE = 1;
+    private static final int LEAST_NEGATVE_SCORE = 5;
+    private static final int LEAST_POSITIVE_SCORE = 6;
+    private static final int MOST_POSITIVE_SCORE = 10;
 
     @Autowired
     public FilmDbStorage(JdbcTemplate jdbcTemplate) {
