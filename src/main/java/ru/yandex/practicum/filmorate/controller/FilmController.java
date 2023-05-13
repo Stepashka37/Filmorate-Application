@@ -66,7 +66,7 @@ public class FilmController {
     @DeleteMapping("/{id}/score/{userId}")
     public void removeScore(@PathVariable int id, @PathVariable int userId) {
         filmService.removeScore(id, userId);
-        log.info("Пользователь с id{}", userId + " убрал оценку фильму с id " + id);
+        log.info("Пользователь с id = " + userId + " убрал оценку фильму с id = " + id);
     }
 
     @GetMapping("/{id}")

@@ -18,14 +18,14 @@ public class ErrorHandler {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse userNotFoundExc(final RuntimeException p) {
-        log.info("404: " + p.getMessage());
+        log.error("404: " + p.getMessage());
         return new ErrorResponse("Объект не найден", p.getMessage());
     }
 
     @ExceptionHandler(ValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse validationExc(final ValidationException p) {
-        log.info("400: " + p.getMessage());
+        log.error("400: " + p.getMessage());
         return new ErrorResponse("Ошибка валидации", p.getMessage());
     }
 
@@ -33,21 +33,21 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse anyOtherExc(final Exception p) {
-        log.info("500: " + p.getMessage());
+        log.error("500: " + p.getMessage());
         return new ErrorResponse("Произошла ошибка!", p.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse annotationValidationExc(MethodArgumentNotValidException exc) {
-        log.info("400: " + exc.getMessage());
+        log.error("400: " + exc.getMessage());
         return new ErrorResponse("Ошибка валидации с помощью аннотаций", exc.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse annotationValidationExc(ConstraintViolationException exc) {
-        log.info("400: " + exc.getMessage());
+        log.error("400: " + exc.getMessage());
         return new ErrorResponse("Ошибка валидации с помощью аннотаций", exc.getMessage());
     }
 }
