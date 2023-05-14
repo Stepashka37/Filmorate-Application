@@ -27,7 +27,7 @@ import java.util.List;
 @Slf4j
 public class FilmDbStorage implements FilmsStorage {
     private final JdbcTemplate jdbcTemplate;
-    private final static int BORDER_POSITIVE_SCORE = 6;
+    private static final int BORDER_POSITIVE_SCORE = 6;
 
 
     @Autowired
