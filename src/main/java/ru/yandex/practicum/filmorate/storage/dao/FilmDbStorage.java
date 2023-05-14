@@ -27,10 +27,8 @@ import java.util.List;
 @Slf4j
 public class FilmDbStorage implements FilmsStorage {
     private final JdbcTemplate jdbcTemplate;
-    private static final int MOST_NEGATIVE_SCORE = 1;
-    private static final int LEAST_NEGATVE_SCORE = 5;
-    private static final int LEAST_POSITIVE_SCORE = 6;
-    private static final int MOST_POSITIVE_SCORE = 10;
+    private final static int BORDER_POSITIVE_SCORE = 6;
+
 
     @Autowired
     public FilmDbStorage(JdbcTemplate jdbcTemplate) {
@@ -192,26 +190,25 @@ public class FilmDbStorage implements FilmsStorage {
 
     @Override
     public List<Film> recommendFilms(Integer userId) {
-
         String aimUserReviews = "(SELECT fs.film_id FROM FILM_SCORES as fs WHERE fs.user_id = " + userId + ")";
         String aimUserScores = " (select fs.film_id as film_id, fs.score as aim_score " +
                 " from FILM_SCORES as fs " +
                 " where fs.user_id = " + userId + ") as aus ";
         String filters = " WHERE fs.USER_ID != " + userId + " AND (" +
-                " (fs.SCORE >= " + MOST_NEGATIVE_SCORE + " AND fs.SCORE <= " + LEAST_NEGATVE_SCORE +
-                " AND aus.aim_score >= " + MOST_NEGATIVE_SCORE + " AND aus.aim_score <= " + LEAST_NEGATVE_SCORE + ")" +
-                " OR (fs.SCORE >= " + LEAST_POSITIVE_SCORE + " AND fs.SCORE <= " + MOST_POSITIVE_SCORE +
-                " AND aus.aim_score >= " + LEAST_POSITIVE_SCORE + " AND aus.aim_score <= " + MOST_POSITIVE_SCORE + ")" +
+                " (fs.SCORE < " + BORDER_POSITIVE_SCORE +
+                " AND aus.aim_score < " + BORDER_POSITIVE_SCORE + ")" +
+                " OR (fs.SCORE >= " + BORDER_POSITIVE_SCORE +
+                " AND aus.aim_score >= " + BORDER_POSITIVE_SCORE + ")" +
                 " ) GROUP BY fs.USER_ID) AS ur ON ur.other_user_id = sc.USER_ID" +
                 " WHERE sc.FILM_ID NOT IN " + aimUserReviews +
-                " AND sc.score >= " + LEAST_POSITIVE_SCORE + " AND sc.score <= " + MOST_POSITIVE_SCORE + ");";
+                " AND sc.score >= " + BORDER_POSITIVE_SCORE + ");";
+
         String recommendUsers = "(SELECT fs.USER_ID AS other_user_id FROM FILM_SCORES AS fs " +
                 " JOIN " + aimUserScores + " ON fs.FILM_ID = aus.film_id" + filters;
         String findFilmsIds = "(SELECT DISTINCT sc.FILM_ID FROM FILM_SCORES AS sc JOIN " + recommendUsers;
         String makeFilms = "SELECT * FROM FILM AS f " +
                 " WHERE f.FILM_ID IN" + findFilmsIds;
         return jdbcTemplate.query(makeFilms, (rs, rowNum) -> makeFilm(rs));
-
     }
 
     private Film makeFilm(ResultSet rs) throws SQLException {
