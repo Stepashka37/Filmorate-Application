@@ -50,4 +50,11 @@ public class ErrorHandler {
         log.error("400: " + exc.getMessage());
         return new ErrorResponse("Ошибка валидации с помощью аннотаций", exc.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse annotationValidationExc(ConstraintViolationException exc) {
+        log.info("400: " + exc.getMessage());
+        return new ErrorResponse("Ошибка валидации с помощью аннотаций", exc.getMessage());
+    }
 }

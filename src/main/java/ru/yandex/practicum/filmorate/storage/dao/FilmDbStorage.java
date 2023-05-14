@@ -29,6 +29,7 @@ public class FilmDbStorage implements FilmsStorage {
     private final JdbcTemplate jdbcTemplate;
     private final static int BORDER_POSITIVE_SCORE = 6;
 
+
     @Autowired
     public FilmDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -201,6 +202,7 @@ public class FilmDbStorage implements FilmsStorage {
                 " ) GROUP BY fs.USER_ID) AS ur ON ur.other_user_id = sc.USER_ID" +
                 " WHERE sc.FILM_ID NOT IN " + aimUserReviews +
                 " AND sc.score >= " + BORDER_POSITIVE_SCORE + ");";
+
         String recommendUsers = "(SELECT fs.USER_ID AS other_user_id FROM FILM_SCORES AS fs " +
                 " JOIN " + aimUserScores + " ON fs.FILM_ID = aus.film_id" + filters;
         String findFilmsIds = "(SELECT DISTINCT sc.FILM_ID FROM FILM_SCORES AS sc JOIN " + recommendUsers;
