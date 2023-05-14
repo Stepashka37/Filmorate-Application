@@ -38,7 +38,6 @@ public class FilmController {
     public Film addFilm(@Valid @RequestBody Film film) {
         Film addFilm = filmService.addFilm(film);
         log.info("Добавили фильм с id{}", addFilm.getId());
-        //return addedFilm;
         return addFilm;
     }
 
@@ -60,13 +59,13 @@ public class FilmController {
     @Min(value = 1, message = "Минимальный рейтинг, который можно поставить фильму: 1")
     @Max(value = 10, message = "Максимальный рейтинг, который можно поставить фильму: 10") int score) {
         filmService.scoreFilm(id, userId, score);
-        log.info("Пользователь с id{}", userId + " поставил оценку" + score + " фильму с id " + id);
+        log.info("Пользователь с id{} поставил оценку {} фильму с id{}", userId, score, id);
     }
 
     @DeleteMapping("/{id}/score/{userId}")
     public void removeScore(@PathVariable int id, @PathVariable int userId) {
         filmService.removeScore(id, userId);
-        log.info("Пользователь с id = " + userId + " убрал оценку фильму с id = " + id);
+        log.info("Пользователь с id{} убрал оценку фильму с id{}", userId, id);
     }
 
     @GetMapping("/{id}")

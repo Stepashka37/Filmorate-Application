@@ -62,7 +62,7 @@ public class UserController {
     @PutMapping("/{id}/friends/{friendId}")
     public void addFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
         usersService.addFriend(id, friendId);
-        log.info("Пользователь с id{}", friendId + " добавился в друзья к пользователю с id" + id);
+        log.info("Пользователь с id{} добавился в друзья к пользователю с id{}" + friendId, id);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
@@ -71,7 +71,7 @@ public class UserController {
             throw new ValidationException("не указан id");
         }
         usersService.deleteFriend(id, friendId);
-        log.info("Пользователь с id{}", friendId + " удалил из друзей пользователя с id" + id);
+        log.info("Пользователь с id{} удалил из друзей пользователя с id{}" + friendId, id);
     }
 
     @GetMapping("/{id}/friends")
@@ -84,7 +84,7 @@ public class UserController {
     @GetMapping("/{id}/friends/common/{otherId}")
     public List<User> getCommonFriends(@PathVariable Integer id, @PathVariable Integer otherId) {
         List<User> commonFriends = usersService.showCommonFriends(id, otherId);
-        log.info("Получен список общих друзей пользователей с id{}", id + " и с id" + otherId);
+        log.info("Получен список общих друзей пользователей с id{} и с id{}", id, otherId);
         return commonFriends;
     }
 
@@ -110,7 +110,7 @@ public class UserController {
             throw new ValidationException("не указан id");
         }
         usersService.deleteUser(id);
-        log.info("Пользователь с id{}" + id + " был удален");
+        log.info("Пользователь с id{} был удален", id);
 
     }
 
