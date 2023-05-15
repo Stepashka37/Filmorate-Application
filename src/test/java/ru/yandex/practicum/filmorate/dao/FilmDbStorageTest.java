@@ -8,18 +8,23 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
+import ru.yandex.practicum.filmorate.module.Director;
 import ru.yandex.practicum.filmorate.module.Film;
 import ru.yandex.practicum.filmorate.module.Rating;
 import ru.yandex.practicum.filmorate.module.User;
+import ru.yandex.practicum.filmorate.storage.dao.DirectorDao;
 import ru.yandex.practicum.filmorate.storage.dao.FilmDbStorage;
+import ru.yandex.practicum.filmorate.storage.dao.GenreDao;
 import ru.yandex.practicum.filmorate.storage.dao.UserDbStorage;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
@@ -27,9 +32,21 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class FilmDbStorageTest {
     private final FilmDbStorage filmDbStorage;
     private final UserDbStorage userDbStorage;
+    private final DirectorDao directorDao;
+    private final GenreDao genreDao;
 
     @BeforeEach
     public void setData() {
+
+        Director director = Director.builder()
+                .name("director1")
+                .build();
+
+        directorDao.addDirector(director);
+
+        Set<Director> filmDirectors = new HashSet<>();
+        filmDirectors.add(directorDao.findById(1));
+
         Film film1 = Film.builder()
                 .name("film1")
                 .description("film1Description")
@@ -38,6 +55,7 @@ public class FilmDbStorageTest {
                 .mpa(new Rating(1, "Drama"))
                 .genres(new HashSet<>())
                 .build();
+
         Film film2 = Film.builder()
                 .name("film2")
                 .description("film2Description")
@@ -46,6 +64,7 @@ public class FilmDbStorageTest {
                 .mpa(new Rating(1, "Drama"))
                 .genres(new HashSet<>())
                 .build();
+
         Film film3 = Film.builder()
                 .name("film3")
                 .description("film3Description")
@@ -55,9 +74,43 @@ public class FilmDbStorageTest {
                 .genres(new HashSet<>())
                 .build();
 
+        Film film4 = Film.builder()
+                .name("film4")
+                .description("film4Description")
+                .releaseDate(LocalDate.of(2018, 03, 04))
+                .duration(120)
+                .mpa(new Rating(1, "Drama"))
+                .genres(new HashSet<>())
+                .directors(filmDirectors)
+                .build();
+
+        Film film5 = Film.builder()
+                .name("film5")
+                .description("film5Description")
+                .releaseDate(LocalDate.of(2020, 03, 04))
+                .duration(120)
+                .mpa(new Rating(1, "Drama"))
+                .genres(new HashSet<>(List.of(genreDao.findById(1))))
+                .directors(filmDirectors)
+                .build();
+
+        Film film6 = Film.builder()
+                .name("film6")
+                .description("film6Description")
+                .releaseDate(LocalDate.of(2021, 03, 04))
+                .duration(120)
+                .mpa(new Rating(1, "Drama"))
+                .genres(new HashSet<>(List.of(genreDao.findById(1))))
+                .directors(filmDirectors)
+                .build();
+
+
         filmDbStorage.addFilm(film1);
         filmDbStorage.addFilm(film2);
         filmDbStorage.addFilm(film3);
+        filmDbStorage.addFilm(film4);
+        filmDbStorage.addFilm(film5);
+        filmDbStorage.addFilm(film6);
 
         User user1 = User.builder()
                 .email("yandex1@yandex.ru")
@@ -84,7 +137,6 @@ public class FilmDbStorageTest {
         userDbStorage.addUser(user2);
         userDbStorage.addUser(user3);
 
-
     }
 
     @AfterEach
@@ -106,11 +158,11 @@ public class FilmDbStorageTest {
     public void getFilmsTest() {
         List<Film> films = filmDbStorage.getFilms();
 
-        assertEquals(3, films.size());
+        assertEquals(6, films.size());
     }
 
     @Test
-    public void addfilmTest() {
+    public void addFilmTest() {
         Film film4 = Film.builder()
                 .name("film4")
                 .description("film4Description")
@@ -121,8 +173,8 @@ public class FilmDbStorageTest {
                 .build();
         Film film1Created = filmDbStorage.addFilm(film4);
 
-        assertEquals(4, film1Created.getId());
-        assertEquals(4, filmDbStorage.getFilms().size());
+        assertEquals(7, film1Created.getId());
+        assertEquals(7, filmDbStorage.getFilms().size());
 
     }
 
@@ -140,14 +192,14 @@ public class FilmDbStorageTest {
         Film filmUpdated = filmDbStorage.updateFilm(filmUpd);
 
         assertEquals("film1Upd", filmUpdated.getName());
-        assertEquals(3, filmDbStorage.getFilms().size());
+        assertEquals(6, filmDbStorage.getFilms().size());
     }
 
     @Test
     public void deleteFilmTest() {
         filmDbStorage.deleteFilm(1);
 
-        assertEquals(2, filmDbStorage.getFilms().size());
+        assertEquals(5, filmDbStorage.getFilms().size());
     }
 
     @Test
@@ -158,33 +210,198 @@ public class FilmDbStorageTest {
     }
 
     @Test
-    public void addLikeTest() {
-        filmDbStorage.addLike(1, 2);
-
-        assertEquals(1, filmDbStorage.getFilm(1).getLikes().size());
+    public void addScoreTest() {
+        filmDbStorage.addScore(1, 2, 6);
+        Film film = filmDbStorage.getFilm(1);
+        assertEquals(6, film.getScore());
     }
 
     @Test
-    public void removeLikeTest() {
+    public void addScoreAvgTest() {
+        filmDbStorage.addScore(1, 2, 10);
+        filmDbStorage.addScore(1, 1, 2);
+        Film film = filmDbStorage.getFilm(1);
+        assertEquals(6, film.getScore());
+    }
 
-        filmDbStorage.addLike(1, 2);
+    @Test
+    public void addWrongScoreTest() {
+        assertThrows(DataIntegrityViolationException.class, () -> filmDbStorage.addScore(1, 2, 1000));
+        assertThrows(DataIntegrityViolationException.class, () -> filmDbStorage.addScore(1, 1, -222));
+        assertThrows(DataIntegrityViolationException.class, () -> filmDbStorage.addScore(1, 1, 11));
+        assertDoesNotThrow(() -> filmDbStorage.addScore(1, 1, 10));
+        assertDoesNotThrow(() -> filmDbStorage.addScore(1, 1, 1));
+    }
 
-        assertEquals(1, filmDbStorage.getFilm(1).getLikes().size());
-
-        filmDbStorage.removeLike(1, 2);
-
-        assertEquals(0, filmDbStorage.getFilm(1).getLikes().size());
+    @Test
+    public void removeScoreTest() {
+        filmDbStorage.addScore(1, 2, 9);
+        assertEquals(9, filmDbStorage.getFilm(1).getScore());
+        filmDbStorage.removeScore(1, 2);
+        assertEquals(0.0, filmDbStorage.getFilm(1).getScore());
     }
 
     @Test
     public void getPopularFilms() {
-        filmDbStorage.addLike(1, 2);
-        List<Film> popularFilms = filmDbStorage.getPopularFilms(1);
-        Film popularFilm = filmDbStorage.getFilm(1);
-        assertEquals(popularFilm, popularFilms.get(0));
+        filmDbStorage.addScore(1, 2, 7);
+        filmDbStorage.addScore(2, 2, 8);
+        filmDbStorage.addScore(3, 2, 9);
+        List<Film> popularFilms = filmDbStorage.getPopularFilms(3);
+        assertEquals(filmDbStorage.getFilm(3), popularFilms.get(0));
+        assertEquals(filmDbStorage.getFilm(2), popularFilms.get(1));
+        assertEquals(filmDbStorage.getFilm(1), popularFilms.get(2));
 
         popularFilms = filmDbStorage.getPopularFilms(3);
         assertEquals(3, popularFilms.size());
+    }
+
+    @Test
+    public void getDirectorsFilmsSortByScoreSuccess() {
+        filmDbStorage.addScore(4, 2, 10);
+        filmDbStorage.addScore(4, 1, 3);
+        filmDbStorage.addScore(5, 2, 8);
+        filmDbStorage.addScore(5, 1, 6);
+        final List<Film> directorsFilms = filmDbStorage.getDirectorsFilms(1, "score");
+        final Film film4 = filmDbStorage.getFilm(4);
+        final Film film5 = filmDbStorage.getFilm(5);
+        final Film film6 = filmDbStorage.getFilm(6);
+        assertEquals(film5, directorsFilms.get(0));
+        assertEquals(film4, directorsFilms.get(1));
+        assertEquals(film6, directorsFilms.get(2));
+        assertEquals(3, directorsFilms.size());
+    }
+
+    @Test
+    public void getRecommendation() {
+        User user4 = User.builder()
+                .email("yandex4@yandex.ru")
+                .login("user4")
+                .name("user4")
+                .birthday(LocalDate.of(1995, 06, 03))
+                .build();
+        userDbStorage.addUser(user4);
+
+        filmDbStorage.addScore(1, 1, 7);
+        filmDbStorage.addScore(1, 2, 9);
+        filmDbStorage.addScore(1, 3, 5);
+        filmDbStorage.addScore(1, 4, 7);
+
+        filmDbStorage.addScore(2, 1, 2);
+        filmDbStorage.addScore(2, 2, 1);
+        filmDbStorage.addScore(2, 3, 6);
+        filmDbStorage.addScore(2, 4, 3);
+
+        // user1 не оценивал film3 и должен получить его по рекомендации user2
+        // так же рекомендован user4, но дублирования не должно быть
+        filmDbStorage.addScore(3, 2, 6);
+        filmDbStorage.addScore(3, 3, 4);
+        filmDbStorage.addScore(3, 4, 7);
+
+        // user1 не оценивал film4 и должен получить его по рекомендации user4
+        filmDbStorage.addScore(4, 2, 3);
+        filmDbStorage.addScore(4, 3, 8);
+        filmDbStorage.addScore(4, 4, 9);
+
+        List<Film> recommendedFilms = filmDbStorage.recommendFilms(1);
+        List<Film> checkList = new ArrayList<>();
+        checkList.add(filmDbStorage.getFilm(3));
+        checkList.add(filmDbStorage.getFilm(4));
+        assertEquals(recommendedFilms, checkList, "Должны быть рекомендованы фильмы 3 и 4.");
+    }
+
+    @Test
+    public void getFilmByDirectorQueryTest() {
+        filmDbStorage.addScore(4, 2, 7);
+        filmDbStorage.addScore(5, 2, 8);
+        filmDbStorage.addScore(6, 2, 9);
+
+        List<Film> films = filmDbStorage.getFilmByDirectorQuery("dir");
+        assertEquals(films.size(), 3);
+        assertEquals(filmDbStorage.getFilm(6), films.get(0));
+        assertEquals(filmDbStorage.getFilm(5), films.get(1));
+        assertEquals(filmDbStorage.getFilm(4), films.get(2));
+    }
+
+    @Test
+    public void getFilmByFilmQueryTest() {
+        filmDbStorage.addScore(4, 2, 7);
+        filmDbStorage.addScore(5, 2, 8);
+        filmDbStorage.addScore(6, 2, 9);
+
+        List<Film> films = filmDbStorage.getFilmByFilmQuery("fil");
+        assertEquals(films.size(), 6);
+        assertEquals(filmDbStorage.getFilm(6), films.get(0));
+        assertEquals(filmDbStorage.getFilm(5), films.get(1));
+        assertEquals(filmDbStorage.getFilm(4), films.get(2));
+    }
+
+    @Test
+    public void getPopularByGenreAndYearTest() {
+        Film film7 = Film.builder()
+                .name("film7")
+                .description("film7Description")
+                .releaseDate(LocalDate.of(2021, 04, 04))
+                .duration(120)
+                .mpa(new Rating(1, "Drama"))
+                .genres(new HashSet<>(List.of(genreDao.findById(1))))
+                .build();
+
+        filmDbStorage.addFilm(film7);
+
+        filmDbStorage.addScore(6, 2, 7);
+        filmDbStorage.addScore(7, 2, 9);
+
+        List<Film> films = filmDbStorage.getPopularByGenreAndYear(2021, 1, 2);
+
+        assertEquals(filmDbStorage.getFilm(7), films.get(0));
+        assertEquals(filmDbStorage.getFilm(6), films.get(1));
+
+    }
+
+    @Test
+    public void getPopularByGenreTest() {
+        Film film7 = Film.builder()
+                .name("film7")
+                .description("film7Description")
+                .releaseDate(LocalDate.of(2021, 04, 04))
+                .duration(120)
+                .mpa(new Rating(1, "Drama"))
+                .genres(new HashSet<>(List.of(genreDao.findById(1))))
+                .build();
+
+        filmDbStorage.addFilm(film7);
+
+        filmDbStorage.addScore(6, 2, 7);
+        filmDbStorage.addScore(7, 2, 9);
+
+        List<Film> films = filmDbStorage.getPopularByGenre(1, 2);
+
+        assertEquals(filmDbStorage.getFilm(7), films.get(0));
+        assertEquals(filmDbStorage.getFilm(6), films.get(1));
+
+    }
+
+    @Test
+    public void getPopularByYearTest() {
+        Film film7 = Film.builder()
+                .name("film7")
+                .description("film7Description")
+                .releaseDate(LocalDate.of(2021, 04, 04))
+                .duration(120)
+                .mpa(new Rating(1, "Drama"))
+                .genres(new HashSet<>(List.of(genreDao.findById(1))))
+                .build();
+
+        filmDbStorage.addFilm(film7);
+
+        filmDbStorage.addScore(6, 2, 7);
+        filmDbStorage.addScore(7, 2, 9);
+
+        List<Film> films = filmDbStorage.getPopularByYear(2021, 2);
+
+        assertEquals(filmDbStorage.getFilm(7), films.get(0));
+        assertEquals(filmDbStorage.getFilm(6), films.get(1));
+
     }
 
 }

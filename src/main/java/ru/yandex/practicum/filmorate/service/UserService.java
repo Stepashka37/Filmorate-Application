@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.module.Event;
 import ru.yandex.practicum.filmorate.module.User;
+import ru.yandex.practicum.filmorate.storage.interfaces.EventStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.UsersStorage;
 
 import java.util.List;
@@ -16,10 +18,12 @@ public class UserService {
 
 
     private final UsersStorage storage;
+    private final EventStorage eventStorage;
 
     @Autowired
-    public UserService(@Qualifier("userDbStorage") UsersStorage storage) {
+    public UserService(@Qualifier("userDbStorage") UsersStorage storage, EventStorage eventStorage) {
         this.storage = storage;
+        this.eventStorage = eventStorage;
     }
 
     public List<User> getUsers() {
@@ -57,7 +61,7 @@ public class UserService {
     public void addFriend(int initiatorId, int acceptorId) {
         User initiator = storage.getUser(initiatorId);
         storage.addFriend(initiatorId, acceptorId);
-
+        eventStorage.addFriend(initiatorId, acceptorId);
 
     }
 
@@ -66,7 +70,7 @@ public class UserService {
         User user = storage.getUser(initiatorId);
         User userToDelete = storage.getUser(acceptorId);
         storage.deleteFriend(initiatorId, acceptorId);
-
+        eventStorage.removeFriend(initiatorId, acceptorId);
     }
 
     public List<User> showFriends(Integer id) {
@@ -79,5 +83,13 @@ public class UserService {
         List<User> secondUserFriends = storage.showFriends(idNumb2);
         firstUserFriends.retainAll(secondUserFriends);
         return firstUserFriends;
+    }
+
+    public List<Event> getEvents(Integer userId) {
+        List<Event> events = eventStorage.getEvents(userId);
+        if (events.isEmpty()) {
+            storage.getUser(userId);
+        }
+        return events;
     }
 }

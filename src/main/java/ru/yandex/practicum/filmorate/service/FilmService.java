@@ -5,9 +5,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.module.Film;
+import ru.yandex.practicum.filmorate.storage.interfaces.EventStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmsStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.UsersStorage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -16,11 +18,13 @@ public class FilmService {
 
     private final UsersStorage usersStorage;
     private final FilmsStorage filmsStorage;
+    private final EventStorage eventStorage;
 
     @Autowired
-    public FilmService(@Qualifier("userDbStorage") UsersStorage usersStorage, @Qualifier("filmDbStorage") FilmsStorage filmsStorage) {
+    public FilmService(@Qualifier("userDbStorage") UsersStorage usersStorage, @Qualifier("filmDbStorage") FilmsStorage filmsStorage, EventStorage eventStorage) {
         this.usersStorage = usersStorage;
         this.filmsStorage = filmsStorage;
+        this.eventStorage = eventStorage;
     }
 
     public List<Film> getFilms() {
@@ -38,17 +42,18 @@ public class FilmService {
         return filmsStorage.updateFilm(film);
     }
 
-
-    public void likeFilm(int id, int userId) {
+    public void scoreFilm(int id, int userId, int score) {
         usersStorage.getUser(userId);
         filmsStorage.getFilm(id);
-        filmsStorage.addLike(id, userId);
+        filmsStorage.addScore(id, userId, score);
+        eventStorage.addScore(userId, id);
     }
 
-    public void removeLike(int id, int userId) {
+    public void removeScore(int id, int userId) {
         usersStorage.getUser(userId);
         filmsStorage.getFilm(id);
-        filmsStorage.removeLike(id, userId);
+        filmsStorage.removeScore(id, userId);
+        eventStorage.removeScore(userId, id);
     }
 
     public List<Film> getMostLikedFilms(int count) {
@@ -56,6 +61,11 @@ public class FilmService {
             return filmsStorage.getFilms();
         }
         return filmsStorage.getPopularFilms(count);
+    }
+
+    public List<Film> recommendFilms(Integer userId) {
+        usersStorage.getUser(userId);
+        return filmsStorage.recommendFilms(userId);
     }
 
     public Film getFilm(int id) {
@@ -68,6 +78,47 @@ public class FilmService {
 
     public void deleteAllFilms() {
         filmsStorage.deleteAllFilms();
+    }
+
+    public List<Film> getCommonFilms(int userId, int friendId) {
+        if (usersStorage.checkBothUsersExist(userId, friendId)) {
+            return filmsStorage.getCommonFilms(userId, friendId);
+        } else {
+            throw new UserNotFoundException("Пользователь не найден");
+        }
+    }
+
+    public List<Film> searchFilms(String query, List<String> by) {
+        if (by.size() == 1) {
+            if (by.contains("director")) {
+                return filmsStorage.getFilmByDirectorQuery(query);
+            } else if (by.contains("title")) {
+                return filmsStorage.getFilmByFilmQuery(query);
+            }
+        }
+
+        if (by.size() == 2 && by.containsAll(List.of("director", "title"))) {
+            List<Film> films = filmsStorage.getFilmByDirectorQuery(query);
+            films.addAll(filmsStorage.getFilmByFilmQuery(query));
+            return films;
+        }
+        return new ArrayList<>();
+    }
+
+    public List<Film> getPopularByGenreAndYear(int year, int genreId, int count) {
+        if (year == 0 && genreId == 0) {
+            return filmsStorage.getPopularFilms(count);
+        } else if (genreId == 0) {
+            return filmsStorage.getPopularByYear(year, count);
+        } else if (year == 0) {
+            return filmsStorage.getPopularByGenre(genreId, count);
+        } else {
+            return filmsStorage.getPopularByGenreAndYear(year, genreId, count);
+        }
+    }
+
+    public List<Film> getDirectorsFilms(int directorId, String sortBy) {
+        return filmsStorage.getDirectorsFilms(directorId, sortBy);
     }
 
 }

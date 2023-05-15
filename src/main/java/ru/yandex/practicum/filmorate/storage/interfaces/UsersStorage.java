@@ -24,4 +24,6 @@ public interface UsersStorage {
     void addFriend(int initatorId, int acceptorId);
 
     List<User> showFriends(int id);
+
+    boolean checkBothUsersExist(int userId, int friendId);
 }

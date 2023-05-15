@@ -82,7 +82,7 @@ public class UserDbStorage implements UsersStorage {
 
         String sql = "SET REFERENTIAL_INTEGRITY FALSE;" +
                 "TRUNCATE TABLE   USERS; " +
-                "TRUNCATE TABLE FILM_LIKES; " +
+                "TRUNCATE TABLE FILM_SCORES; " +
                 "TRUNCATE TABLE USER_FRIENDS; " +
                 "SET REFERENTIAL_INTEGRITY FALSE;" +
                 "alter table USERS alter column USER_ID restart with 1";
@@ -95,11 +95,15 @@ public class UserDbStorage implements UsersStorage {
         String sqlDeleteUser = "delete from USERS where USER_ID = ?";
         String sqlDeleteUserFromFriends1 = "delete from USER_FRIENDS where INITIATOR_ID = ?";
         String sqlDeleteUserFromFriends2 = "delete from USER_FRIENDS where ACCEPTOR_ID = ?";
-        String sqlDeleteUserLike = "delete from FILM_LIKES where USER_ID = ?";
+        String sqlDeleteUserLike = "delete from FILM_SCORES where USER_ID = ?";
+        String sqlDeleteReviewLike = "delete from REVIEW_LIKES where USER_ID = ?";
+        String sqlDeleteEvent = "delete from EVENTS where USER_ID = ?";
         jdbcTemplate.update(sqlDeleteUserFromFriends1, id);
         jdbcTemplate.update(sqlDeleteUserFromFriends2, id);
-        jdbcTemplate.update(sqlDeleteUser, id);
+        jdbcTemplate.update(sqlDeleteReviewLike, id);
+        jdbcTemplate.update(sqlDeleteEvent, id);
         jdbcTemplate.update(sqlDeleteUserLike, id);
+        jdbcTemplate.update(sqlDeleteUser, id);
     }
 
     @Override
@@ -135,7 +139,6 @@ public class UserDbStorage implements UsersStorage {
         return jdbcTemplate.query(sqlShowFriends, (rs, rowNum) -> makeUser(rs), id);
     }
 
-
     private User makeUser(ResultSet rs) throws SQLException {
         User userBuilt = User.builder()
                 .id(rs.getInt("user_id"))
@@ -148,5 +151,11 @@ public class UserDbStorage implements UsersStorage {
         userBuilt.setFriends(new HashSet<>(jdbcTemplate.queryForList(sqlQueryForFriends, Integer.class)));
 
         return userBuilt;
+    }
+
+    @Override
+    public boolean checkBothUsersExist(int userId, int friendId) {
+        String sql = "SELECT COUNT(*) FROM users WHERE user_id IN (?, ?)";
+        return jdbcTemplate.queryForObject(sql, Integer.class, userId, friendId) == 2;
     }
 }
