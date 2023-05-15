@@ -42,18 +42,18 @@ public class FilmService {
         return filmsStorage.updateFilm(film);
     }
 
-    public void likeFilm(int id, int userId) {
+    public void scoreFilm(int id, int userId, int score) {
         usersStorage.getUser(userId);
         filmsStorage.getFilm(id);
-        filmsStorage.addLike(id, userId);
-        eventStorage.addLike(userId, id);
+        filmsStorage.addScore(id, userId, score);
+        eventStorage.addScore(userId, id);
     }
 
-    public void removeLike(int id, int userId) {
+    public void removeScore(int id, int userId) {
         usersStorage.getUser(userId);
         filmsStorage.getFilm(id);
-        filmsStorage.removeLike(id, userId);
-        eventStorage.removeLike(userId, id);
+        filmsStorage.removeScore(id, userId);
+        eventStorage.removeScore(userId, id);
     }
 
     public List<Film> getMostLikedFilms(int count) {

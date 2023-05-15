@@ -64,7 +64,6 @@ class FilmControllerTest {
         mapper.findAndRegisterModules();
 
         Film film = Film.builder().name("name")
-                .likes(new HashSet<>())
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(120)
@@ -73,7 +72,6 @@ class FilmControllerTest {
                 .build();
 
         Film filmCreated = Film.builder().name("name")
-                .likes(new HashSet<>())
                 .id(1)
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
@@ -107,9 +105,8 @@ class FilmControllerTest {
     @SneakyThrows
     @Test
     public void filmPostMethodTestValidValue() {
-        String validFilm = "{\"likes\":[],\"id\":1,\"name\":\"name\",\"description\":\"Film description\",\"releaseDate\":\"2016-03-04\",\"duration\":120,\"genres\":[],\"mpa\":{\"id\":1,\"name\":\"G\"},\"directors\":[]}";
+        String validFilm = "{\"score\":0.0,\"id\":1,\"name\":\"name\",\"description\":\"Film description\",\"releaseDate\":\"2016-03-04\",\"duration\":120,\"genres\":[],\"mpa\":{\"id\":1,\"name\":\"G\"},\"directors\":[]}";
         Film filmCreated = Film.builder().name("name")
-                .likes(new HashSet<>())
                 .id(1)
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
@@ -389,7 +386,6 @@ class FilmControllerTest {
     @Test
     public void filmGetById() {
         Film film = Film.builder().name("Name")
-                .likes(new HashSet<>())
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(120)
@@ -419,9 +415,8 @@ class FilmControllerTest {
 
     @SneakyThrows
     @Test
-    public void likeFilm() {
+    public void scoreFilm() {
         Film film = Film.builder().name("Name")
-                .likes(new HashSet<>())
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(120)
@@ -449,7 +444,7 @@ class FilmControllerTest {
                 .content(gson1)
         ).andExpect(status().isCreated());
 
-        mockMvc.perform(put("/films/1/like/2")
+        mockMvc.perform(put("/films/1/score/2?score=1")
                 .contentType("application/json")
                 .content(gson1)
         ).andExpect(status().isOk());
@@ -463,38 +458,86 @@ class FilmControllerTest {
         String json = result.getResponse().getContentAsString();
 
         Film film1 = objectMapper.readValue(json, Film.class);
-        assertEquals(1, film1.getLikes().size());
+        assertEquals(1, film1.getScore());
     }
 
     @SneakyThrows
     @Test
-    public void likeFilmInvalidId() {
+    public void scoreFilmInvalidId() {
         Film film = Film.builder().name("Name")
-                .likes(new HashSet<>())
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(120)
                 .mpa(new Rating(1, "PG"))
                 .genres(new HashSet<>())
                 .build();
+        User user1 = User.builder()
+                .email("yandex1@yandex.ru")
+                .login("user1")
+                .name("user1")
+                .birthday(LocalDate.of(1997, 06, 03))
+                .friends(new HashSet<>())
+                .build();
+        String userGson = objectMapper.writeValueAsString(user1);
+        mockMvc.perform(post("/users")
+                .contentType("application/json")
+                .content(userGson)
+        ).andExpect(status().isCreated());
         String gson1 = objectMapper.writeValueAsString(film);
         mockMvc.perform(post("/films")
                 .contentType("application/json")
                 .content(gson1)
         ).andExpect(status().isCreated());
 
-        mockMvc.perform(put("/films/10/like/1")
+        mockMvc.perform(put("/films/10/score/1?score=1")
                 .contentType("application/json")
                 .content(gson1)
         ).andExpect(status().isNotFound());
-
     }
 
     @SneakyThrows
     @Test
-    public void removeLike() {
+    public void wrongScoreFilm() {
         Film film = Film.builder().name("Name")
-                .likes(new HashSet<>())
+                .description("Film description")
+                .releaseDate(LocalDate.of(2016, 3, 4))
+                .duration(120)
+                .mpa(new Rating(1, "PG"))
+                .genres(new HashSet<>())
+                .build();
+        User user1 = User.builder()
+                .email("yandex1@yandex.ru")
+                .login("user1")
+                .name("user1")
+                .birthday(LocalDate.of(1997, 06, 03))
+                .friends(new HashSet<>())
+                .build();
+        String userGson = objectMapper.writeValueAsString(user1);
+        mockMvc.perform(post("/users")
+                .contentType("application/json")
+                .content(userGson)
+        ).andExpect(status().isCreated());
+        String gson1 = objectMapper.writeValueAsString(film);
+        mockMvc.perform(post("/films")
+                .contentType("application/json")
+                .content(gson1)
+        ).andExpect(status().isCreated());
+
+        mockMvc.perform(put("/films/1/score/1?score=0")
+                .contentType("application/json")
+                .content(gson1)
+        ).andExpect(status().isBadRequest());
+
+        mockMvc.perform(put("/films/1/score/1?score=11")
+                .contentType("application/json")
+                .content(gson1)
+        ).andExpect(status().isBadRequest());
+    }
+
+    @SneakyThrows
+    @Test
+    public void removeScore() {
+        Film film = Film.builder().name("Name")
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(120)
@@ -522,7 +565,7 @@ class FilmControllerTest {
         ).andExpect(status().isCreated());
 
 
-        mockMvc.perform(put("/films/1/like/2")
+        mockMvc.perform(put("/films/1/score/2?score=9")
                 .contentType("application/json")
                 .content(gson1)
         ).andExpect(status().isOk());
@@ -536,9 +579,9 @@ class FilmControllerTest {
         String json = result.getResponse().getContentAsString();
 
         Film film1 = objectMapper.readValue(json, Film.class);
-        assertEquals(1, film1.getLikes().size());
+        assertEquals(9, film1.getScore());
 
-        mockMvc.perform(delete("/films/1/like/2")
+        mockMvc.perform(delete("/films/1/score/2")
                 .contentType("application/json")
                 .content(gson1)
         ).andExpect(status().isOk());
@@ -552,15 +595,14 @@ class FilmControllerTest {
         json = result.getResponse().getContentAsString();
 
         film1 = objectMapper.readValue(json, Film.class);
-        assertEquals(0, film1.getLikes().size());
+        assertEquals(0.0, film1.getScore());
     }
 
 
     @SneakyThrows
     @Test
-    public void removeLikeWithInvalidId() {
+    public void removeScoreWithInvalidId() {
         Film film = Film.builder().name("Name")
-                .likes(new HashSet<>())
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(120)
@@ -573,7 +615,7 @@ class FilmControllerTest {
                 .content(gson1)
         ).andExpect(status().isCreated());
 
-        mockMvc.perform(put("/films/1/like/2")
+        mockMvc.perform(put("/films/1/score/2?score=5")
                 .contentType("application/json")
                 .content(gson1)
         ).andExpect(status().isOk());
@@ -587,14 +629,14 @@ class FilmControllerTest {
         String json = result.getResponse().getContentAsString();
 
         Film film1 = objectMapper.readValue(json, Film.class);
-        assertEquals(1, film1.getLikes().size());
+        assertEquals(5, film1.getScore());
 
-        mockMvc.perform(delete("/films/100/like/2")
+        mockMvc.perform(delete("/films/100/score/2")
                 .contentType("application/json")
                 .content(gson1)
         ).andExpect(status().isNotFound());
 
-        mockMvc.perform(delete("/films/1/like/100")
+        mockMvc.perform(delete("/films/1/score/100")
                 .contentType("application/json")
                 .content(gson1)
         ).andExpect(status().isNotFound());
@@ -608,14 +650,13 @@ class FilmControllerTest {
         json = result.getResponse().getContentAsString();
 
         film1 = objectMapper.readValue(json, Film.class);
-        assertEquals(1, film1.getLikes().size());
+        assertEquals(5, film1.getScore());
     }
 
     @SneakyThrows
     @Test
     public void showPopularFilms() {
         Film film = Film.builder().name("Name")
-                .likes(new HashSet<>())
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(120)
@@ -629,7 +670,6 @@ class FilmControllerTest {
         ).andExpect(status().isCreated());
 
         Film film2 = Film.builder().name("Name2")
-                .likes(new HashSet<>())
                 .description("Film description")
                 .releaseDate(LocalDate.of(2016, 03, 04))
                 .duration(120)
@@ -668,7 +708,7 @@ class FilmControllerTest {
 
         assertEquals(2, films.size());
 
-        mockMvc.perform(put("/films/1/like/1")
+        mockMvc.perform(put("/films/1/score/1?score=6")
                 .contentType("application/json")
                 .content(gson1)
         ).andExpect(status().isOk());
@@ -680,7 +720,7 @@ class FilmControllerTest {
         ).andExpect(status().isOk());
 */
 
-        mockMvc.perform(put("/films/2/like/1")
+        mockMvc.perform(put("/films/2/score/1?score=10")
                 .contentType("application/json")
                 .content(gson1)
         ).andExpect(status().isOk());
@@ -697,7 +737,7 @@ class FilmControllerTest {
         });
 
         assertEquals(1, films.size());
-        assertEquals(1, films.get(0).getId());
+        assertEquals(2, films.get(0).getId());
 
         result = mockMvc.perform(get("/films/popular")
                         .contentType("application/json")
@@ -710,8 +750,8 @@ class FilmControllerTest {
         });
 
         assertEquals(2, films.size());
-        assertEquals(1, films.get(0).getId());
-        assertEquals(2, films.get(1).getId());
+        assertEquals(2, films.get(0).getId());
+        assertEquals(1, films.get(1).getId());
 
         mockMvc.perform(get("/films/popular?count=-1")
                 .contentType("application/json")

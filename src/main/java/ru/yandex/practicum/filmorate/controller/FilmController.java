@@ -3,16 +3,20 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.module.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @Slf4j
 @RestController
 @RequestMapping("/films")
+@Validated
 public class FilmController {
 
     private final FilmService filmService;
@@ -34,7 +38,6 @@ public class FilmController {
     public Film addFilm(@Valid @RequestBody Film film) {
         Film addFilm = filmService.addFilm(film);
         log.info("Добавили фильм с id{}", addFilm.getId());
-        //return addedFilm;
         return addFilm;
     }
 
@@ -51,17 +54,18 @@ public class FilmController {
         log.info("Все фильмы были удален");
     }
 
-    @PutMapping("/{id}/like/{userId}")
-    public void likeFilm(@PathVariable int id, @PathVariable int userId) {
-        filmService.likeFilm(id, userId);
-        log.info("Пользователь с id{}", userId + " поставил лайк фильму с id" + id);
-
+    @PutMapping("/{id}/score/{userId}")
+    public void scoreFilm(@PathVariable int id, @PathVariable int userId, @RequestParam
+    @Min(value = 1, message = "Минимальный рейтинг, который можно поставить фильму: 1")
+    @Max(value = 10, message = "Максимальный рейтинг, который можно поставить фильму: 10") int score) {
+        filmService.scoreFilm(id, userId, score);
+        log.info("Пользователь с id{} поставил оценку {} фильму с id{}", userId, score, id);
     }
 
-    @DeleteMapping("/{id}/like/{userId}")
-    public void removeLike(@PathVariable int id, @PathVariable int userId) {
-        filmService.removeLike(id, userId);
-        log.info("Пользователь с id{}", userId + " убрал лайк фильму с id" + id);
+    @DeleteMapping("/{id}/score/{userId}")
+    public void removeScore(@PathVariable int id, @PathVariable int userId) {
+        filmService.removeScore(id, userId);
+        log.info("Пользователь с id{} убрал оценку фильму с id{}", userId, id);
     }
 
     @GetMapping("/{id}")

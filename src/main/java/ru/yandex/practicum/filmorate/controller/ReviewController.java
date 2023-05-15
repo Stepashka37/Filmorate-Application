@@ -31,7 +31,7 @@ public class ReviewController {
 
     @DeleteMapping("/{id}")
     public void deleteReview(@PathVariable Integer id) {
-        log.info("Получили запрос на удаление ревью с id{}" + id);
+        log.info("Получили запрос на удаление ревью с id{}", id);
         reviewService.deleteReview(id);
     }
 
@@ -49,7 +49,7 @@ public class ReviewController {
 
     @DeleteMapping("/{id}/like/{userId}")
     public void removeLike(@PathVariable Integer id, @PathVariable Integer userId) {
-        log.info("Получили запрос на удаление лайка ревью с id" + id);
+        log.info("Получили запрос на удаление лайка ревью с id{}", id);
         reviewService.removeLike(id, userId);
     }
 
@@ -61,7 +61,7 @@ public class ReviewController {
 
     @DeleteMapping("/{id}/dislike/{userId}")
     public void removeDislike(@PathVariable Integer id, @PathVariable Integer userId) {
-        log.info("Получили запрос на удаление дислайка ревью с id" + id);
+        log.info("Получили запрос на удаление дислайка ревью с id{}", id);
         reviewService.removeDislike(id, userId);
     }
 
