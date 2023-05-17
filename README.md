@@ -1,10 +1,9 @@
 # Filmorate Application 🎥
-Filmorate - проект социальной сети, которая поможет выбратькино на основе того, какие фильмы вы иваши друзья смотрите и какие оценки им ставите. Пользователи могут добавляться в друзья, добавлять  редактировать фильмы, оставлять отзывы и оценки, осуществлять поиск фильмов, получать рекомендации и выборки самых популярных фильмов по году выпуска и режиссеру.
+Filmorate - проект социальной сети, которая поможет выбрать кино на основе того, какие фильмы вы иваши друзья смотрите и какие оценки им ставите. Пользователи могут добавляться в друзья, добавлять  редактировать фильмы, оставлять отзывы и оценки, осуществлять поиск фильмов, получать рекомендации и выборки самых популярных фильмов по году выпуска и режиссеру.
 
 ## Tech Stack 🔧
-[![Java](https://img.shields.io/badge/Java%2011-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://www.oracle.com/java/)[![Spring](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white)](https://spring.io/projects/spring-framework)[![H2 Database](https://img.shields.io/badge/H2-0000FF?style=for-the-badge&logo=H2&logoColor=white)](https://www.h2database.com/html/main.html)[![JUnit](https://img.shields.io/badge/JUnit%205-9F2B68?style=for-the-badge&logo=JUnit&logoColor=white)](https://junit.org/junit5/docs/current/user-guide/)
-[![JDBC](https://img.shields.io/badge/JDBC-FF5733?style=for-the-badge&logo=JUnit&logoColor=white)](https://docs.oracle.com/javase/tutorial/jdbc/overview/index.html)  
-
+[![Java](https://img.shields.io/badge/Java%2011-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://www.oracle.com/java/) [![Spring](https://img.shields.io/badge/Spring%20Boot%202.7.9-6DB33F?style=for-the-badge&logo=spring&logoColor=white)](https://spring.io/projects/spring-framework) [![JDBC](https://img.shields.io/badge/JDBC-FF5733?style=for-the-badge&logo=JUnit&logoColor=white)](https://docs.oracle.com/javase/tutorial/jdbc/overview/index.html) [![H2 Database](https://img.shields.io/badge/H2-0000FF?style=for-the-badge&logo=H2&logoColor=white)](https://www.h2database.com/html/main.html) [![JUnit](https://img.shields.io/badge/JUnit%205-9F2B68?style=for-the-badge&logo=JUnit&logoColor=white)](https://junit.org/junit5/docs/current/user-guide/)
+[![Maven](https://img.shields.io/badge/Maven-00008B?style=for-the-badge&logo=Maven&logoColor=white)](https://maven.apache.org/)  
 
 ## Функциональность «Отзывы» (Бобровский Виктор)
 
@@ -102,7 +101,7 @@ Filmorate - проект социальной сети, которая помо�
 # Схема для базы данных: 
 
 <p align="left">
-<a href="https://miro.com/app/board/uXjVMbPpfag=/?moveToWidget=3458764549540578678&cot=10" target="_blank" rel="noreferrer"><img src="https://github.com/Stepashka37/java-filmorate/blob/add-friends-likes/My First Board (1).jpg" width="2000" height="900" alt="Java" /></a>
+<a href="https://sun9-28.userapi.com/impg/lzKf9oQkVo1T14BW0-vX68ZLpWePgDATy9_vwA/AuBnP9XIVcQ.jpg?size=2560x1344&quality=96&sign=c2fc502cc774b3fd95d44e22e25dc2f7&type=album" target="_blank" rel="noreferrer"><img src="https://github.com/Stepashka37/java-filmorate/blob/add-friends-likes/My First Board (1).jpg" width="2000" height="900" alt="Java" /></a>
 
   </p>
 
