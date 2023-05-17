@@ -3,7 +3,7 @@ Filmorate - проект социальной сети, которая помо�
 
 ## Tech Stack 🔧
 [![Java](https://img.shields.io/badge/Java%2011-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://www.oracle.com/java/) [![Spring](https://img.shields.io/badge/Spring%20Boot%202.7.9-6DB33F?style=for-the-badge&logo=spring&logoColor=white)](https://spring.io/projects/spring-framework) [![JDBC](https://img.shields.io/badge/JDBC-FF5733?style=for-the-badge&logo=JUnit&logoColor=white)](https://docs.oracle.com/javase/tutorial/jdbc/overview/index.html) [![H2 Database](https://img.shields.io/badge/H2-0000FF?style=for-the-badge&logo=H2&logoColor=white)](https://www.h2database.com/html/main.html) [![JUnit](https://img.shields.io/badge/JUnit%205-9F2B68?style=for-the-badge&logo=JUnit&logoColor=white)](https://junit.org/junit5/docs/current/user-guide/)
-[![Maven](https://img.shields.io/badge/Maven-00008B?style=for-the-badge&logo=Maven&logoColor=white)](https://maven.apache.org/)  
+[![Maven](https://img.shields.io/badge/Maven-00008B?style=for-the-badge&logo=Maven&logoColor=white)](https://maven.apache.org/)
 
 ## Функциональность «Отзывы» (Бобровский Виктор)
 
@@ -98,67 +98,15 @@ Filmorate - проект социальной сети, которая помо�
 
 Возвращает список самых популярных фильмов указанного жанра за нужный год.
 
-# Схема для базы данных: 
+# Database schema: 
+![](https://github.com/Stepashka37/java-filmorate/blob/main/DB%20scheme.jpg?raw=true)
 
-<p align="left">
-<a href="https://sun9-28.userapi.com/impg/lzKf9oQkVo1T14BW0-vX68ZLpWePgDATy9_vwA/AuBnP9XIVcQ.jpg?size=2560x1344&quality=96&sign=c2fc502cc774b3fd95d44e22e25dc2f7&type=album" target="_blank" rel="noreferrer"><img src="https://github.com/Stepashka37/java-filmorate/blob/add-friends-likes/My First Board (1).jpg" width="2000" height="900" alt="Java" /></a>
+# Team 🎯:
 
-  </p>
+- [Бобровский Виктор](https://github.com/VictorBobrovskiy) - добавление отзывы, поиск общие фильмы, выдача популярных фильмов
+- [Корюкова Надежда](https://github.com/Salaia) - реализация алгоритма общих рекомендаций
+- [Жолтиков Александр](https://github.com/Zholtikov-A) - добавление режиссеров, получение фильмов режиссера
+- [Пьянков Владимир](https://github.com/Antroverden) - реализация ленты событий
+- [Дмитрий Максимов](https://github.com/Stepashka37) - поиск по ключевой фразе по названию и режиссеру фильма, тимлид
 
-Примеры запросов для основных операций вашего приложения:
-1) Получить список всех фильмов
-   
-   SELECT * 
-   FROM Film;
-   
-2) Получить фильм c конкретным id:
-   
-   SELECT * 
-   FROM Film
-   WHERE film_id = <your_id>;
-   
-3) Получить список самых популярных фильмов:
-   
-   SELECT f.name as name
-          COUNT(fl.user_id) as likes_number
-   FROM Film as f
-   LEFT JOIN FILM_SCORES AS fl ON fl.film_id = f.film_id
-   GROUP BY f.name 
-   ORDER BY likes_number DESC
-   LIMIT <your_limit>;
-   
-4) Получить список всех юзеров
-   
-   SELECT * 
-   FROM User;
-   
-5) Получить юзера с конкретным id
-   
-   SELECT * 
-   FROM User
-   WHERE user_id = <your_id>;
-   
-6) Получить друзей юзера с конкретным id
 
-   SELECT u.* AS user,
-      f.* AS friend
-FROM User AS u
-LEFT JOIN User AS f ON u.friend_id = f.user_id
-WHERE u.user_id = <your_id>;
-
-7) Получить общих друзей юзера c id = 1 и id = 2
-SELECT user1_friends.user_id
-FROM (SELECT u.* AS user,
-      f.* AS friend
-      FROM User AS u
-      LEFT JOIN User AS f ON u.friend_id = f.user_id
-      WHERE u.user_id = <your_id>) AS user1_friends
-INNER JOIN (SELECT u.* AS user,
-      f.* AS friend
-      FROM User AS u
-      LEFT JOIN User AS f ON u.friend_id = f.user_id
-      WHERE u.user_id = <your_id>) AS user2_friends 
-ON user1_friends.friend_id = user2_friends.frind_id;
-
-  
-  SELECT * FROM EMP JOIN DEPT ON EMP.DEPTNO = DEPT.DEPTNO;
