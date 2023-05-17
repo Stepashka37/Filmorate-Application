@@ -1,1 +1,0 @@
-GET http://localhost:8080/films/search?query=krad&by=director,title
